@@ -1,4 +1,4 @@
-const CACHE = 'akan-yazi-v3'; // dosyaları değiştirince sürümü artır
+const CACHE = 'akan-yazi-v4'; // dosyaları değiştirince sürümü artır
 const ASSETS = [
   './', './index.html', './manifest.json',
   './icons/icon-192.png', './icons/icon-512.png',
@@ -17,9 +17,16 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// Önce ağ, olmazsa önbellek: güncellemeler eski dosyaya takılmaz
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).catch(() => caches.match('./index.html')))
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      })
+      .catch(() => caches.match(e.request).then(hit => hit || caches.match('./index.html')))
   );
 });

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Akan Yazı</title>
+<!-- viewport-fit=cover: içerik çentik/ada ve ev çubuğu altına kadar uzanır -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0e1a2b">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Akan Yazı">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  :root {
+    --bg: #0e1a2b;
+    --ink: #f3e9d2;
+    --dim: #5f7391;
+    --accent: #ffb454;
+    --speed: 40s; /* bir tur süresi: büyüdükçe yavaşlar */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* Safe area boşluğu YOK: env(safe-area-inset-*) bilerek kullanılmadı */
+  html, body {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+
+  .stage {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    /* üst ve alt kenarlarda yumuşak solma */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+  }
+
+  .track {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* yukarıdan aşağıya akış: -50% → 0 */
+    animation: fall var(--speed) linear infinite;
+    will-change: transform;
+  }
+  .paused .track { animation-play-state: paused; }
+
+  .copy {
+    padding: 6vh 8vw;
+    text-align: center;
+  }
+  .copy p {
+    font-size: clamp(1.9rem, 9vw, 4.2rem);
+    line-height: 1.18;
+    margin-bottom: 7vh;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+  .copy p:nth-child(even) { color: var(--dim); font-weight: 400; font-style: italic; }
+  .copy p.hot { color: var(--accent); }
+
+  @keyframes fall {
+    from { transform: translate3d(0, -50%, 0); }
+    to   { transform: translate3d(0, 0, 0); }
+  }
+
+  .hint {
+    position: fixed;
+    left: 50%;
+    bottom: 3vh;
+    transform: translateX(-50%);
+    font: 600 0.8rem system-ui, sans-serif;
+    color: var(--ink);
+    background: rgba(255,255,255,.12);
+    padding: .5em 1em;
+    border-radius: 99px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+  }
+  .paused .hint { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation-duration: 120s; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="track" id="track">
+    <div class="copy" id="copyA">
+      <p>Gökyüzü ekranın tepesinde başlar.</p>
+      <p>Her satır yavaşça aşağı süzülür.</p>
+      <p class="hot">Durmadan, usulca, sonsuza kadar.</p>
+      <p>Çentiğin altına da, ev çubuğunun üstüne de taşar.</p>
+      <p>Ekranda boş kenar kalmaz.</p>
+      <p class="hot">Dokun: durdur. Tekrar dokun: devam et.</p>
+    </div>
+  </div>
+</div>
+<div class="hint">Duraklatıldı</div>
+
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var copyA = document.getElementById('copyA');
+
+  // Kesintisiz döngü için içerik ikiye katlanır (animasyon -50% → 0)
+  var copyB = copyA.cloneNode(true);
+  copyB.removeAttribute('id');
+  copyB.setAttribute('aria-hidden', 'true');
+  track.appendChild(copyB);
+
+  // Hız sabit kalsın: blok yüksekliğine göre süre hesapla (px/sn)
+  function setSpeed() {
+    var pxPerSec = 70;
+    document.documentElement.style.setProperty('--speed', (copyA.offsetHeight / pxPerSec) + 's');
+  }
+  setSpeed();
+  window.addEventListener('resize', setSpeed);
+
+  // Dokununca duraklat / devam et
+  document.body.addEventListener('click', function () {
+    document.body.classList.toggle('paused');
+  });
+
+  // Service worker (HTTPS gerekir)
+  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>

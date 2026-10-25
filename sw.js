@@ -1,4 +1,4 @@
-const CACHE = 'akan-yazi-v2'; // dosyaları değiştirince sürümü artır
+const CACHE = 'akan-yazi-v3'; // dosyaları değiştirince sürümü artır
 const ASSETS = [
   './', './index.html', './manifest.json',
   './icons/icon-192.png', './icons/icon-512.png',

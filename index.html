@@ -1,165 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>Akan Yazı</title>
-<!-- viewport-fit=cover: içerik çentik/ada ve ev çubuğu altına kadar uzanır -->
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#0e1a2b">
-<meta name="color-scheme" content="dark">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Akan Yazı">
+<meta name="theme-color" content="#F2EBDD">
+<title>Yemek Yapalım</title>
+<meta name="apple-mobile-web-app-title" content="Yemek Yapalım">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0e1a2b;
-    --ink: #f3e9d2;
-    --dim: #5f7391;
-    --accent: #ffb454;
-    --speed: 40s; /* bir tur süresi: büyüdükçe yavaşlar */
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* Safe area boşluğu YOK: env(safe-area-inset-*) bilerek kullanılmadı */
-  html, body {
-    width: 100%;
-    height: var(--full-h, 100%);
-    min-height: 100%;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: Georgia, "Times New Roman", serif;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    overscroll-behavior: none;
-    touch-action: manipulation;
-  }
+:root{
+  --paper:#F2EBDD;--paper2:#E9DFCB;--card:#FAF5EA;--ink:#2B221B;--ink2:#7A6C5D;
+  --line:rgba(43,34,27,.13);--clay:#B4532F;--sun:#D9A23C;--olive:#5F6B3C;--cream:#F6EFE2;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--H:100vh;
+  --ease:cubic-bezier(.22,.9,.24,1);
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--paper);overscroll-behavior:none}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text;font-family:var(--sans);color:var(--ink)}
+button{font-family:var(--sans);cursor:pointer;color:inherit}
+#app{position:fixed;left:0;right:0;top:0;height:100%;overflow:hidden;background:var(--paper)}
+#grain{position:absolute;inset:0;pointer-events:none;z-index:900;opacity:.9}
+.view{position:absolute;inset:0;background:var(--paper);will-change:transform}
+.view.push{box-shadow:-18px 0 50px rgba(43,34,27,.14)}
+#home{z-index:1}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.ic{display:block;pointer-events:none}
+.tap{transition:transform .35s var(--ease),filter .3s,opacity .3s}
+.tap:active{transform:scale(.955);filter:brightness(.94)}
 
-  .stage {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: var(--full-h, 100%);
-    overflow: hidden;
-  }
+/* ---------- Ana sayfa ---------- */
+.head{padding:calc(var(--st) + 26px) 26px 0}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);font-weight:600;animation:rise .8s var(--ease) both}
+.h1{font-family:var(--serif);font-weight:400;font-size:48px;line-height:1.02;letter-spacing:-.025em;margin-top:10px;font-variation-settings:"SOFT" 100,"opsz" 144;animation:rise .9s .08s var(--ease) both}
+.h1 em{font-style:italic;color:var(--clay)}
+.search{position:relative;margin:26px 26px 0;display:flex;align-items:center;gap:12px;height:48px;border-bottom:1px solid var(--line);animation:rise .9s .16s var(--ease) both}
+.search::after{content:'';position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--clay);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.search:focus-within::after{transform:scaleX(1)}
+.search input{flex:1;background:none;border:0;outline:0;font-size:17px;height:100%;-webkit-appearance:none;appearance:none}
+.search input::placeholder{color:#A99B89}
+.search input::-webkit-search-cancel-button{display:none}
+.clr{width:30px;height:30px;border:0;background:var(--paper2);border-radius:50%;display:grid;place-items:center;opacity:0;transform:scale(.6);pointer-events:none;transition:all .35s var(--ease)}
+.clr.on{opacity:1;transform:none;pointer-events:auto}
+.cats{overflow-x:auto;scrollbar-width:none;padding:0 26px;margin-top:22px;animation:rise .9s .24s var(--ease) both}
+.cats::-webkit-scrollbar{display:none}
+.cats-in{position:relative;display:flex;gap:24px;width:max-content;padding-bottom:16px}
+.cat{background:none;border:0;padding:4px 0;font:400 25px var(--serif);font-variation-settings:"SOFT" 100,"opsz" 72;letter-spacing:-.01em;color:#ABA08F;transition:color .35s;white-space:nowrap}
+.cat.on{color:var(--ink)}
+.brush{position:absolute;left:-14px;bottom:0;height:14px;width:calc(100% + 28px);pointer-events:none}
+.info{display:flex;justify-content:space-between;align-items:center;padding:6px 26px 18px;animation:rise .9s .3s var(--ease) both}
+.count{font-size:13px;color:var(--ink2)}
+.sortb{display:flex;align-items:center;gap:8px;background:none;border:0;font-size:13px;color:var(--ink2);padding:6px 0 6px 10px}
+.list{padding-bottom:calc(var(--sb) + 150px)}
+.card{display:block;margin:0 20px 30px;animation:rise .8s var(--ease) both;animation-delay:calc(var(--i)*70ms);cursor:pointer}
+.list.quick .card{animation:fade .32s both;animation-delay:0s}
+.card .ph{position:relative;aspect-ratio:4/3.15;border-radius:28px;overflow:hidden;background:var(--paper2);box-shadow:0 22px 34px -20px rgba(70,40,15,.55)}
+.card .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s var(--ease)}
+.card:active .ph img{transform:scale(1.04)}
+.card .ph::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(30,20,12,.35),rgba(30,20,12,0) 45%);pointer-events:none}
+.badge{position:absolute;left:16px;bottom:14px;z-index:2;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);font-weight:600}
+.card .tt{font:400 26px/1.12 var(--serif);letter-spacing:-.015em;margin:16px 6px 0;font-variation-settings:"SOFT" 100,"opsz" 96}
+.card .mt{display:flex;justify-content:space-between;align-items:center;margin:8px 6px 0;font-size:13.5px;color:var(--ink2)}
+.none{padding:50px 40px;text-align:center;color:var(--ink2);font-size:15px;animation:fade .5s both}
+.empty{display:flex;flex-direction:column;align-items:center;padding:34px 40px;text-align:center;animation:rise .9s .3s var(--ease) both}
+.empty h3{font:400 28px var(--serif);margin-top:14px;font-variation-settings:"SOFT" 100,"opsz" 96}
+.empty p{color:var(--ink2);font-size:15px;line-height:1.5;margin-top:8px;max-width:260px}
 
-  .track {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    /* yukarıdan aşağıya akış: -50% → 0 */
-    animation: fall var(--speed) linear infinite;
-    will-change: transform;
-  }
-  .paused .track { animation-play-state: paused; }
+.fade{position:absolute;left:0;right:0;bottom:0;height:calc(var(--sb) + 140px);background:linear-gradient(to top,var(--paper) 30%,rgba(242,235,221,0));pointer-events:none;z-index:15}
+.fab{position:absolute;left:50%;bottom:calc(var(--sb) + 20px);transform:translateX(-50%);display:flex;align-items:center;gap:10px;height:58px;padding:0 26px 0 22px;border-radius:29px;background:var(--ink);color:var(--cream);font:600 16px var(--sans);border:0;box-shadow:0 18px 30px -12px rgba(43,34,27,.6),inset 0 1px 0 rgba(255,255,255,.1);z-index:20;transition:transform .45s var(--ease),padding .45s var(--ease),gap .45s var(--ease),opacity .35s}
+.fab:active{transform:translateX(-50%) scale(.95)}
+.fab span{max-width:160px;overflow:hidden;white-space:nowrap;transition:max-width .45s var(--ease),opacity .3s}
+.fab.mini{gap:0;padding:0 20px}
+.fab.mini span{max-width:0;opacity:0}
+.fab.sun{background:var(--clay)}
 
-  .copy {
-    padding: 6vh 8vw;
-    text-align: center;
-  }
-  .copy p {
-    font-size: clamp(1.9rem, 9vw, 4.2rem);
-    line-height: 1.18;
-    margin-bottom: 7vh;
-    letter-spacing: -0.01em;
-    font-weight: 700;
-  }
-  .copy p:nth-child(even) { color: var(--dim); font-weight: 400; font-style: italic; }
-  .copy p.hot { color: var(--accent); }
+#toast{position:absolute;left:50%;bottom:calc(var(--sb) + 98px);transform:translate(-50%,20px);background:var(--ink);color:var(--cream);padding:13px 20px;border-radius:22px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;z-index:200;transition:all .5s var(--ease);white-space:nowrap;box-shadow:0 14px 30px -10px rgba(0,0,0,.4)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
 
-  @keyframes fall {
-    from { transform: translate3d(0, -50%, 0); }
-    to   { transform: translate3d(0, 0, 0); }
-  }
-
-  .hint {
-    position: absolute;
-    left: 50%;
-    bottom: 3vh;
-    transform: translateX(-50%);
-    font: 600 0.8rem system-ui, sans-serif;
-    color: var(--ink);
-    background: rgba(255,255,255,.12);
-    padding: .5em 1em;
-    border-radius: 99px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s;
-  }
-  .paused .hint { opacity: 1; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .track { animation-duration: 120s; }
-  }
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
 </style>
 </head>
 <body>
-<div class="stage" id="stage">
-  <div class="track" id="track">
-    <div class="copy" id="copyA">
-      <p>Gökyüzü ekranın tepesinde başlar.</p>
-      <p>Her satır yavaşça aşağı süzülür.</p>
-      <p class="hot">Durmadan, usulca, sonsuza kadar.</p>
-      <p>Çentiğin altına da, ev çubuğunun üstüne de taşar.</p>
-      <p>Ekranda boş kenar kalmaz.</p>
-      <p class="hot">Dokun: durdur. Tekrar dokun: devam et.</p>
-    </div>
-  </div>
+<div id="app">
+  <section class="view" id="home"></section>
+  <div id="toast"></div>
+  <div id="grain"></div>
 </div>
-<div class="hint">Duraklatıldı</div>
-
 <script>
-(function () {
-  var track = document.getElementById('track');
-  var copyA = document.getElementById('copyA');
-
-  // Kesintisiz döngü için içerik ikiye katlanır (animasyon -50% → 0)
-  var copyB = copyA.cloneNode(true);
-  copyB.removeAttribute('id');
-  copyB.setAttribute('aria-hidden', 'true');
-  track.appendChild(copyB);
-
-  // Hız sabit kalsın: blok yüksekliğine göre süre hesapla (px/sn)
-  function setSpeed() {
-    var pxPerSec = 70;
-    document.documentElement.style.setProperty('--speed', (copyA.offsetHeight / pxPerSec) + 's');
+(()=>{
+'use strict';
+/* ============ Temel ============ */
+const DPR=Math.min(window.devicePixelRatio||1,3);
+const INK='#2B221B',INK2='#7A6C5D',CLAY='#B4532F',SUN='#D9A23C',CREAM='#F6EFE2';
+const CATS=['Çorba','Ana Yemek','Hamur İşi','Kahvaltı','Salata','Tatlı','İçecek'];
+const CATCOL={'Çorba':'#C98446','Ana Yemek':'#A9502D','Hamur İşi':'#BF9A58','Kahvaltı':'#CFA93F','Salata':'#74834A','Tatlı':'#B87281','İçecek':'#668683'};
+const EASE='cubic-bezier(.22,.9,.24,1)';
+const sfx=()=>{}; /* ses katmanı: ileride buraya bağlanacak (adım, kaydet, yıldız, deklanşör...) */
+const $=(s,r=document)=>r.querySelector(s);
+/* Tam ekran yükseklik: iOS ana ekran uygulamasında klavye kapandıktan sonra görünüm alanı küçük kalabiliyor (alta boş şerit).
+   Gerçek ekran yüksekliğini kullanıp, takılı kalırsa yeniden ölçtürüyoruz. */
+const iosApp=navigator.standalone===true;
+let maxH=innerHeight;
+function fit(){
+  let hh=innerHeight;
+  if(iosApp&&innerHeight>=innerWidth)hh=Math.max(innerHeight,screen.height,screen.width);
+  document.documentElement.style.setProperty('--H',hh+'px');
+  const a=document.getElementById('app');if(a)a.style.height=hh+'px';
+}
+function unstick(){
+  maxH=Math.max(maxH,innerHeight);
+  if(maxH-innerHeight>4){
+    const a=document.getElementById('app');
+    const keep=[...document.querySelectorAll('.scroll,.gal')].map(e=>[e,e.scrollTop,e.scrollLeft]);
+    a.style.display='none';void a.offsetHeight;a.style.display='';
+    keep.forEach(([e,t,l])=>{e.scrollTop=t;e.scrollLeft=l});
   }
-  function setFullHeight() {
-    var portrait = window.innerHeight >= window.innerWidth;
-    var screenH = portrait ? Math.max(screen.height, screen.width) : Math.min(screen.height, screen.width);
-    var h = Math.max(window.innerHeight, document.documentElement.clientHeight, screenH);
-    document.documentElement.style.setProperty('--full-h', h + 'px');
+  fit();
+}
+fit();
+addEventListener('resize',()=>{maxH=Math.max(maxH,innerHeight);fit()});
+addEventListener('orientationchange',()=>setTimeout(()=>{maxH=innerHeight;fit()},350));
+addEventListener('pageshow',()=>{fit();scrollTo(0,0)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){fit();scrollTo(0,0)}});
+document.addEventListener('focusout',()=>{
+  setTimeout(()=>{unstick();scrollTo(0,0)},160);
+  setTimeout(()=>{fit();scrollTo(0,0)},550);
+});
+
+function h(tag,attrs,...kids){
+  const el=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k==='class')el.className=v;
+    else if(k==='style')el.style.cssText=v;
+    else if(k.startsWith('on'))el[k]=v;
+    else if(v!==false&&v!=null)el.setAttribute(k,v===true?'':v);
   }
-  document.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
-  window.addEventListener('scroll', function () { window.scrollTo(0, 0); });
+  for(const kid of kids.flat())if(kid!=null&&kid!==false)el.append(kid.nodeType?kid:document.createTextNode(kid));
+  return el;
+}
+function canvas(w,hh){const c=document.createElement('canvas');c.width=Math.round(w*DPR);c.height=Math.round(hh*DPR);c.style.width=w+'px';c.style.height=hh+'px';const x=c.getContext('2d');x.scale(DPR,DPR);return [c,x];}
 
-  if (location.hash === '#debug') {
-    var dbg = document.createElement('div');
-    dbg.style.cssText = 'position:absolute;top:60px;left:8px;z-index:9;font:12px monospace;color:#0f0;background:#000a;padding:4px';
-    document.body.appendChild(dbg);
-    setInterval(function () {
-      dbg.textContent = 'inner ' + innerWidth + 'x' + innerHeight + ' | screen ' + screen.width + 'x' + screen.height + ' | doc ' + document.documentElement.clientHeight;
-    }, 500);
-  }
+/* ============ Tarih / metin ============ */
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const t=new Date();return `${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`};
+const parseD=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const fmtLong=s=>parseD(s).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+const fmtShort=s=>parseD(s).toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const lines=t=>t.split('\n').map(s=>s.replace(/^\s*(?:\d+[.)]|[-•*])\s*/,'').trim()).filter(Boolean);
+const fold=s=>s.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ç/g,'c').replace(/ö/g,'o').replace(/ü/g,'u').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const ytId=u=>{const m=(u||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:null};
 
-  setFullHeight();
-  setSpeed();
-  window.addEventListener('resize', function () { setFullHeight(); setSpeed(); });
-  window.addEventListener('orientationchange', function () { setTimeout(function () { setFullHeight(); setSpeed(); }, 250); });
-
-  // Dokununca duraklat / devam et
-  document.body.addEventListener('click', function () {
-    document.body.classList.toggle('paused');
+/* ============ Veri katmanı (Supabase'e geçişte yalnızca burası değişir) ============ */
+const Store=(()=>{
+  let db=null,mem=null;
+  const open=()=>new Promise((res,rej)=>{
+    if(!window.indexedDB)return rej();
+    const r=indexedDB.open('defter-v1',1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('recipes',{keyPath:'id'});
+    r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);r.onblocked=()=>rej();
   });
+  const init=async()=>{if(db||mem)return;try{db=await open()}catch{mem=new Map()}};
+  const run=(mode,fn)=>new Promise((res,rej)=>{
+    const t=db.transaction('recipes',mode);const rq=fn(t.objectStore('recipes'));
+    t.oncomplete=()=>res(rq&&rq.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error);
+  });
+  return{
+    async all(){await init();return mem?[...mem.values()]:run('readonly',s=>s.getAll())},
+    async put(r){await init();if(mem){mem.set(r.id,r);return}return run('readwrite',s=>s.put(r))},
+    async remove(id){await init();if(mem){mem.delete(id);return}return run('readwrite',s=>s.delete(id))}
+  };
+})();
+const state={all:[],q:'',cat:'Tümü',sort:0};
+const bus=new Set();
+async function save(rec,quiet){
+  rec.updated=Date.now();
+  await Store.put(rec);
+  const k=state.all.findIndex(x=>x.id===rec.id);
+  if(k>=0)state.all[k]=rec;else state.all.push(rec);
+  bus.forEach(f=>f(quiet));
+}
 
-  // Service worker (HTTPS gerekir)
-  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
+/* ============ Görsel işleme: yüksek kalite WebP, makul çözünürlük ============ */
+const urlMap=new WeakMap();
+const urlOf=b=>{let u=urlMap.get(b);if(!u){u=URL.createObjectURL(b);urlMap.set(b,u)}return u};
+
+/* ============ Canvas ikonlar ============ */
+const C=(x,y,r)=>`M${x-r} ${y}a${r} ${r} 0 1 0 ${2*r} 0a${r} ${r} 0 1 0 ${-2*r} 0`;
+const IC={
+  plus:{s:'M12 5v14M5 12h14'},
+  back:{s:'M15 5l-7 7 7 7'},
+  close:{s:'M6 6l12 12M18 6L6 18'},
+  more:{f:[C(5.5,12,1.7),C(12,12,1.7),C(18.5,12,1.7)]},
+  search:{s:C(11,11,6.2)+'M15.8 15.8L20 20'},
+  camera:{s:'M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.3-2h6l1.3 2h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z'+C(12,12.6,3.4)},
+  clock:{s:C(12,12,8.5)+'M12 7.5V12l3 2'},
+  plate:{s:C(12,12,8.5)+C(12,12,4.6)},
+  calendar:{s:'M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5zM4 10h16M8.5 3.5V7M15.5 3.5V7'},
+  check:{s:'M5 12.5l4.5 4.5L19 7.5'},
+  play:{f:['M8.5 5.8L18.5 12l-10 6.2z']},
+  trash:{s:'M5 7h14M9.5 7V4.8h5V7M6.8 7l.9 12.2h8.6L17.2 7M10.4 11v5M13.6 11v5'},
+  edit:{s:'M4.5 19.5l.9-4L16 4.9a1.6 1.6 0 0 1 2.3 0l.8.8a1.6 1.6 0 0 1 0 2.3L8.5 18.6zM14.3 6.6l3.1 3.1'},
+  list:{s:'M9.5 7h10M9.5 12h10M9.5 17h10',f:[C(5,7,1.2),C(5,12,1.2),C(5,17,1.2)]},
+  sort:{s:'M7 5v14M3.8 15.8L7 19l3.2-3.2M17 19V5M13.8 8.2L17 5l3.2 3.2'},
+  prev:{s:'M14 6l-6 6 6 6'},
+  next:{s:'M10 6l6 6-6 6'}
+};
+function icon(name,size=22,color=INK,lw=1.8){
+  const cv=document.createElement('canvas');cv.width=cv.height=Math.round(size*DPR);
+  cv.style.width=cv.style.height=size+'px';cv.className='ic';
+  const x=cv.getContext('2d');x.scale(size*DPR/24,size*DPR/24);
+  x.strokeStyle=x.fillStyle=color;x.lineWidth=lw;x.lineCap=x.lineJoin='round';
+  const d=IC[name];if(d.s)x.stroke(new Path2D(d.s));(d.f||[]).forEach(p=>x.fill(new Path2D(p)));
+  return cv;
+}
+
+/* ============ Yıldızlar (canvas) ============ */
+function starPath(ctx,cx,cy,r){
+  ctx.beginPath();
+  for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.5:r;ctx[i?'lineTo':'moveTo'](cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}
+  ctx.closePath();
+}
+function Stars({value=0,size=18,gap=4,interactive=false,onChange}){
+  const W=size*5+gap*4,pad=Math.ceil(size*.6),CW=W+pad*2,CH=size+pad*2;
+  const [cv,x]=canvas(CW,CH);cv.style.touchAction='pan-y';cv.style.margin=`-${pad}px`;cv.style.display='block';
+  cv.style.pointerEvents=interactive?'auto':'none';
+  let val=value,anim=null;
+  const draw=now=>{
+    x.clearRect(0,0,CW,CH);
+    for(let i=0;i<5;i++){
+      const cx=pad+i*(size+gap)+size/2,cy=pad+size/2;let sc=1;
+      if(anim&&i<anim.upto){const p=Math.min(1,Math.max(0,(now-anim.t0-i*55)/340));sc=1+.4*Math.sin(Math.PI*p)}
+      const r=size*.5*sc;starPath(x,cx,cy,r);x.lineJoin='round';x.lineWidth=r*.3;
+      if(i<val){x.fillStyle=x.strokeStyle=SUN;x.fill();x.stroke()}
+      else{x.strokeStyle='rgba(43,34,27,.26)';x.stroke()}
+    }
+  };
+  const run=()=>{
+    const tick=n=>{draw(n);if(anim&&n-anim.t0<340+5*55)requestAnimationFrame(tick);else{anim=null;draw(performance.now())}};
+    requestAnimationFrame(tick);
+  };
+  draw(0);
+  if(interactive){
+    const pick=(e,first)=>{
+      const r=cv.getBoundingClientRect();
+      let i=Math.floor((e.clientX-r.left-pad)/(size+gap))+1;i=Math.max(1,Math.min(5,i));
+      if(first&&i===val)i=0;
+      if(i!==val){val=i;anim={t0:performance.now(),upto:i};run();sfx('star');onChange&&onChange(val)}
+    };
+    let down=false;
+    cv.onpointerdown=e=>{down=true;cv.setPointerCapture(e.pointerId);pick(e,true)};
+    cv.onpointermove=e=>{if(down)pick(e,false)};
+    cv.onpointerup=cv.onpointercancel=()=>{down=false};
   }
+  cv.set=v=>{val=v;draw(0)};
+  return cv;
+}
+
+/* ============ Kategori seçici: tipografik, canvas fırça çizgisi ============ */
+function CatPicker(cats,value,onChange){
+  const wrap=h('div',{class:'cats'});
+  const inner=h('div',{class:'cats-in'});
+  const cv=h('canvas',{class:'brush'});
+  const btns=cats.map(c=>h('button',{type:'button',class:'cat'+(c===value?' on':'')},c));
+  inner.append(...btns,cv);wrap.append(inner);
+  let cur=value,x0=0,x1=0,t0=0,t1=0,raf=0,seed=Math.random()*6;
+  const target=()=>{const b=btns[cats.indexOf(cur)];return b?[b.offsetLeft,b.offsetLeft+b.offsetWidth]:[0,0]};
+  const size=()=>{const w=inner.offsetWidth+28;if(cv.width!==Math.round(w*DPR)){cv.width=Math.round(w*DPR);cv.height=Math.round(14*DPR)}};
+  const draw=()=>{
+    size();const g=cv.getContext('2d');g.setTransform(DPR,0,0,DPR,0,0);g.clearRect(0,0,cv.width,cv.height);g.translate(14,0);
+    const a=Math.min(x0,x1),b=Math.max(x0,x1);if(b-a<2)return;
+    g.lineCap=g.lineJoin='round';g.strokeStyle=CLAY;
+    for(const [lw,al,off] of [[5.4,.92,0],[2.2,.5,2.4]]){
+      g.lineWidth=lw;g.globalAlpha=al;g.beginPath();
+      for(let px=a;px<=b;px+=4){const py=7+Math.sin(px*.07+seed+off)*1.5+off*.5;px===a?g.moveTo(px,py):g.lineTo(px,py)}
+      g.lineTo(b,7+Math.sin(b*.07+seed+off)*1.5+off*.5);g.stroke();
+    }
+    g.globalAlpha=1;
+  };
+  const loop=()=>{
+    const [a,b]=[t0,t1];const grow=x1<b||x0<a;
+    x0+=(a-x0)*(grow?.16:.3);x1+=(b-x1)*(grow?.3:.16);
+    draw();
+    if(Math.abs(a-x0)>.4||Math.abs(b-x1)>.4)raf=requestAnimationFrame(loop);else{x0=a;x1=b;draw();raf=0}
+  };
+  const go=()=>{[t0,t1]=target();if(!raf)raf=requestAnimationFrame(loop)};
+  btns.forEach((b,i)=>b.onclick=()=>{
+    if(cats[i]===cur)return;cur=cats[i];sfx('tap');
+    btns.forEach(k=>k.classList.toggle('on',k===b));
+    wrap.scrollTo({left:b.offsetLeft+26-(wrap.clientWidth-b.offsetWidth)/2,behavior:'smooth'});
+    go();onChange(cur);
+  });
+  requestAnimationFrame(()=>{[t0,t1]=target();x0=x1=t0;go()});
+  if(window.ResizeObserver)new ResizeObserver(()=>{[t0,t1]=target();if(!raf){x0=t0;x1=t1;draw()}}).observe(inner);
+  wrap.value=()=>cur;
+  return wrap;
+}
+
+/* ============ Çizimler: boş durum + kapak yer tutucu ============ */
+function PotArt(){
+  const [cv,g]=canvas(210,170);let n=0;
+  const draw=t=>{
+    g.clearRect(0,0,210,170);g.lineCap=g.lineJoin='round';
+    for(let k=0;k<3;k++){
+      const bx=76+k*30,ph=t*1.5+k*1.7;g.strokeStyle=`rgba(122,108,93,${.28+.22*Math.sin(ph)})`;g.lineWidth=3;g.beginPath();
+      for(let s=0;s<=1;s+=.05){const y=72-s*58,xx=bx+Math.sin(s*5+ph)*6*s;s?g.lineTo(xx,y):g.moveTo(xx,y)}g.stroke();
+    }
+    g.lineWidth=3;g.strokeStyle=INK;
+    g.fillStyle=CLAY;g.beginPath();g.roundRect(48,92,114,60,[8,8,22,22]);g.fill();g.stroke();
+    g.fillStyle='#C9683F';g.beginPath();g.roundRect(42,80,126,16,8);g.fill();g.stroke();
+    g.beginPath();g.moveTo(94,80);g.quadraticCurveTo(105,68,116,80);g.stroke();
+    g.beginPath();g.moveTo(48,108);g.quadraticCurveTo(30,108,30,120);g.quadraticCurveTo(30,130,48,128);g.stroke();
+    g.beginPath();g.moveTo(162,108);g.quadraticCurveTo(180,108,180,120);g.quadraticCurveTo(180,130,162,128);g.stroke();
+    g.strokeStyle='rgba(246,239,226,.5)';g.lineWidth=3;g.beginPath();g.moveTo(62,106);g.lineTo(62,128);g.stroke();
+  };
+  const loop=t=>{n++;if(!cv.isConnected&&n>20)return;draw(t/1000);requestAnimationFrame(loop)};
+  requestAnimationFrame(loop);return cv;
+}
+const artCache={};
+function plateArt(cat){
+  if(artCache[cat])return artCache[cat];
+  const W=640,Hh=500,c=document.createElement('canvas');c.width=W;c.height=Hh;const x=c.getContext('2d');
+  const col=CATCOL[cat]||CLAY;x.fillStyle=col;x.fillRect(0,0,W,Hh);
+  const g=x.createRadialGradient(W/2,Hh/2,20,W/2,Hh/2,W*.7);g.addColorStop(0,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(0,0,0,.2)');x.fillStyle=g;x.fillRect(0,0,W,Hh);
+  x.save();x.shadowColor='rgba(0,0,0,.3)';x.shadowBlur=40;x.shadowOffsetY=18;x.fillStyle=CREAM;x.beginPath();x.arc(W/2,Hh/2,168,0,7);x.fill();x.restore();
+  x.strokeStyle='rgba(43,34,27,.09)';x.lineWidth=3;x.beginPath();x.arc(W/2,Hh/2,128,0,7);x.stroke();
+  x.fillStyle=col;x.globalAlpha=.85;x.beginPath();x.arc(W/2,Hh/2,76,0,7);x.fill();x.globalAlpha=1;
+  x.strokeStyle='rgba(246,239,226,.9)';x.lineCap='round';x.lineWidth=12;
+  x.beginPath();x.moveTo(78,Hh/2-110);x.lineTo(78,Hh/2+120);x.stroke();
+  x.beginPath();x.moveTo(W-78,Hh/2-110);x.lineTo(W-78,Hh/2+120);x.stroke();
+  x.lineWidth=5;for(const dx of[-14,0,14]){x.beginPath();x.moveTo(W-78+dx,Hh/2-110);x.lineTo(W-78+dx,Hh/2-60);x.stroke()}
+  return artCache[cat]=c.toDataURL('image/jpeg',.85);
+}
+
+let toastT;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2300)}
+/* ============ Ana sayfa ============ */
+const home=$('#home');
+const SORTS=['Yeniden eskiye','Puana göre','A – Z'];
+const scroll=h('div',{class:'scroll'});
+const dateLine=new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long'});
+const inp=h('input',{type:'search',placeholder:'Tariflerde ara',enterkeyhint:'search',autocomplete:'off',autocapitalize:'off',spellcheck:'false'});
+const clr=h('button',{class:'clr',type:'button',onclick:()=>{inp.value='';state.q='';clr.classList.remove('on');renderList('quick');inp.focus()}},icon('close',14,INK,2.2));
+const catsEl=CatPicker(['Tümü',...CATS],'Tümü',c=>{state.cat=c;renderList('stagger')});
+const countEl=h('div',{class:'count'});
+const sortLab=h('span',{},SORTS[0]);
+const sortB=h('button',{class:'sortb tap',type:'button',onclick:()=>{state.sort=(state.sort+1)%3;sortLab.textContent=SORTS[state.sort];sfx('tap');renderList('stagger')}},sortLab,icon('sort',18,INK2,1.7));
+const listEl=h('div',{class:'list'});
+scroll.append(
+  h('header',{class:'head'},h('div',{class:'eyebrow'},dateLine),h('h1',{class:'h1'},'Tariflerim')),
+  h('div',{class:'search'},icon('search',22,INK2,1.8),inp,clr),
+  catsEl,h('div',{class:'info'},countEl,sortB),listEl
+);
+const fabLab=h('span',{},'Yeni tarif');
+const fab=h('button',{class:'fab',type:'button',onclick:()=>{sfx('tap');toast('Tarif ekleme bir sonraki adımda')}},icon('plus',24,CREAM,2.2),fabLab);
+home.append(scroll,h('div',{class:'fade'}),fab);
+inp.addEventListener('input',()=>{state.q=inp.value;clr.classList.toggle('on',!!inp.value);renderList('quick')});
+let lastY=0;
+scroll.addEventListener('scroll',()=>{const y=scroll.scrollTop;fab.classList.toggle('mini',y>90&&y>lastY);if(y<lastY-6||y<90)fab.classList.remove('mini');lastY=y},{passive:true});
+
+function filtered(){
+  const q=fold(state.q.trim());let items=state.all.filter(r=>state.cat==='Tümü'||r.cat===state.cat);
+  if(q){
+    items=items.map(r=>{const t=fold(r.title);const rank=t.startsWith(q)?0:t.split(/\s+/).some(w=>w.startsWith(q))?1:9;return{r,rank}}).filter(o=>o.rank<9).sort((a,b)=>a.rank-b.rank).map(o=>o.r);
+    return items;
+  }
+  const by=[(a,b)=>(b.date||'').localeCompare(a.date||'')||b.created-a.created,(a,b)=>(b.rating||0)-(a.rating||0)||(b.date||'').localeCompare(a.date||''),(a,b)=>a.title.localeCompare(b.title,'tr')][state.sort];
+  return items.sort(by);
+}
+function Card(r,i){
+  const src=r.photos[0]?urlOf(r.photos[0]):plateArt(r.cat);
+  return h('article',{class:'card tap',style:`--i:${i}`,onclick:()=>{sfx('tap')}},
+    h('div',{class:'ph'},h('img',{src,alt:'',decoding:'async'}),h('div',{class:'badge'},r.cat)),
+    h('div',{class:'tt'},r.title),
+    h('div',{class:'mt'},h('span',{},fmtShort(r.date)),Stars({value:r.rating,size:15,gap:3}))
+  );
+}
+function renderList(mode){
+  const items=filtered();listEl.innerHTML='';listEl.classList.toggle('quick',mode==='quick');
+  countEl.textContent=state.all.length?`${items.length} tarif`:'';
+  if(!state.all.length){listEl.append(h('div',{class:'empty'},PotArt(),h('h3',{},'Defterin henüz boş'),h('p',{},'İlk tarifini ekleyerek mutfak defterini başlat.')));return}
+  if(!items.length){listEl.append(h('div',{class:'none'},'Bu aramayla eşleşen tarif yok'));return}
+  items.forEach((r,i)=>listEl.append(Card(r,Math.min(i,8))));
+}
+bus.add(()=>renderList('quick'));
+
+/* ============ Başlat ============ */
+(function(){
+  const c=document.createElement('canvas');c.width=c.height=140;const x=c.getContext('2d'),id=x.createImageData(140,140);
+  for(let i=0;i<id.data.length;i+=4){id.data[i]=43;id.data[i+1]=34;id.data[i+2]=27;id.data[i+3]=Math.random()*20}
+  x.putImageData(id,0,0);$('#grain').style.backgroundImage=`url(${c.toDataURL()})`;
+})();
+(async()=>{
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
+  state.all=await Store.all();
+  renderList('stagger');
+})();
 })();
 </script>
 </body>

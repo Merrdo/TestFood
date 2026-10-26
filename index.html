@@ -28,6 +28,8 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:var(--H);min-height:100%;overflow:hidden;background:var(--paper);overscroll-behavior:none}
 body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img,canvas{-webkit-touch-callout:none;-webkit-user-drag:none;user-drag:none;-webkit-user-select:none;user-select:none}
+img{pointer-events:none}
 input,textarea{-webkit-user-select:text;user-select:text;font-family:var(--sans);color:var(--ink)}
 button{font-family:var(--sans);cursor:pointer;color:inherit}
 #app{position:absolute;left:0;right:0;top:0;height:var(--H);overflow:hidden;background:var(--paper)}
@@ -183,6 +185,48 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
+.head{position:relative}
+.gearb{width:44px;height:44px;margin-right:-10px;background:none;border:0;display:grid;place-items:center;flex:none}
+.head{display:flex;align-items:center;justify-content:space-between;padding-top:calc(var(--st) + 36px)}
+.head .h1{margin-top:0}
+.eyebrow,.h1,.search,.cats,.info,.gearb{animation:none!important}
+.card{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i)*40ms)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.sgroup{margin:32px 20px 0}
+.sh{font:600 11.5px var(--sans);letter-spacing:.15em;text-transform:uppercase;color:var(--ink2);margin:0 8px 10px}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.sitem{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:0 16px 0 14px;background:none;border:0;border-bottom:1px solid var(--line);text-align:left;font-size:17px}
+.sitem:last-child{border-bottom:0}
+.sitem .si{width:36px;height:36px;border-radius:12px;background:rgba(180,83,47,.1);display:grid;place-items:center;flex:none}
+.sitem .st{flex:1}
+.sitem small{color:var(--ink2);font-size:14.5px}
+.sfoot{text-align:center;color:#B3A593;font:italic 400 15px var(--serif);margin-top:44px}
+.chint{margin:12px 26px 0;color:var(--ink2);font-size:14.5px;line-height:1.5}
+.clist{margin:22px 20px 0;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:4px 0}
+.clist.dragging{-webkit-user-select:none;user-select:none}
+.crow{position:relative;display:flex;align-items:center;gap:14px;height:64px;margin:0 6px;padding:0 0 0 14px;border-radius:18px;touch-action:pan-y;transition:box-shadow .26s,background .26s}
+.crow::after{content:'';position:absolute;left:14px;right:14px;bottom:0;height:1px;background:var(--line)}
+.crow.slide{transition:transform .3s var(--ease)}
+.crow.lift,.crow.settle{z-index:6}
+.crow.lift{background:var(--card);box-shadow:0 24px 40px -14px rgba(43,34,27,.5),0 0 0 1px var(--line);transition:box-shadow .26s,background .26s}
+.crow.lift::after,.crow.settle::after{opacity:0}
+.cdot{width:14px;height:14px;border-radius:50%;flex:none}
+.cname{flex:1;font:400 22px var(--serif);letter-spacing:-.01em;font-variation-settings:"SOFT" 100,"opsz" 72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cdel{width:44px;height:44px;border:0;background:none;border-radius:50%;display:grid;place-items:center;flex:none}
+.grip{width:54px;height:100%;display:grid;place-items:center;flex:none;touch-action:none}
+.addcat{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 40px);height:58px;margin:18px 20px 0;border-radius:20px;border:1.5px dashed rgba(180,83,47,.5);background:rgba(180,83,47,.05);color:var(--clay);font:600 16px var(--sans)}
+.sheet.top{top:calc(var(--st) + 56px);bottom:auto;left:14px;right:14px;border-radius:28px;padding:24px 22px 22px;box-shadow:0 30px 60px -10px rgba(0,0,0,.3)}
+.crow:last-child::after{display:none}
+.bkrow{padding:calc(var(--st) + 10px) 18px 0}
+.bk{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--paper2);display:grid;place-items:center}
+.bkrow+.head{padding-top:18px}
+.pbar{position:absolute;top:0;left:0;right:0;z-index:6;height:calc(var(--st) + 56px);padding-top:var(--st);background:var(--paper);display:flex;align-items:center;justify-content:center;border-bottom:1px solid transparent;transition:border-color .25s}
+.pbar.on{border-bottom-color:var(--line)}
+.pback{position:absolute;left:6px;bottom:0;width:56px;height:56px;background:none;border:0;display:grid;place-items:center}
+.ptitle{font:400 22px var(--serif);font-variation-settings:"SOFT" 100,"opsz" 72;letter-spacing:-.01em}
+.barsp{height:calc(var(--st) + 56px)}
+.barsp+.sgroup{margin-top:14px}
+.barsp+.chint{margin-top:10px}
 </style>
 </head>
 <body>
@@ -197,11 +241,23 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 /* ============ Temel ============ */
 const DPR=Math.min(window.devicePixelRatio||1,3);
 const INK='#2B221B',INK2='#7A6C5D',CLAY='#B4532F',SUN='#D9A23C',CREAM='#F6EFE2';
-const CATS=['Çorba','Ana Yemek','Hamur İşi','Kahvaltı','Salata','Tatlı','İçecek'];
-const CATCOL={'Çorba':'#C98446','Ana Yemek':'#A9502D','Hamur İşi':'#BF9A58','Kahvaltı':'#CFA93F','Salata':'#74834A','Tatlı':'#B87281','İçecek':'#668683'};
+const CATKEY='defter-cats-v1';
+const DEFCATS=[['Çorba','#C98446'],['Ana Yemek','#A9502D'],['Hamur İşi','#BF9A58'],['Kahvaltı','#CFA93F'],['Salata','#74834A'],['Tatlı','#B87281'],['İçecek','#668683']];
+const PALETTE=['#C98446','#A9502D','#BF9A58','#CFA93F','#74834A','#B87281','#668683','#8C6A9E','#4F7C9A','#9A7B4F'];
+const uid0=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function loadCats(){
+  try{const a=JSON.parse(localStorage.getItem(CATKEY));if(Array.isArray(a)&&a.length&&a.every(c=>c&&c.name))return a}catch{}
+  return DEFCATS.map(([name,color])=>({id:uid0(),name,color}));
+}
+let cats=loadCats();
+const saveCats=()=>{try{localStorage.setItem(CATKEY,JSON.stringify(cats))}catch{}};
+const catNames=()=>cats.map(c=>c.name);
+const catColor=n=>(cats.find(c=>c.name===n)||{}).color||CLAY;
+const catBus=new Set();
 const EASE='cubic-bezier(.22,.9,.24,1)';
 const sfx=()=>{}; /* ses katmanı: ileride buraya bağlanacak (adım, kaydet, yıldız, deklanşör...) */
 const $=(s,r=document)=>r.querySelector(s);
+addEventListener('contextmenu',e=>{if(!e.target.closest('input,textarea'))e.preventDefault()});
 /* Tam ekran yükseklik: iOS ana ekran uygulamasında klavye kapandıktan sonra görünüm alanı küçük kalabiliyor (alta boş şerit).
    Gerçek ekran yüksekliğini kullanıp, takılı kalırsa yeniden ölçtürüyoruz. */
 const iosApp=navigator.standalone===true;
@@ -311,6 +367,10 @@ async function compress(file,max=1800){
 const C=(x,y,r)=>`M${x-r} ${y}a${r} ${r} 0 1 0 ${2*r} 0a${r} ${r} 0 1 0 ${-2*r} 0`;
 const IC={
   plus:{s:'M12 5v14M5 12h14'},
+  sliders:{s:'M4 7h9M17 7h3M4 17h3M11 17h9'+C(15,7,2)+C(9,17,2)},
+  curve:{s:'M8.5 4.5L4 9l4.5 4.5M4 9h10a5 5 0 0 1 0 10H9'},
+  tag:{s:'M4 4h8.5l7.5 7.5-8.5 8.5L4 12.5z'+C(8.5,8.5,1.2)},
+  grip:{f:[C(9,7,1.5),C(15,7,1.5),C(9,12,1.5),C(15,12,1.5),C(9,17,1.5),C(15,17,1.5)]},
   back:{s:'M15 5l-7 7 7 7'},
   close:{s:'M6 6l12 12M18 6L6 18'},
   more:{f:[C(5.5,12,1.7),C(12,12,1.7),C(18.5,12,1.7)]},
@@ -460,7 +520,7 @@ const artCache={};
 function plateArt(cat){
   if(artCache[cat])return artCache[cat];
   const W=640,Hh=500,c=document.createElement('canvas');c.width=W;c.height=Hh;const x=c.getContext('2d');
-  const col=CATCOL[cat]||CLAY;x.fillStyle=col;x.fillRect(0,0,W,Hh);
+  const col=catColor(cat);x.fillStyle=col;x.fillRect(0,0,W,Hh);
   const g=x.createRadialGradient(W/2,Hh/2,20,W/2,Hh/2,W*.7);g.addColorStop(0,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(0,0,0,.2)');x.fillStyle=g;x.fillRect(0,0,W,Hh);
   x.save();x.shadowColor='rgba(0,0,0,.3)';x.shadowBlur=40;x.shadowOffsetY=18;x.fillStyle=CREAM;x.beginPath();x.arc(W/2,Hh/2,168,0,7);x.fill();x.restore();
   x.strokeStyle='rgba(43,34,27,.09)';x.lineWidth=3;x.beginPath();x.arc(W/2,Hh/2,128,0,7);x.stroke();
@@ -481,13 +541,16 @@ const nav={stack:[],
     const modal=view.kind==='modal';
     view.el.animate(modal?[{transform:'translateY(100%)'},{transform:'none'}]:[{transform:'translateX(100%)'},{transform:'none'}],{duration:modal?540:480,easing:EASE});
     view.prevAnim=top.el.animate(modal?[{transform:'none',opacity:1},{transform:'scale(.95)',opacity:.55}]:[{transform:'none'},{transform:'translateX(-22%)'}],{duration:modal?540:480,easing:EASE,fill:'forwards'});
-    this.stack.push(view);
+    view.prevEl=top.el;this.stack.push(view);
   },
   pop(from){
     const view=this.stack.pop();if(!view)return;
     const modal=view.kind==='modal';
     const a=view.el.animate([{transform:from||'none'},{transform:modal?'translateY(100%)':'translateX(100%)'}],{duration:400,easing:EASE,fill:'forwards'});
-    if(view.prevAnim){const p=view.prevAnim;p.reverse();p.onfinish=()=>p.cancel()}
+    if(view.prevAnim){
+      const k=modal?[{transform:'scale(.95)',opacity:.55},{transform:'none',opacity:1}]:[{transform:'translateX(-22%)'},{transform:'none'}];
+      view.prevEl.animate(k,{duration:400,easing:EASE});view.prevAnim.cancel();
+    }
     a.onfinish=()=>{view.el.remove();view.onClose&&view.onClose()};
   }
 };
@@ -500,14 +563,15 @@ function edgeBack(view){
     if(dx>110||v>.6)nav.pop(from);else el.animate([{transform:from},{transform:'none'}],{duration:320,easing:EASE});
   });
 }
-function sheet(content,{onClose}={}){
-  const back=h('div',{class:'sheet-back'}),box=h('div',{class:'sheet'},h('div',{class:'grab'}),content);
+function sheet(content,{onClose,top}={}){
+  const out=top?[{transform:'translateY(-36px)',opacity:0},{transform:'none',opacity:1}]:[{transform:'translateY(100%)'},{transform:'none'}];
+  const back=h('div',{class:'sheet-back'}),box=h('div',{class:'sheet'+(top?' top':'')},top?null:h('div',{class:'grab'}),content);
   const root=h('div',{class:'sheet-root'},back,box);app.insertBefore(root,$('#toast'));
   back.animate([{opacity:0},{opacity:1}],{duration:300,fill:'forwards'});
-  box.animate([{transform:'translateY(100%)'},{transform:'none'}],{duration:500,easing:EASE});
+  box.animate(out,{duration:top?420:500,easing:EASE});
   const api={close(){
     back.animate([{opacity:1},{opacity:0}],{duration:260,fill:'forwards'});
-    box.animate([{transform:'none'},{transform:'translateY(100%)'}],{duration:340,easing:EASE,fill:'forwards'}).onfinish=()=>{root.remove();onClose&&onClose()};
+    box.animate([...out].reverse(),{duration:300,easing:EASE,fill:'forwards'}).onfinish=()=>{root.remove();onClose&&onClose()};
   }};
   back.onclick=api.close;return api;
 }
@@ -519,16 +583,21 @@ const shake=[{transform:'translateX(0)'},{transform:'translateX(-9px)'},{transfo
 const home=$('#home');
 const SORTS=['Yeniden eskiye','Puana göre','A – Z'];
 const scroll=h('div',{class:'scroll'});
-const dateLine=new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long'});
 const inp=h('input',{type:'search',placeholder:'Tariflerde ara',enterkeyhint:'search',autocomplete:'off',autocapitalize:'off',spellcheck:'false'});
 const clr=h('button',{class:'clr',type:'button',onclick:()=>{inp.value='';state.q='';clr.classList.remove('on');renderList('quick');inp.focus()}},icon('close',14,INK,2.2));
-const catsEl=CatPicker(['Tümü',...CATS],'Tümü',c=>{state.cat=c;renderList('stagger')});
+const mkCats=()=>CatPicker(['Tümü',...catNames()],state.cat,c=>{state.cat=c;renderList('stagger')});
+let catsEl=mkCats();
+function rebuildHomeCats(){
+  if(state.cat!=='Tümü'&&!catNames().includes(state.cat))state.cat='Tümü';
+  const n=mkCats();catsEl.replaceWith(n);catsEl=n;renderList('quick');
+}
+catBus.add(()=>rebuildHomeCats());
 const countEl=h('div',{class:'count'});
 const sortLab=h('span',{},SORTS[0]);
 const sortB=h('button',{class:'sortb tap',type:'button',onclick:()=>{state.sort=(state.sort+1)%3;sortLab.textContent=SORTS[state.sort];sfx('tap');renderList('stagger')}},sortLab,icon('sort',18,INK2,1.7));
 const listEl=h('div',{class:'list'});
 scroll.append(
-  h('header',{class:'head'},h('div',{class:'eyebrow'},dateLine),h('h1',{class:'h1'},'Tariflerim')),
+  h('header',{class:'head'},h('h1',{class:'h1'},'Tariflerim'),h('button',{class:'gearb tap',type:'button',onclick:()=>{sfx('tap');openSettings()}},icon('sliders',26,INK,2))),
   h('div',{class:'search'},icon('search',22,INK2,1.8),inp,clr),
   catsEl,h('div',{class:'info'},countEl,sortB),listEl
 );
@@ -693,7 +762,7 @@ function openCook(rec){
 /* ============ Editör ============ */
 function openEditor(rec){
   const editing=!!rec;
-  const d=rec?{...rec,photos:[...rec.photos]}:{id:uid(),title:'',cat:'Ana Yemek',date:today(),rating:0,time:'',serves:'',ing:[],steps:[],video:'',note:'',photos:[],created:Date.now()};
+  const d=rec?{...rec,photos:[...rec.photos]}:{id:uid(),title:'',cat:catNames().includes('Ana Yemek')?'Ana Yemek':(catNames()[0]||''),date:today(),rating:0,time:'',serves:'',ing:[],steps:[],video:'',note:'',photos:[],created:Date.now()};
   let dirty=false;const mark=()=>{dirty=true};
   const el=h('section',{class:'view editor'}),view={el,kind:'modal'};
   const phRow=h('div',{class:'phrow'});
@@ -716,7 +785,7 @@ function openEditor(rec){
   const grow=t=>{t.style.height='auto';t.style.height=Math.max(96,t.scrollHeight)+'px'};
   const ta=(val,ph)=>{const t=h('textarea',{class:'in',placeholder:ph,oninput:()=>{mark();grow(t)}},val);return t};
   const titleIn=h('input',{class:'in big',placeholder:'Yemeğin adı',value:d.title,autocomplete:'off',autocapitalize:'sentences',oninput:mark});
-  const picker=CatPicker(CATS,d.cat,c=>{d.cat=c;mark()});
+  const picker=CatPicker(catNames(),d.cat,c=>{d.cat=c;mark()});
   const dateIn=h('input',{type:'date',class:'in',value:d.date,onchange:mark});
   const timeIn=h('input',{class:'in',inputmode:'numeric',placeholder:'45',value:d.time,oninput:mark});
   const servIn=h('input',{class:'in',inputmode:'numeric',placeholder:'4',value:d.serves,oninput:mark});
@@ -759,6 +828,184 @@ function openEditor(rec){
   setTimeout(()=>{grow(ingTa);grow(stepTa);grow(noteTa)},60);
 }
 
+/* ============ Ayarlar ============ */
+async function recat(from,to){
+  for(const r of state.all.filter(x=>x.cat===from)){r.cat=to;await Store.put(r)}
+  bus.forEach(f=>f(true));
+}
+const barSp=()=>h('div',{class:'barsp'});
+function pageBar(el,title){
+  const bar=h('div',{class:'pbar'},
+    h('button',{class:'pback tap',type:'button','aria-label':'Geri',onclick:()=>nav.pop()},icon('curve',24,INK,2)),
+    h('div',{class:'ptitle'},title));
+  el.append(bar);
+  const sc=el.querySelector('.scroll');
+  sc.addEventListener('scroll',()=>bar.classList.toggle('on',sc.scrollTop>4),{passive:true});
+}
+let dragOn=false;
+addEventListener('touchmove',e=>{if(dragOn)e.preventDefault()},{passive:false});
+
+/* Sürükle-bırak sıralama: bırakmadan komşular kayıp yer açar */
+function sortable(list,scroller,onCommit,onDone){
+  let d=null,busy=false;
+  const rows=()=>[...list.children];
+  list.addEventListener('pointerdown',e=>{
+    if(d||busy||(e.pointerType==='mouse'&&e.button!==0))return;
+    const row=e.target.closest('.crow');if(!row||e.target.closest('.cdel'))return;
+    const grip=!!e.target.closest('.grip'),p={id:e.pointerId,x:e.clientX,y:e.clientY};
+    let timer=0;
+    const stop=()=>{clearTimeout(timer);removeEventListener('pointermove',pm);removeEventListener('pointerup',pu);removeEventListener('pointercancel',pu)};
+    const pm=ev=>{if(ev.pointerId===p.id&&Math.hypot(ev.clientX-p.x,ev.clientY-p.y)>9)stop()};
+    const pu=ev=>{if(ev.pointerId===p.id)stop()};
+    addEventListener('pointermove',pm);addEventListener('pointerup',pu);addEventListener('pointercancel',pu);
+    if(grip){e.preventDefault();stop();start(row,p)}
+    else timer=setTimeout(()=>{stop();start(row,p)},220);
+  });
+  function start(row,p){
+    const rs=rows(),i=rs.indexOf(row);
+    d={row,rs,n:rs.length,from:i,to:i,rowH:row.offsetHeight,id:p.id,x0:p.x,y0:p.y,x:p.x,y:p.y,sc0:scroller.scrollTop,raf:0};
+    dragOn=true;sfx('tap');
+    row.classList.add('lift');rs.forEach(r=>{if(r!==row)r.classList.add('slide')});list.classList.add('dragging');
+    update();
+    addEventListener('pointermove',move);addEventListener('pointerup',end);addEventListener('pointercancel',end);
+    loop();
+  }
+  function move(ev){if(!d||ev.pointerId!==d.id)return;d.x=ev.clientX;d.y=ev.clientY;update()}
+  function update(){
+    const dy=d.y-d.y0+(scroller.scrollTop-d.sc0),dx=d.x-d.x0;
+    const cy=Math.max(-d.from*d.rowH-14,Math.min((d.n-1-d.from)*d.rowH+14,dy));
+    d.row.style.transform=`translate(${Math.max(-36,Math.min(36,dx*.4))}px,${cy}px) scale(1.035)`;
+    const to=Math.max(0,Math.min(d.n-1,Math.round(d.from+cy/d.rowH)));
+    if(to!==d.to){
+      d.to=to;sfx('tap');
+      d.rs.forEach((r,j)=>{
+        if(r===d.row)return;let t=0;
+        if(d.from<to&&j>d.from&&j<=to)t=-d.rowH;else if(to<d.from&&j>=to&&j<d.from)t=d.rowH;
+        r.style.transform=t?`translateY(${t}px)`:'';
+      });
+    }
+  }
+  function loop(){
+    if(!d)return;
+    const r=scroller.getBoundingClientRect(),top=r.top+100,bot=r.bottom-100;let v=0;
+    if(d.y<top)v=-(top-d.y)/5;else if(d.y>bot)v=(d.y-bot)/5;
+    v=Math.max(-18,Math.min(18,v));
+    if(v){const before=scroller.scrollTop;scroller.scrollTop+=v;if(scroller.scrollTop!==before)update()}
+    d.raf=requestAnimationFrame(loop);
+  }
+  function end(ev){
+    if(!d||ev.pointerId!==d.id)return;
+    cancelAnimationFrame(d.raf);
+    removeEventListener('pointermove',move);removeEventListener('pointerup',end);removeEventListener('pointercancel',end);
+    const {row,rs,from,to,rowH}=d;d=null;busy=true;dragOn=false;
+    row.classList.remove('lift');row.classList.add('settle');
+    row.style.transition=`transform .28s ${EASE},box-shadow .26s,background .26s`;
+    row.style.transform=`translateY(${(to-from)*rowH}px)`;
+    setTimeout(()=>{
+      rs.forEach(r=>{r.style.transition='none';r.style.transform='';r.classList.remove('slide','lift','settle')});
+      if(to!==from)list.insertBefore(row,to>from?rs[to].nextSibling:rs[to]);
+      void list.offsetHeight;rs.forEach(r=>r.style.transition='');
+      list.classList.remove('dragging');busy=false;
+      onDone&&onDone();
+      if(to!==from)onCommit(rows().map(r=>r.dataset.id));
+    },300);
+  }
+}
+
+/* Kategori adı: ekle / yeniden adlandır */
+function nameSheet(c,done){
+  const inp=h('input',{class:'in',placeholder:'Kategori adı',value:c?c.name:'',maxlength:'24',autocomplete:'off',autocapitalize:'sentences',enterkeyhint:'done',spellcheck:'false'});
+  const field=h('div',{class:'field'},inp);
+  const submit=()=>{
+    const v=inp.value.trim().replace(/\s+/g,' ');
+    if(!v){field.animate(shake,{duration:420});toast('Bir ad yaz');return}
+    if(cats.some(x=>x!==c&&fold(x.name)===fold(v))){field.animate(shake,{duration:420});toast('Bu kategori zaten var');return}
+    inp.blur();s.close();done(v);
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();submit()}};
+  const box=h('div',{},h('div',{class:'sh-t'},c?'Adı değiştir':'Yeni kategori'),
+    h('div',{style:'margin-top:18px'},field),
+    h('div',{class:'btns'},h('button',{class:'bt g tap',type:'button',onclick:()=>{inp.blur();s.close()}},'Vazgeç'),
+    h('button',{class:'bt tap',type:'button',onclick:submit},c?'Kaydet':'Ekle')));
+  const s=sheet(box,{top:true});inp.focus();
+  if(c)inp.select();
+}
+
+/* Kategoriler sayfası */
+function openCategories(){
+  const el=h('section',{class:'view push'}),view={el,kind:'push'};
+  const list=h('div',{class:'clist'}),scroller=h('div',{class:'scroll'});
+  let noClick=0;
+  const mk=c=>{
+    const r=h('div',{class:'crow','data-id':c.id},
+      h('span',{class:'cdot',style:`background:${c.color}`}),
+      h('div',{class:'cname'},c.name),
+      h('button',{class:'cdel tap',type:'button','aria-label':'Sil',onclick:ev=>{ev.stopPropagation();del(c,r)}},icon('trash',20,INK2,1.7)),
+      h('div',{class:'grip'},icon('grip',22,'#B3A593',1)));
+    r.onclick=e=>{if(Date.now()<noClick||e.target.closest('.cdel,.grip'))return;sfx('tap');rename(c)};
+    return r;
+  };
+  const render=()=>{list.innerHTML='';cats.forEach(c=>list.append(mk(c)))};
+  function rename(c){
+    nameSheet(c,async v=>{
+      if(v===c.name)return;
+      const old=c.name;c.name=v;if(state.cat===old)state.cat=v;
+      await recat(old,v);saveCats();render();catBus.forEach(f=>f());toast('Ad değiştirildi');
+    });
+  }
+  function add(){
+    nameSheet(null,v=>{
+      const c={id:uid0(),name:v,color:PALETTE[cats.length%PALETTE.length]};
+      cats.push(c);saveCats();render();catBus.forEach(f=>f());
+      scroller.scrollTo({top:scroller.scrollHeight,behavior:'smooth'});
+      list.lastElementChild.animate([{opacity:0,transform:'scale(.9)'},{opacity:1,transform:'none'}],{duration:420,easing:EASE});
+      toast('Kategori eklendi');
+    });
+  }
+  function del(c,rowEl){
+    if(cats.length<=1){toast('En az bir kategori kalmalı');return}
+    const used=state.all.filter(r=>r.cat===c.name).length;
+    const box=h('div',{},h('div',{class:'sh-t'},`“${c.name}” silinsin mi?`),
+      h('p',{class:'sh-p'},used?`Bu kategorideki ${used} tarif silinmez. Kategorisiz kalır ve yalnızca “Tümü” altında görünür.`:'Bu kategoride tarif yok.'),
+      h('div',{class:'btns'},h('button',{class:'bt g tap',type:'button',onclick:()=>s.close()},'Vazgeç'),
+      h('button',{class:'bt c tap',type:'button',onclick:async()=>{
+        s.close();
+        cats=cats.filter(x=>x!==c);saveCats();await recat(c.name,'');
+        rowEl.style.overflow='hidden';
+        rowEl.animate([{height:rowEl.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],{duration:260,easing:EASE,fill:'forwards'}).onfinish=render;
+        catBus.forEach(f=>f());toast('Kategori silindi');
+      }},'Sil')));
+    const s=sheet(box);
+  }
+  render();
+  sortable(list,scroller,ids=>{cats=ids.map(id=>cats.find(c=>c.id===id));saveCats();catBus.forEach(f=>f())},()=>{noClick=Date.now()+350});
+  scroller.append(barSp(),
+    h('p',{class:'chint'},'Sırayı değiştirmek için tutup sürükle, adı değiştirmek için dokun.'),
+    list,
+    h('button',{class:'addcat tap',type:'button',onclick:()=>{sfx('tap');add()}},icon('plus',22,CLAY,2),'Yeni kategori'),
+    h('div',{style:'height:calc(var(--sb) + 60px)'}));
+  el.append(scroller);
+  pageBar(el,'Kategoriler');
+  nav.push(view);edgeBack(view);
+}
+
+/* Ayarlar sayfası: başlıklar altında gruplanır, yeni ayarlar ilgili gruba satır olarak eklenir */
+function openSettings(){
+  const el=h('section',{class:'view push'}),view={el,kind:'push'};
+  const count=h('small',{});
+  const upd=()=>{count.textContent=`${cats.length} kategori`};upd();
+  catBus.add(upd);view.onClose=()=>catBus.delete(upd);
+  const item=(ic,label,right,fn)=>h('button',{class:'sitem tap',type:'button',onclick:()=>{sfx('tap');fn()}},
+    h('span',{class:'si'},icon(ic,20,CLAY,1.8)),h('span',{class:'st'},label),right,icon('next',18,'#B3A593',2));
+  const group=(title,...items)=>h('section',{class:'sgroup'},h('h2',{class:'sh'},title),h('div',{class:'scard'},items));
+  el.append(h('div',{class:'scroll'},barSp(),
+    group('Tarifler',item('tag','Kategoriler',count,openCategories)),
+    h('div',{class:'sfoot'},'Yemek Yapalım'),
+    h('div',{style:'height:calc(var(--sb) + 40px)'})));
+  pageBar(el,'Ayarlar');
+  nav.push(view);edgeBack(view);
+}
+
 /* ============ PWA ============ */
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
   addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
@@ -772,7 +1019,8 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
 (async()=>{
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
   state.all=await Store.all();
-  renderList('stagger');
+  renderList('quick');
+  home.animate([{opacity:0,transform:'translateX(-22%)'},{opacity:1,transform:'none'}],{duration:480,easing:EASE});
 })();
 })();
 </script>

@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="color-scheme" content="light">
 <meta name="theme-color" content="#F2EBDD">
 <title>Yemek Yapalım</title>
 <meta name="apple-mobile-web-app-title" content="Yemek Yapalım">
@@ -26,11 +27,11 @@
   --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--paper);overscroll-behavior:none}
+html,body{width:100%;height:var(--H);min-height:100%;overflow:hidden;background:var(--paper);overscroll-behavior:none}
 body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea{-webkit-user-select:text;user-select:text;font-family:var(--sans);color:var(--ink)}
 button{font-family:var(--sans);cursor:pointer;color:inherit}
-#app{position:fixed;left:0;right:0;top:0;height:100%;overflow:hidden;background:var(--paper)}
+#app{position:absolute;left:0;right:0;top:0;height:var(--H);overflow:hidden;background:var(--paper)}
 #grain{position:absolute;inset:0;pointer-events:none;z-index:900;opacity:.9}
 .view{position:absolute;inset:0;background:var(--paper);will-change:transform}
 .view.push{box-shadow:-18px 0 50px rgba(43,34,27,.14)}
@@ -116,8 +117,12 @@ const $=(s,r=document)=>r.querySelector(s);
 const iosApp=navigator.standalone===true;
 let maxH=innerHeight;
 function fit(){
-  let hh=innerHeight;
-  if(iosApp&&innerHeight>=innerWidth)hh=Math.max(innerHeight,screen.height,screen.width);
+  const standalone=iosApp||matchMedia('(display-mode: standalone)').matches;
+  let hh=Math.max(innerHeight,document.documentElement.clientHeight);
+  if(standalone){
+    const portrait=innerHeight>=innerWidth;
+    hh=Math.max(hh,portrait?Math.max(screen.height,screen.width):Math.min(screen.height,screen.width));
+  }
   document.documentElement.style.setProperty('--H',hh+'px');
   const a=document.getElementById('app');if(a)a.style.height=hh+'px';
 }
@@ -132,6 +137,7 @@ function unstick(){
   fit();
 }
 fit();
+addEventListener('scroll',()=>scrollTo(0,0));
 addEventListener('resize',()=>{maxH=Math.max(maxH,innerHeight);fit()});
 addEventListener('orientationchange',()=>setTimeout(()=>{maxH=innerHeight;fit()},350));
 addEventListener('pageshow',()=>{fit();scrollTo(0,0)});

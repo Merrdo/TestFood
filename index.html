@@ -41,8 +41,10 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .view,.body,.sheet,.pbar{background-image:var(--grain,none);background-size:140px 140px}
 .view{position:absolute;inset:0;background:var(--paper);will-change:transform}
 .view.push{box-shadow:-18px 0 50px rgb(var(--ink-rgb) / .14)}
+.dim{position:absolute;inset:0;background:rgb(var(--dk-rgb) / .16);pointer-events:none}
+.view[inert]{pointer-events:none}
 #home{z-index:1}
-.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:none;scrollbar-width:none}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 .ic{display:block;pointer-events:none}
 .tap{transition:transform .35s var(--ease),filter .3s,opacity .3s}
@@ -1087,33 +1089,69 @@ const app=$('#app');
 const nav={stack:[],
   push(view){
     const top=this.stack.at(-1)||{el:$('#home')};
-    view.el.style.zIndex=10+this.stack.length;app.insertBefore(view.el,$('#toast'));
+    const z=10+this.stack.length;
+    view.el.style.zIndex=z;
     const modal=view.kind==='modal';
+    /* Alttaki sayfa kapalıyken dokunma/kaydırma almasın */
+    top.el.inert=true;
+    /* Push sayfalarda arkadaki sayfayı karartan katman: geri çekerken parmakla birlikte açılır */
+    if(!modal){
+      view.dim=h('div',{class:'dim',style:`z-index:${z-1}`});
+      app.insertBefore(view.dim,$('#toast'));
+      view.dim.animate([{opacity:0},{opacity:1}],{duration:480,easing:EASE});
+    }
+    app.insertBefore(view.el,$('#toast'));
     view.el.animate(modal?[{transform:'translateY(100%)'},{transform:'none'}]:[{transform:'translateX(100%)'},{transform:'none'}],{duration:modal?540:480,easing:EASE});
     view.prevAnim=top.el.animate(modal?[{transform:'none',opacity:1},{transform:'scale(.95)',opacity:.55}]:[{transform:'none'},{transform:'translateX(-22%)'}],{duration:modal?540:480,easing:EASE,fill:'forwards'});
     view.prevEl=top.el;this.stack.push(view);
   },
-  pop(from){
+  pop(from,prevFrom,dimFrom){
     const view=this.stack.pop();if(!view)return;
     const modal=view.kind==='modal';
     const a=view.el.animate([{transform:from||'none'},{transform:modal?'translateY(100%)':'translateX(100%)'}],{duration:400,easing:EASE,fill:'forwards'});
     if(view.prevAnim){
-      const k=modal?[{transform:'scale(.95)',opacity:.55},{transform:'none',opacity:1}]:[{transform:'translateX(-22%)'},{transform:'none'}];
+      const k=modal?[{transform:'scale(.95)',opacity:.55},{transform:'none',opacity:1}]:[{transform:prevFrom||'translateX(-22%)'},{transform:'none'}];
       view.prevEl.animate(k,{duration:400,easing:EASE});view.prevAnim.cancel();
     }
+    if(view.dim){const d=view.dim;d.animate([{opacity:dimFrom==null?1:dimFrom},{opacity:0}],{duration:400,easing:EASE,fill:'forwards'}).onfinish=()=>d.remove()}
+    if(view.prevEl)view.prevEl.inert=false;
     a.onfinish=()=>{view.el.remove();view.onClose&&view.onClose()};
   }
 };
 function edgeBack(view){
-  const el=view.el;let sx=null,dx=0,t0=0;
+  const el=view.el;let sx=null,dx=0,t0=0,W=1,prev=null,PX=0.22;
   /* Sol kenarda ince bir şerit: touch-action:none sayesinde tarayıcı bu dokunuşta kaydırma/esneme yapmaz,
      böylece ana thread'i bekleten non-passive dinleyiciye gerek kalmaz */
   const strip=h('div',{class:'edge'});el.append(strip);
-  strip.addEventListener('touchstart',e=>{if(nav.stack.at(-1)!==view)return;sx=e.touches[0].clientX;dx=0;t0=Date.now()},{passive:true});
-  strip.addEventListener('touchmove',e=>{if(sx==null)return;dx=Math.max(0,e.touches[0].clientX-sx);el.style.transform=`translate3d(${dx}px,0,0)`},{passive:true});
+  const prevT=p=>`translate3d(${-PX*W*(1-p)}px,0,0)`;
+  strip.addEventListener('touchstart',e=>{
+    if(nav.stack.at(-1)!==view||sx!=null)return;
+    sx=e.touches[0].clientX;dx=0;t0=Date.now();W=el.offsetWidth||innerWidth;prev=view.prevEl;
+    /* Alttaki sayfanın "-22%" sabit animasyonunu bırak; konumu parmağa bağla (iOS gibi paralaks) */
+    if(view.prevAnim)view.prevAnim.cancel();
+    if(prev)prev.style.transform=prevT(0);
+  },{passive:true});
+  strip.addEventListener('touchmove',e=>{
+    if(sx==null)return;
+    dx=Math.min(W,Math.max(0,e.touches[0].clientX-sx));const p=dx/W;
+    el.style.transform=`translate3d(${dx}px,0,0)`;
+    if(prev)prev.style.transform=prevT(p);
+    if(view.dim)view.dim.style.opacity=1-p;
+  },{passive:true});
   const end=cancel=>{
-    if(sx==null)return;const v=dx/Math.max(1,Date.now()-t0);sx=null;const from=`translate3d(${dx}px,0,0)`;el.style.transform='';
-    if(!cancel&&(dx>110||v>.6))nav.pop(from);else if(dx>0)el.animate([{transform:from},{transform:'none'}],{duration:320,easing:EASE});
+    if(sx==null)return;
+    const v=dx/Math.max(1,Date.now()-t0),p=dx/W;sx=null;
+    const from=`translate3d(${dx}px,0,0)`,pf=prevT(p);
+    el.style.transform='';if(prev)prev.style.transform='';
+    if(view.dim)view.dim.style.opacity='';
+    if(!cancel&&(dx>W*.33||v>.6)){nav.pop(from,pf,1-p)}
+    else{
+      /* Vazgeçildi: sayfa yerine döner, alttaki sayfa tekrar geriye çekilir */
+      if(dx>0)el.animate([{transform:from},{transform:'none'}],{duration:320,easing:EASE});
+      if(prev)view.prevAnim=prev.animate([{transform:pf},{transform:'translateX(-22%)'}],{duration:320,easing:EASE,fill:'forwards'});
+      if(view.dim)view.dim.animate([{opacity:1-p},{opacity:1}],{duration:320,easing:EASE});
+    }
+    prev=null;
   };
   strip.addEventListener('touchend',()=>end(false));
   strip.addEventListener('touchcancel',()=>end(true));

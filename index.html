@@ -1372,18 +1372,27 @@ function openDetail(id){
       gw.style.transform=`scale3d(${k},${k},1)`;             /* üst kenara sabit, aşağı doğru büyür */
       body.style.transform=`translate3d(0,${d}px,0)`;        /* içerik tam büyüyen görselin altından iner */
     };
+    /* Geri dönüş animasyonu sürerken yeni bir çekme başlarsa, animasyon satır içi transform'u ezip parmağı
+       görmezden geliyordu (takılma + animasyon bitince sıçrama). Artık animasyonu iptal edip kaldığı yerden devralıyoruz. */
+    let anims=[];
+    const invDamp=d=>d/Math.max(.05,.55-d/900);
+    const curD=()=>{try{return new DOMMatrix(getComputedStyle(body).transform).m42||0}catch{return 0}};
+    const stopAnims=()=>{const d=anims.length?curD():0;anims.forEach(a=>a.cancel());anims=[];return d};
     const release=()=>{
       if(!pulling)return;pulling=false;
       pull=0;oy=null;
       const g0=gw.style.transform,b0=body.style.transform;
       gw.style.transform='';body.style.transform='';
       const o={duration:560,easing:SPRING};
-      gw.animate([{transform:g0},{transform:'none'}],o);
-      body.animate([{transform:b0},{transform:'none'}],o);
+      const a=[gw.animate([{transform:g0},{transform:'none'}],o),body.animate([{transform:b0},{transform:'none'}],o)];
+      anims=a;a[1].onfinish=()=>{if(anims===a)anims=[]};
     };
     sc.addEventListener('touchstart',e=>{
       if(e.touches.length!==1)return;
-      oy=sc.scrollTop<=0?e.touches[0].clientY:null;sx0=e.touches[0].clientX;horiz=false;pull=0;H=gw.offsetHeight||1;lastT=e.touches[0].clientY;
+      const y0=e.touches[0].clientY;
+      oy=sc.scrollTop<=0?y0:null;sx0=e.touches[0].clientX;horiz=false;pull=0;H=gw.offsetHeight||1;lastT=y0;
+      const d=stopAnims();
+      if(d>.5&&oy!=null&&d<480){pulling=true;apply(d);oy=y0-invDamp(d)}   /* uçuştaki görseli parmakla yakala */
     },{passive:true});
     sc.addEventListener('touchmove',e=>{
       const t=e.touches[0],y=t.clientY;

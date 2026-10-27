@@ -105,8 +105,8 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .vt small{position:absolute;z-index:2;bottom:64px;left:0;right:0;text-align:center;color:var(--cream);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
 .edge{position:absolute;left:0;top:0;bottom:0;width:18px;z-index:60;touch-action:none}
 .gw{position:relative;transform-origin:50% 0;will-change:transform;backface-visibility:hidden}
-.scroll.stretch{overscroll-behavior-y:none}
-.scroll.stretch>.body{will-change:transform}
+.scroll.stretch{overscroll-behavior-y:auto}
+.gw::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:500px;background:var(--topc,var(--paper2));pointer-events:none}
 .dots{position:absolute;left:0;right:0;bottom:46px;display:flex;justify-content:center;gap:6px;z-index:4;pointer-events:none}
 .dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.55);transition:all .45s var(--ease)}
 .dots i.on{width:22px;background:#fff}
@@ -1358,66 +1358,23 @@ function openDetail(id){
     fill(false);
     const gw=h('div',{class:'gw'},gal,dots);
     /* nokta rengi: görselin alt kısmı açıksa koyu, koyuysa beyaz */
-    const tone=[];const setTone=()=>{const k=Math.round(gal.scrollLeft/(gal.clientWidth||1));dots.classList.toggle('dk',!!tone[k])};
-    [...gal.querySelectorAll('img')].forEach((im,k)=>{const f=()=>{try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');x.drawImage(im,0,0,24,24);const d=x.getImageData(4,15,16,8).data;let l=0;for(let q=0;q<d.length;q+=4)l+=.2126*d[q]+.7152*d[q+1]+.0722*d[q+2];tone[k]=l/(d.length/4)>150;setTone()}catch{}};im.complete&&im.naturalWidth?f():im.addEventListener('load',f,{once:true})});
+    const tone=[],topc=[];const setTone=()=>{const k=Math.round(gal.scrollLeft/(gal.clientWidth||1));dots.classList.toggle('dk',!!tone[k]);if(topc[k])gw.style.setProperty('--topc',topc[k])};
+    [...gal.querySelectorAll('img')].forEach((im,k)=>{const f=()=>{try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');x.drawImage(im,0,0,24,24);const d=x.getImageData(4,15,16,8).data;let l=0;for(let q=0;q<d.length;q+=4)l+=.2126*d[q]+.7152*d[q+1]+.0722*d[q+2];tone[k]=l/(d.length/4)>150;const u=x.getImageData(0,0,24,2).data;let R=0,G=0,B=0;for(let q=0;q<u.length;q+=4){R+=u[q];G+=u[q+1];B+=u[q+2]}const n=u.length/4;topc[k]=`rgb(${R/n|0},${G/n|0},${B/n|0})`;setTone()}catch{}};im.complete&&im.naturalWidth?f():im.addEventListener('load',f,{once:true})});
     gal.addEventListener('scroll',setTone,{passive:true});
     const sc=h('div',{class:'scroll stretch'},gw,body);
-    /* Stretchy header: yerel lastik (scroll olayıyla bir kare geriden gelen) yerine parmağı birebir izleyen
-       kendi çekme hareketimiz. Görsel ve içerik aynı karede, tek transform ile hareket eder → takılma ve üst boşluk olmaz. */
-    let H=0,pulling=false,oy=null,sx0=0,pull=0,horiz=false,lastT=0,fallbackOn=false;
-    const SPRING='cubic-bezier(.2,.9,.25,1)';
-    const damp=p=>p*.55/(1+p/900);                           /* iOS'taki gibi: uzadıkça zorlaşan direnç */
-    const apply=d=>{
-      const k=1+d/H;
-      gw.style.transform=`scale3d(${k},${k},1)`;             /* üst kenara sabit, aşağı doğru büyür */
-      body.style.transform=`translate3d(0,${d}px,0)`;        /* içerik tam büyüyen görselin altından iner */
-    };
-    /* Geri dönüş animasyonu sürerken yeni bir çekme başlarsa, animasyon satır içi transform'u ezip parmağı
-       görmezden geliyordu (takılma + animasyon bitince sıçrama). Artık animasyonu iptal edip kaldığı yerden devralıyoruz. */
-    let anims=[];
-    const invDamp=d=>d/Math.max(.05,.55-d/900);
-    const curD=()=>{try{return new DOMMatrix(getComputedStyle(body).transform).m42||0}catch{return 0}};
-    const stopAnims=()=>{const d=anims.length?curD():0;anims.forEach(a=>a.cancel());anims=[];return d};
-    const release=()=>{
-      if(!pulling)return;pulling=false;
-      pull=0;oy=null;
-      const g0=gw.style.transform,b0=body.style.transform;
-      gw.style.transform='';body.style.transform='';
-      const o={duration:560,easing:SPRING};
-      const a=[gw.animate([{transform:g0},{transform:'none'}],o),body.animate([{transform:b0},{transform:'none'}],o)];
-      anims=a;a[1].onfinish=()=>{if(anims===a)anims=[]};
-    };
-    sc.addEventListener('touchstart',e=>{
-      if(e.touches.length!==1)return;
-      const y0=e.touches[0].clientY;
-      oy=sc.scrollTop<=0?y0:null;sx0=e.touches[0].clientX;horiz=false;pull=0;H=gw.offsetHeight||1;lastT=y0;
-      const d=stopAnims();
-      if(d>.5&&oy!=null&&d<480){pulling=true;apply(d);oy=y0-invDamp(d)}   /* uçuştaki görseli parmakla yakala */
-    },{passive:true});
-    sc.addEventListener('touchmove',e=>{
-      const t=e.touches[0],y=t.clientY;
-      if(!pulling&&!horiz&&Math.abs(t.clientX-sx0)>Math.abs(y-lastT)+6&&oy==null)horiz=true;
-      if(horiz){lastT=y;return}
-      if(sc.scrollTop<=0){
-        if(oy==null)oy=y;                                      /* yukarı kaydırırken tepeye ulaşınca çekme başlangıcı */
-        pull=Math.max(0,y-oy);
-        if(pull>0){
-          if(Math.abs(t.clientX-sx0)>pull*1.4&&!pulling){lastT=y;return}   /* yatay galeri kaydırması */
-          pulling=true;if(e.cancelable)e.preventDefault();apply(damp(pull));
-        }else if(pulling){release()}
-      }else{oy=null;if(pulling)release()}
-      lastT=y;
-    },{passive:false});
-    sc.addEventListener('touchend',release,{passive:true});
-    sc.addEventListener('touchcancel',release,{passive:true});
-    /* Yedek: eski tarayıcıda yerel lastik hâlâ çalışırsa (scrollTop<0) görseli yine sabit tut */
-    sc.addEventListener('scroll',()=>{
-      if(pulling)return;const t=sc.scrollTop;
+    /* Esneme tamamen iOS'un yerel lastiğiyle çalışır (tarayıcı çizer, JS parmağı takip etmez → takılma yok).
+       Üstte çekilince scrollTop negatif olur; görseli aynı scroll olayında üst kenara sabitleyip büyütüyoruz.
+       Altta yerel lastik zaten çalışıyor, görselle çakışma olmaz. */
+    let H=0,on=false;
+    const stretch=()=>{
+      const t=sc.scrollTop;
       if(t<0){
-        if(!fallbackOn){fallbackOn=true;H=gw.offsetHeight||1}
-        gw.style.transform=`translate3d(0,${t}px,0) scale3d(${1+(-t)/H},${1+(-t)/H},1)`;
-      }else if(fallbackOn){fallbackOn=false;gw.style.transform=''}
-    },{passive:true});
+        if(!on){on=true;H=gw.offsetHeight||1}
+        const k=1+(-t)/H;
+        gw.style.transform=`translate3d(0,${t}px,0) scale3d(${k},${k},1)`;
+      }else if(on){on=false;gw.style.transform=''}
+    };
+    sc.addEventListener('scroll',stretch,{passive:true});
     const back=h('button',{class:'fbtn tap',type:'button',style:'left:18px',onclick:()=>nav.pop()},icon('back',22));
     const more=h('button',{class:'fbtn tap',type:'button',style:'right:18px',onclick:()=>menu(r)},icon('more',22));
     el.append(sc,back,more);

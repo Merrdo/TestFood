@@ -81,6 +81,20 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .card .tt{font:400 26px/1.12 var(--serif);letter-spacing:-.015em;margin:16px 6px 0;font-variation-settings:"SOFT" 100,"opsz" 96}
 .card .mt{display:flex;justify-content:space-between;align-items:center;margin:8px 6px 0;font-size:13.5px;color:var(--ink2)}
 .none{padding:50px 40px;text-align:center;color:var(--ink2);font-size:15px;animation:fade .5s both}
+.pot{width:244px;height:244px;margin-top:6px}
+.pot svg{display:block;overflow:visible}
+.pot *{transform-box:fill-box}
+.pot .orbit{transform-origin:150px 150px;transform-box:view-box;animation:potorb 14s linear infinite}
+.pot .s{transform-origin:center;animation:potsteam 3.6s ease-out infinite;opacity:0}
+.pot .s2{animation-delay:.9s}.pot .s3{animation-delay:1.8s}.pot .s4{animation-delay:2.6s}
+.pot .lid{transform-origin:50% 100%;animation:potlid 1.5s ease-in-out infinite}
+.pot .fl{transform-origin:center;animation:potbob 4.2s ease-in-out infinite}
+.pot .f2{animation-delay:-1.2s;animation-duration:5s}.pot .f3{animation-delay:-2.1s;animation-duration:4.6s}.pot .f4{animation-delay:-3s;animation-duration:5.4s}
+@keyframes potorb{to{transform:rotate(360deg)}}
+@keyframes potsteam{0%{opacity:0;transform:translateY(8px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-52px) scale(1.15)}}
+@keyframes potlid{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2.5px) rotate(-1.2deg)}}
+@keyframes potbob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){.pot *{animation:none!important}.pot .s{opacity:.7}}
 .empty{display:flex;flex-direction:column;align-items:center;padding:34px 40px;text-align:center;animation:rise .9s .3s var(--ease) both}
 .empty h3{font:400 28px var(--serif);margin-top:14px;font-variation-settings:"SOFT" 100,"opsz" 96}
 .empty p{color:var(--ink2);font-size:15px;line-height:1.5;margin-top:8px;max-width:260px}
@@ -138,7 +152,7 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .vchips::-webkit-scrollbar{display:none}
 .vc{flex:none;height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);background:none;font:500 14px var(--sans);color:var(--ink2);transition:all .45s var(--ease);display:flex;align-items:center;gap:6px}
 .vc.on{background:var(--go);border-color:var(--go);color:#fff}
-.vc.add{border-style:dashed;border-color:rgb(var(--clay-rgb) / .5);color:var(--clay)}
+.vc.add{width:38px;padding:0;justify-content:center;border-color:var(--line);background:rgb(var(--ink-rgb) / .05);color:var(--ink2)}
 .vname{font:italic 400 24px var(--serif);color:var(--clay);margin-top:6px;font-variation-settings:"SOFT" 100,"opsz" 72}
 .ing.new{background:linear-gradient(90deg,rgb(var(--clay-rgb) / .08),transparent)}
 .ing .nw{margin-left:auto;font:600 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--clay)}
@@ -769,154 +783,44 @@ function CatPicker(cats,value,onChange){
 
 /* ============ Çizimler: boş durum + kapak yer tutucu ============ */
 function PotArt(){
-  /* Boş durum: tahtada havuç dilimleyen bıçak.
-     Sahne 2B çizilir; yalnızca havuç diskleri (dilimler + kesik yüz) küçük bir eğik izdüşümle (PH, K1) 3B'den projekte edilir,
-     böylece dilimler devrilirken yüzleri gerçekten dönüyor. Her şey zamanın saf fonksiyonu; tek döngü = LOOP sn. */
-  const S=1.12,W0=286,H0=108;
-  const [cv,g]=canvas(Math.round(W0*S),Math.round(H0*S));let n=0;
-  const YS=54,XK=148,TH=6,E=XK+TH;                    /* YS: havucun tahtaya değdiği çizgi · XK: kesim düzlemi · E: kesilmeden önce havuç ucu */
-  const L=112,R0=13.5,RT=3.8,NS=9;                    /* havuç boyu, omuz/uç yarıçapı, dilim sayısı */
-  const PH=32*Math.PI/180,CP=Math.cos(PH),SP=Math.sin(PH),K1=-.2;
-  const AUP=16*Math.PI/180,ADN=3*Math.PI/180;         /* bıçağın sırtı: yukarıda / kesimde (uç hep tahtada) */
-  const T0=.8,LOOP=6.1,FADE0=5.25;
-  const Ti=i=>.5-.2*i/(NS-1);                         /* vuruşlar yavaştan hızlıya */
-  const S0=[];{let a=T0;for(let i=0;i<NS;i++){S0.push(a);a+=Ti(i)}}
-  const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-  const sm=t=>{t=cl(t);return t*t*(3-2*t)};
-  const eOut=t=>1-Math.pow(1-cl(t),3);
-  const eBack=t=>{t=cl(t);const c1=1.25,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)};
-  const rr=a=>(RT+(R0-RT)*Math.pow(cl(a/L),.85))*(a>L-12?1-.16*Math.pow((a-(L-12))/12,2):1);       /* yarıçap: uçtan (a=0) omuza */
-  const pr=(X,Y,Z)=>[X+K1*Z,YS-Y*CP+Z*SP];
-  const uOf=ph=>ph<.38?Math.pow(ph/.38,2.2):ph<.43?1:1-sm((ph-.43)/.57);
-
-  /* ---- havuç diski (dilim / kesik yüz): normal n=(cosθ,sinθ,0), θ=0 dik duran disk, θ=90° yatık ---- */
-  const discPath=(cx,cy,cz,off,rho,th)=>{
-    const nx=Math.cos(th),ny=Math.sin(th),bx=-ny,by=nx;g.beginPath();
-    for(let k=0;k<=36;k++){const t=k/36*Math.PI*2,c=Math.cos(t)*rho,s=Math.sin(t)*rho;
-      const p=pr(cx+nx*off+bx*s,cy+ny*off+by*s,cz+c);k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])}
-    g.closePath()};
-  const disc=(cx,cy,cz,r,t,th,wall)=>{
-    if(wall){for(let s=0;s<=6;s++){discPath(cx,cy,cz,-t/2+t*s/6,r,th);g.fillStyle=s<3?'#B9540F':'#CC6218';g.fill()}}
-    const f=wall?t/2:0;
-    discPath(cx,cy,cz,f,r,th);g.fillStyle='#DB6A1B';g.fill();
-    discPath(cx,cy,cz,f,r*.88,th);g.fillStyle='#F2994A';g.fill();
-    discPath(cx,cy,cz,f,r*.5,th);g.fillStyle='#F8BC74';g.fill();
-    if(r>5){
-      g.strokeStyle='rgba(196,98,28,.32)';g.lineWidth=.7;
-      for(let k=0;k<10;k++){const a=k/10*Math.PI*2+.3,nx=Math.cos(th),ny=Math.sin(th),bx=-ny,by=nx;
-        const P=q=>pr(cx+nx*f+bx*Math.sin(a)*q,cy+ny*f+by*Math.sin(a)*q,cz+Math.cos(a)*q);
-        const p0=P(r*.1),p1=P(r*.46);g.beginPath();g.moveTo(p0[0],p0[1]);g.lineTo(p1[0],p1[1]);g.stroke()}
-      discPath(cx,cy,cz,f,r*.5,th);g.strokeStyle='rgba(206,106,30,.5)';g.lineWidth=.8;g.stroke()}
-    discPath(cx,cy,cz,f,Math.max(.8,r*.12),th);g.fillStyle='#F2994A';g.fill()};
-
-  /* ---- sahne parçaları ---- */
-  const board=()=>{
-    const x0=12,w=262,y0=YS-30*SP,h=86*SP,r=9;
-    g.fillStyle=`rgba(${INKRGB},.15)`;g.beginPath();g.ellipse(x0+w/2,y0+h+11+3,w/2-2,5.5,0,0,7);g.fill();
-    g.fillStyle='#A8702C';g.beginPath();g.roundRect(x0,y0+6,w,h+5,r);g.fill();
-    const gr=g.createLinearGradient(0,y0,0,y0+h);gr.addColorStop(0,'#E2B476');gr.addColorStop(1,'#D8A662');
-    g.fillStyle=gr;g.beginPath();g.roundRect(x0,y0,w,h,r);g.fill();
-    g.save();g.beginPath();g.roundRect(x0,y0,w,h,r);g.clip();
-    g.strokeStyle='rgba(150,92,36,.24)';g.lineWidth=1.1;
-    [[.22,.9],[.47,-.7],[.7,.6],[.88,-.5]].forEach(([q,k])=>{const y=y0+h*q;g.beginPath();g.moveTo(x0,y);g.bezierCurveTo(x0+w*.3,y+k*3.2,x0+w*.68,y-k*3.2,x0+w,y+k*1.2);g.stroke()});
-    g.fillStyle='rgba(255,255,255,.28)';g.fillRect(x0,y0,w,1.6);
-    g.restore();
-    g.strokeStyle='rgba(120,70,22,.2)';g.lineWidth=1.1;g.beginPath();g.roundRect(x0+10,y0+7,w-20,h-14,6);g.stroke();
-    g.fillStyle='#8E5C28';g.beginPath();g.ellipse(x0+w-20,y0+h*.5,4.6,2.5,0,0,7);g.fill();
-    g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(x0+w-20,y0+h*.5+3,4.6,.7,0,0,Math.PI);g.fill()};
-
-  const stalk=(bx,by,dx,dy,len,w,bend)=>{
-    const m=Math.hypot(dx,dy);dx/=m;dy/=m;const nx=-dy,ny=dx,ex=bx+dx*len,ey=by+dy*len,cx=bx+dx*len*.5+nx*bend,cy=by+dy*len*.5+ny*bend;
-    const q=t=>[(1-t)*(1-t)*bx+2*(1-t)*t*cx+t*t*ex,(1-t)*(1-t)*by+2*(1-t)*t*cy+t*t*ey];
-    const tg=t=>{const a=2*(1-t)*(cx-bx)+2*t*(ex-cx),b=2*(1-t)*(cy-by)+2*t*(ey-cy),mm=Math.hypot(a,b);return[a/mm,b/mm]};
-    const A=[],B=[];for(let k=0;k<=10;k++){const t=k/10,p=q(t),d=tg(t),hw=(w*(1-.38*t))/2;A.push([p[0]-d[1]*hw,p[1]+d[0]*hw]);B.push([p[0]+d[1]*hw,p[1]-d[0]*hw])}
-    g.beginPath();A.forEach((p,k)=>k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));B.reverse().forEach(p=>g.lineTo(p[0],p[1]));g.closePath();
-    g.fillStyle='#5C7B2C';g.fill();
-    g.strokeStyle='#86A64A';g.lineWidth=.9;g.beginPath();for(let k=1;k<=9;k++){const t=k/10,p=q(t),d=tg(t),o=w*(1-.38*t)*.2;k>1?g.lineTo(p[0]-d[1]*o,p[1]+d[0]*o):g.moveTo(p[0]-d[1]*o,p[1]+d[0]*o)}g.stroke();
-    const pe=q(1),de=tg(1);g.fillStyle='#CBDA94';g.beginPath();g.ellipse(pe[0],pe[1],w*.31*.62+.4,w*.31*.62*.55+.3,Math.atan2(de[1],de[0])+Math.PI/2,0,7);g.fill()};
-
-  const carrot=(xe,aEnd,cutFaceOn)=>{
-    const xs=xe-(L-aEnd),yc=a=>YS-rr(a)*CP,hc=yc(L);
-    g.fillStyle=`rgba(${INKRGB},.13)`;g.beginPath();g.ellipse((xs+xe)/2,YS+2.4,(xe-xs)/2+3,4,0,0,7);g.fill();
-    /* sap: gövdenin arkasından çıkar, omuz örter */
-    stalk(xs+4.5,hc-R0*.72,-.38,-1,14,5.6,-1.2);stalk(xs+2,hc-R0*.6,-1,-.5,11.5,5.2,.9);stalk(xs+8,hc-R0*.76,.4,-1,11,4.8,1.2);
-    /* gövde */
-    const pts=[];for(let a=aEnd;a<L;a+=2)pts.push(a);pts.push(L);
-    const X=a=>xe-(a-aEnd);
-    g.beginPath();pts.forEach((a,k)=>{const x=X(a),y=yc(a)-rr(a);k?g.lineTo(x,y):g.moveTo(x,y)});
-    g.bezierCurveTo(xs-6,yc(L)-rr(L),xs-6,yc(L)+rr(L),xs,yc(L)+rr(L));
-    for(let k=pts.length-1;k>=0;k--){const a=pts[k];g.lineTo(X(a),yc(a)+rr(a))}
-    g.closePath();
-    const top=YS-R0*CP-R0,bot=YS+R0*(1-CP);
-    const gr=g.createLinearGradient(0,top,0,bot);gr.addColorStop(0,'#F4903E');gr.addColorStop(.42,'#E9742A');gr.addColorStop(.82,'#CF5C16');gr.addColorStop(1,'#B64B10');
-    g.fillStyle=gr;g.fill();
-    g.save();g.clip();
-    /* ışık: üst üçte bir */
-    g.strokeStyle='rgba(255,216,168,.5)';g.lineWidth=2;g.beginPath();pts.forEach((a,k)=>{if(a<aEnd+5||a>L-9)return;const x=X(a),y=yc(a)-rr(a)*.56;g.lineTo(x,y)});g.stroke();
-    /* halka izleri */
-    g.strokeStyle='rgba(120,44,6,.3)';g.lineWidth=1;g.lineCap='round';
-    [12,26,41,57,73,89,103].forEach((a,k)=>{if(a<aEnd+3||a>L-6)return;const x=X(a),r=rr(a),y=yc(a),s=k%2?.12:-.1;
-      g.beginPath();g.moveTo(x+1.3,y-r*(.72+s));g.quadraticCurveTo(x-1.5,y-r*.28,x+.7,y+r*(.12+s));g.stroke()});
-    g.restore();
-    g.fillStyle='rgba(150,60,10,.22)';g.beginPath();g.ellipse(xs+4.5,hc-R0*.5,4.6,1.7,-.2,0,7);g.fill();
-    /* kesik uç yüzü */
-    if(cutFaceOn){const r=rr(aEnd);disc(xe,r,0,r,0,0,false)}};
-
-  const knife=(tx,ty,al,u)=>{
-    /* orijin = kenarın tahtaya değen göbek noktası; sırt düz, kesen kenar ucuna doğru yukarı kıvrılır */
-    g.fillStyle=`rgba(${INKRGB},${.05+.08*u})`;g.beginPath();g.ellipse(tx+8*Math.cos(al),ty+3.4,36,2.4+1.4*(1-u),0,0,7);g.fill();
-    g.save();g.translate(tx,ty);g.rotate(-al);g.lineJoin='round';g.lineCap='round';
-    const blade=()=>{g.beginPath();g.moveTo(-28,-7.5);g.bezierCurveTo(-21,-1.8,-11,.7,4,.9);g.bezierCurveTo(19,1,33,.9,42,.5);g.lineTo(42,-22.5);g.lineTo(8,-22.1);g.bezierCurveTo(-8,-21.8,-21,-17,-28,-7.5);g.closePath()};
-    const gr=g.createLinearGradient(0,-22,0,2);gr.addColorStop(0,'#EEF2F4');gr.addColorStop(.46,'#DCE2E7');gr.addColorStop(.47,'#C2CBD2');gr.addColorStop(.84,'#B4BFC7');gr.addColorStop(1,'#9AA6AF');
-    g.save();g.translate(1.6,3.2+3*(1-u));blade();g.fillStyle=`rgba(${INKRGB},.22)`;g.fill();g.restore();
-    blade();g.fillStyle=gr;g.fill();
-    g.strokeStyle='rgba(112,126,136,.5)';g.lineWidth=.9;g.beginPath();g.moveTo(-19,-7);g.bezierCurveTo(-8,-3.9,12,-3.5,41,-4.6);g.stroke();
-    g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=1.1;g.beginPath();g.moveTo(-25,-6.4);g.bezierCurveTo(-18,-1.2,-10,.1,4,.2);g.bezierCurveTo(19,.3,33,.2,41,-.1);g.stroke();
-    g.fillStyle='#808B95';g.beginPath();g.roundRect(41.5,-23.5,5.5,26,1.6);g.fill();
-    g.fillStyle='rgba(255,255,255,.35)';g.fillRect(42.4,-22.5,1.2,24);
-    g.fillStyle='#4A2D1E';g.beginPath();g.moveTo(47,-20.5);g.lineTo(82,-21.4);g.quadraticCurveTo(94,-21.4,94,-12);g.quadraticCurveTo(94,-2.8,82,-3.4);g.lineTo(47,-4);g.closePath();g.fill();
-    g.fillStyle='#6A4328';g.beginPath();g.moveTo(48,-19.6);g.lineTo(82,-20.4);g.quadraticCurveTo(88,-20.4,90,-17.4);g.lineTo(48,-15.8);g.closePath();g.fill();
-    g.fillStyle='#E4DDCB';g.strokeStyle='rgba(40,24,14,.5)';g.lineWidth=.6;
-    [57,70,83].forEach(x=>{g.beginPath();g.arc(x,-12.4,1.8,0,7);g.fill();g.stroke()});
-    g.restore()};
-
-  const draw=t=>{
-    g.setTransform(DPR*S,0,0,DPR*S,0,0);g.clearRect(0,0,W0,H0);g.lineCap=g.lineJoin='round';
-    const tau=t%LOOP;
-    board();
-    /* durum */
-    let J=0,Q=0,i=-1,ph=0;
-    for(let k=0;k<NS;k++){const tc=S0[k]+.385*Ti(k);if(tau>=tc)J=k+1;Q+=sm((tau-(tc+.03))/(.36*Ti(k)));if(tau>=S0[k]&&tau<S0[k]+Ti(k)){i=k;ph=(tau-S0[k])/Ti(k)}}
-    const u=i<0?0:uOf(ph);
-    const gA=tau<FADE0?1:1-sm((tau-FADE0)/.5);
-    const inA=cl(tau/.38),ox=-26*(1-eOut(tau/.65));
-    if(gA>0){
-      g.save();g.globalAlpha=gA;
-      /* dilimler (arkadan öne: büyüyenler üstte) */
-      const sl=[];
-      for(let k=0;k<J;k++){
-        const tc=S0[k]+.385*Ti(k),p=cl((tau-tc)/.46),r=rr(k*TH+TH/2),th=TH-.6;
-        const Xl=XK+30+k*7.6,Zl=34+Math.sin(k*2.1)*1.6;
-        const e=eOut(p),X=XK+TH/2+(Xl-(XK+TH/2))*e,Z=Zl*e,hop=Math.sin(Math.PI*p)*6;
-        const Y=th/2+(r-th/2)*(1-e)+hop;
-        sl.push({r,th,X,Y,Z,thA:Math.PI/2*eBack(p)})}
-      sl.forEach(s=>{const lift=cl(1-s.Y/20);const q=pr(s.X,0,s.Z);
-        g.fillStyle=`rgba(${INKRGB},${.16*lift})`;g.beginPath();g.ellipse(q[0],q[1],s.r*1.08,s.r*SP*1.1,0,0,7);g.fill()});
-      sl.forEach(s=>disc(s.X,s.Y,s.Z,s.r,s.th,s.thA,true));
-      /* havuç */
-      g.save();g.globalAlpha=gA*inA;g.translate(ox,0);
-      carrot(E-TH*J+TH*Q,J*TH,true);
-      g.restore();
-      g.restore()}
-    /* bıçak: ucu tahtada, sırt sallanır; kesimde hafifçe ileri iter */
-    const al=AUP+(ADN-AUP)*u;
-    knife(XK+12-2.2*u,YS+10,al,u);
-  };
-  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const loop=t=>{n++;if(!cv.isConnected&&n>20)return;draw(t/1000);requestAnimationFrame(loop)};
-  cv.draw=draw;
-  if(reduce)draw(4.9);else requestAnimationFrame(loop);
-  return cv;
+  /* Boş durum: düz (flat) vektör çizim — daire içinde tencere, buhar, süzülen malzemeler. Renkler temadan (--fabc) gelir. */
+  const w=h('div',{class:'pot'});
+  w.innerHTML=`<svg viewBox="0 0 300 300" width="244" height="244" aria-hidden="true">
+  <defs><clipPath id="potclip"><circle cx="150" cy="150" r="122"/></clipPath></defs>
+  <circle cx="150" cy="150" r="141" fill="none" stroke="var(--fabc)" stroke-opacity=".28" stroke-width="2.5"/>
+  <g class="orbit"><circle cx="150" cy="9" r="5.5" fill="var(--fabc)"/></g>
+  <circle cx="150" cy="150" r="122" fill="var(--fabc)" fill-opacity=".14"/>
+  <g clip-path="url(#potclip)">
+    <path d="M205 20 L245 20 L120 290 L80 290Z" fill="#fff" fill-opacity=".22"/>
+    <path d="M232 20 L252 20 L127 290 L107 290Z" fill="#fff" fill-opacity=".14"/>
+    <rect x="20" y="214" width="260" height="90" fill="var(--fabc)" fill-opacity=".16"/>
+  </g>
+  <ellipse cx="150" cy="217" rx="66" ry="7" fill="var(--fabc)" fill-opacity=".3"/>
+  <g class="steam">
+    <circle class="s s1" cx="140" cy="112" r="12" fill="#fff" fill-opacity=".75"/>
+    <circle class="s s2" cx="160" cy="108" r="17" fill="#fff" fill-opacity=".7"/>
+    <circle class="s s3" cx="150" cy="104" r="9" fill="#fff" fill-opacity=".8"/>
+    <circle class="s s4" cx="172" cy="112" r="7" fill="#fff" fill-opacity=".7"/>
+  </g>
+  <g class="fl f1"><circle cx="82" cy="92" r="21" fill="#E6A82B"/><circle cx="82" cy="92" r="16.5" fill="#FBE27A"/>
+    <g stroke="#E6A82B" stroke-width="2" stroke-linecap="round"><path d="M82 77v30M67 92h30M71.4 81.4l21.2 21.2M92.6 81.4l-21.2 21.2"/></g><circle cx="82" cy="92" r="3" fill="#E6A82B"/></g>
+  <g class="fl f2"><path d="M208 88c2-22 22-34 44-30-1 24-17 40-44 30Z" fill="#4F8F3A"/>
+    <path d="M214 84c10-6 20-14 30-22M222 78l1 10M230 71l2 10" stroke="#BFE3A8" stroke-width="2" fill="none" stroke-linecap="round"/></g>
+  <g class="lid"><path d="M132 126c3-9 33-9 36 0Z" fill="var(--fabc)"/><circle cx="150" cy="116" r="4.5" fill="#fff"/>
+    <rect x="86" y="125" width="128" height="21" rx="10.5" fill="var(--fabc)"/>
+    <rect x="86" y="125" width="128" height="21" rx="10.5" fill="#fff" fill-opacity=".22"/>
+    <rect x="102" y="131" width="62" height="3.5" rx="1.75" fill="#fff" fill-opacity=".5"/></g>
+  <rect x="66" y="165" width="34" height="17" rx="8.5" fill="var(--fabc)"/><rect x="200" y="165" width="34" height="17" rx="8.5" fill="var(--fabc)"/>
+  <path d="M96 142h108v34c0 24-14 40-38 40h-32c-24 0-38-16-38-40Z" fill="var(--fabc)"/>
+  <path d="M150 142h54v34c0 24-14 40-38 40h-16Z" fill="#000" fill-opacity=".16"/>
+  <rect x="106" y="156" width="5" height="34" rx="2.5" fill="#fff" fill-opacity=".35"/>
+  <rect x="96" y="194" width="108" height="4" fill="#fff" fill-opacity=".16"/>
+  <g class="fl f3"><circle cx="70" cy="204" r="19" fill="#D9442F"/><ellipse cx="63" cy="198" rx="3.5" ry="2.2" fill="#fff" fill-opacity=".5" transform="rotate(-35 63 198)"/>
+    <path d="M60 187l10 5 10-5-6 8-4 1-4-1Z" fill="#3E7A2E"/></g>
+  <g class="fl f4"><path d="M232 183c-12 8-20 18-20 28 0 7 9 9 20 9s20-2 20-9c0-10-8-20-20-28Z" fill="#E9DFC4"/>
+    <path d="M232 183c-8 9-9 24 0 37M232 183c8 9 9 24 0 37" stroke="#CDBE9B" stroke-width="2" fill="none"/><path d="M232 183v-6" stroke="#CDBE9B" stroke-width="3" stroke-linecap="round"/></g>
+</svg>`;
+  return w;
 }
 const artCache={};
 const hexRGB=hx=>{const m=/^#?([0-9a-f]{6})$/i.exec(String(hx).trim());if(!m)return[180,83,47];const n=parseInt(m[1],16);return[n>>16&255,n>>8&255,n&255]};
@@ -1537,8 +1441,8 @@ function openDetail(id){
       const ings=IngList(e,checked);if(e.addN)ings.slice(-e.addN).forEach(li=>{li.classList.add('new');li.append(h('small',{class:'nw'},'farklı'))});
       const outs=V&&V.out&&V.out.length?h('div',{class:'outl'},'Çıkarılan: '+V.out.join(', ')):null;
       const chips=h('div',{class:'vchips'},[{name:'Ana tarif'},...vars].map((v,k)=>h('button',{type:'button',class:'vc tap'+(k===vi?' on':''),onclick:()=>{if(k===vi)return;sfx('tap');dir=k>vi?1:-1;vi=k;fill(true);slideTo(k)}},v.name)),
-        h('button',{type:'button',class:'vc add tap',onclick:()=>varSheet(r,null,k=>{vi=k;build()})},icon('plus',16,CLAY,2.2),'Varyasyon'));
-      const w=h('div',{},h('div',{class:'kick'},r.cat),h('h1',{class:'dt'},r.title),V?h('div',{class:'vname'},V.name):null,chips,
+        h('button',{type:'button',class:'vc add tap','aria-label':'Varyasyon ekle',onclick:()=>varSheet(r,null,k=>{vi=k;build()})},icon('plus',16,INK2,2.2)));
+      const w=h('div',{},h('div',{class:'kick'},r.cat),h('h1',{class:'dt'},r.title),V?h('div',{class:'vname'},V.name):null,vars.length?chips:null,
         h('div',{class:'rate'},stars,badge),meta,
         e.ing.length?[h('h2',{class:'sec'},'Malzemeler',h('small',{},`${e.ing.length} kalem`)),...ings,outs]:null,
         e.steps.length?[h('h2',{class:'sec'},'Hazırlanışı'),...e.steps.map((t,i)=>h('div',{class:'stp'},h('b',{},String(i+1).padStart(2,'0')),h('p',{},t)))]:null,
@@ -1557,6 +1461,12 @@ function openDetail(id){
     [...gal.querySelectorAll('img')].forEach((im,k)=>{const f=()=>{try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');x.drawImage(im,0,0,24,24);const d=x.getImageData(4,15,16,8).data;let l=0;for(let q=0;q<d.length;q+=4)l+=.2126*d[q]+.7152*d[q+1]+.0722*d[q+2];tone[k]=l/(d.length/4)>150;setTone()}catch{}};im.complete&&im.naturalWidth?f():im.addEventListener('load',f,{once:true})});
     gal.addEventListener('scroll',setTone,{passive:true});
     const sc=h('div',{class:'scroll'},gw,body);
+    /* Esneyen kapak: aşağı çekildiğinde (scrollTop<0) kapak alttan sabitlenip büyür, üstte boşluk kalmaz */
+    if(r.photos.length||vars.some(v=>v.photo)){let raf=0;const stretch=()=>{raf=0;const d=Math.max(0,-sc.scrollTop),gh=gal.clientHeight||1;
+      if(d>0){const s=1+d/gh;gw.style.transform=`scale(${s})`;dots.style.transform=`scale(${1/s})`}
+      else if(gw.style.transform){gw.style.transform='';dots.style.transform=''}};
+      gw.style.transformOrigin='50% 100%';gw.style.willChange='transform';
+      sc.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(stretch)},{passive:true})}
     const back=h('button',{class:'fbtn tap',type:'button',style:'left:18px',onclick:()=>nav.pop()},icon('back',22));
     const more=h('button',{class:'fbtn tap',type:'button',style:'right:18px',onclick:()=>menu(r)},icon('more',22));
     el.append(sc,back,more);

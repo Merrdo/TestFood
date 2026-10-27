@@ -233,7 +233,7 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .vid{position:absolute;inset:0;z-index:120;background:rgb(var(--dk2-rgb) / .94);display:flex;align-items:center;justify-content:center;padding:0 0}
 .vid iframe{width:100%;aspect-ratio:16/9;border:0;background:#000}
 .vid .cbtn{position:absolute;top:calc(var(--st) + 12px);right:20px}
-#toast{position:absolute;left:50%;bottom:calc(var(--sb) + 98px);transform:translate(-50%,20px);display:flex;align-items:center;gap:10px;background:rgb(var(--ink-rgb) / .94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgb(var(--cream-rgb) / .14);color:var(--cream);padding:13px 20px 13px 16px;border-radius:22px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;z-index:200;transition:all .5s var(--ease);white-space:nowrap;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
+#toast{position:absolute;left:50%;bottom:calc(var(--sb) + 98px);transform:translate(-50%,20px);display:flex;align-items:center;gap:10px;background:var(--toast,rgb(var(--ink-rgb) / .94));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgb(var(--cream-rgb) / .14);color:var(--cream);padding:13px 20px 13px 16px;border-radius:22px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;z-index:200;transition:all .5s var(--ease);white-space:nowrap;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
 #toast::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--g2);flex:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 .editor.typing .fab{transform:translateX(-50%) translateY(150px);opacity:0;pointer-events:none}
@@ -344,6 +344,13 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .trd{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);flex:none;position:relative;transition:all .35s var(--ease)}
 .tcard.on .trd{background:var(--go);border-color:var(--go)}
 .tcard.on .trd::after{content:'';position:absolute;left:8px;top:4px;width:6px;height:11px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg)}
+:root[data-dark] .sitem .si,:root[data-dark] .vph,:root[data-dark] .addph,:root[data-dark] .addcat,:root[data-dark] .vc.add{background-color:transparent}
+:root[data-dark] .view.push{box-shadow:-18px 0 50px rgba(0,0,0,.55)}
+:root[data-dark] #toast{border-color:rgb(var(--cream-rgb) / .16)}
+:root[data-dark] .crow.lift{box-shadow:0 24px 40px -14px rgba(0,0,0,.65),0 0 0 1px var(--line)}
+:root[data-dark] .card .ph{box-shadow:0 22px 34px -20px rgba(0,0,0,.7)}
+:root[data-dark] .tcard.on{box-shadow:0 0 0 4px rgb(var(--go-rgb) / .3)}
+:root[data-dark] .tpv{border-color:rgb(var(--ink-rgb) / .14)}
 .tsw *{transition:background-color .5s,border-color .5s,color .5s,box-shadow .5s!important}
 
 /* ---------- Yedekleme + çoklu seçim ---------- */
@@ -365,36 +372,8 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .bkbar i{display:block;height:100%;width:0;background:var(--clay);border-radius:3px;transition:width .25s}
 .more{height:1px}
 .hbtns{display:flex;align-items:center}
-.cartb{position:relative;margin-right:0}
-.cbd{position:absolute;top:3px;right:1px;min-width:18px;height:18px;border-radius:9px;background:var(--clay);color:var(--cream);font:600 11px/18px var(--sans);text-align:center;padding:0 5px}
 .sbx.off{opacity:.4;pointer-events:none}
 .sba{padding:0 8px}
-.shaddr{display:flex;align-items:center;gap:12px;margin:14px 26px 0}
-.shadd{width:44px;height:44px;border-radius:50%;border:0;background:var(--fabc);display:grid;place-items:center;flex:none}
-.shsec{display:flex;align-items:center;justify-content:space-between;margin:28px 26px 4px}
-.shh{font:600 11.5px var(--sans);letter-spacing:.15em;text-transform:uppercase;color:var(--ink2)}
-.shlk{background:none;border:0;color:var(--clay);font:600 13.5px var(--sans);padding:6px 0}
-.shlk.dg{color:var(--danger)}
-.shr{display:flex;align-items:center;gap:6px;padding:0 20px 0 26px;border-bottom:1px solid var(--line)}
-.shk{flex:1;display:flex;align-items:center;gap:14px;background:none;border:0;text-align:left;padding:14px 0;min-width:0}
-.ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--mute);display:grid;place-items:center;flex:none;transition:all .3s var(--ease)}
-.ck canvas{opacity:0;transition:opacity .2s}
-.shr.on .ck{background:var(--fabc);border-color:var(--fabc)}
-.shr.on .ck canvas{opacity:1}
-.sht{flex:1;min-width:0}
-.shl{display:block;font-size:17px;line-height:1.3}
-.shl b{font-weight:600}
-.shs{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px}
-.shr.on .shl{color:var(--mute);text-decoration:line-through}
-.shx{width:36px;height:36px;border:0;background:none;display:grid;place-items:center;flex:none}
-.shrc{display:flex;align-items:center;gap:10px;padding:10px 20px 10px 26px;border-bottom:1px solid var(--line)}
-.shrt{flex:1;font-size:15.5px;line-height:1.3;min-width:0}
-.stp2{display:flex;align-items:center;gap:2px}
-.stp2 button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;font-size:18px;line-height:1;color:var(--ink)}
-.stp2 span{min-width:30px;text-align:center;font-weight:600;font-size:14.5px}
-.shemp{text-align:center;color:var(--ink2);margin:70px 40px 0;line-height:1.5}
-.shemp h3{font:400 24px var(--serif);color:var(--ink);margin-bottom:8px}
-.shfoot{text-align:center;margin-top:34px}
 .ingprev{margin-top:8px}
 .ipt{display:flex;align-items:center;gap:8px;background:none;border:0;color:var(--ink2);font-size:13px;padding:6px 0}
 .ipt i{display:inline-block;font-style:normal;transition:transform .3s var(--ease)}
@@ -453,32 +432,35 @@ let CLAYRGB='180,83,47',INKRGB='43,34,27',INK2RGB='122,108,93',CREAMRGB='246,239
 
 /* ============ Temalar ============ */
 const THEMEKEY='defter-theme-v1';
+try{localStorage.removeItem('defter-shop-v1')}catch{}
 const THEMES={
   krem:{name:'Zeytin & Krem',desc:'Sıcak krem zemin, zeytin yeşili ve kiremit detaylar.',meta:'#F2EBDD',grain:'noise',
     js:{INK:'#2B221B',INK2:'#7A6C5D',CLAY:'#B4532F',CLAY2:'#C9683F',DANGER:'#98391D',CREAM:'#F6EFE2',MUTE:'#B3A593',COOKINK:'#26331F',INKRGB:'43,34,27',INK2RGB:'122,108,93',CREAMRGB:'246,239,226'},
     v:{'--paper':'#F2EBDD','--paper2':'#E9DFCB','--card':'#FAF5EA','--card-rgb':'250 245 234','--ink':'#2B221B','--ink2':'#7A6C5D','--ink3':'#4A3E33','--ink-rgb':'43 34 27',
       '--clay':'#B4532F','--clay-rgb':'180 83 47','--danger':'#98391D','--danger-rgb':'152 57 29','--fabc':'#5E6D3B','--go-rgb':'94 109 59','--cream':'#F6EFE2','--cream-rgb':'246 239 226',
       '--mute':'#B3A593','--mute-a':'#A99B89','--mute-b':'#ABA08F','--shd-rgb':'70 40 15','--dk-rgb':'30 20 12','--dk2-rgb':'20 14 10',
-      '--c1':'68 86 58','--c2':'51 69 47','--c3':'27 37 24','--cookink':'#26331F','--nx1':'#FBF5E8','--nx2':'#EFE4CC','--g1':'#E8C57F','--g2':'#D9A23C'}},
+      '--c1':'68 86 58','--c2':'51 69 47','--c3':'27 37 24','--cookink':'#26331F','--nx1':'#FBF5E8','--nx2':'#EFE4CC','--g1':'#E8C57F','--g2':'#D9A23C','--toast':'rgb(43 34 27 / .94)'}},
   mavi:{name:'Mavi Sabah',desc:'Ferah taş-fildişi zemin; butonlar ve detaylar mavi.',meta:'#F5F2EC',grain:'noise',
     js:{INK:'#1B2A3D',INK2:'#5F6C7D',CLAY:'#2A68AD',CLAY2:'#4C8AD0',DANGER:'#1C438C',CREAM:'#F8FBFE',MUTE:'#A3AFBE',COOKINK:'#14304F',INKRGB:'27,42,61',INK2RGB:'95,108,125',CREAMRGB:'248,251,254'},
     v:{'--paper':'#F5F2EC','--paper2':'#E7E5DE','--card':'#FCFBF8','--card-rgb':'252 251 248','--ink':'#1B2A3D','--ink2':'#5F6C7D','--ink3':'#33445A','--ink-rgb':'27 42 61',
       '--clay':'#2A68AD','--clay-rgb':'42 104 173','--danger':'#1C438C','--danger-rgb':'28 67 140','--fabc':'#274A74','--go-rgb':'39 74 116','--cream':'#F8FBFE','--cream-rgb':'248 251 254',
       '--mute':'#A3AFBE','--mute-a':'#9EAAB9','--mute-b':'#A6B1BF','--shd-rgb':'24 52 92','--dk-rgb':'10 20 36','--dk2-rgb':'6 12 22',
-      '--c1':'38 78 128','--c2':'27 58 100','--c3':'13 26 46','--cookink':'#14304F','--nx1':'#FFFFFF','--nx2':'#E4EEF9','--g1':'#A9D0F6','--g2':'#5FA2E6'}}
+      '--c1':'38 78 128','--c2':'27 58 100','--c3':'13 26 46','--cookink':'#14304F','--nx1':'#FFFFFF','--nx2':'#E4EEF9','--g1':'#A9D0F6','--g2':'#5FA2E6','--toast':'rgb(27 42 61 / .94)'}}
 };
 let curTheme='krem';const themeBus=new Set(),grainCache={};
 function makeGrain(kind){
   if(grainCache[kind])return grainCache[kind];
   const c=document.createElement('canvas');
+  if(kind==='none'){c.width=c.height=2;return grainCache[kind]=c.toDataURL()} /* dokusuz: şeffaf */
   if(kind==='dots'){ /* ince, kayık sıralı nokta dokusu (2x netlik) */
     c.width=c.height=280;const x=c.getContext('2d'),id=x.createImageData(280,280);
     for(let i=0;i<id.data.length;i+=4){id.data[i]=27;id.data[i+1]=42;id.data[i+2]=61;id.data[i+3]=Math.random()*6}
     x.putImageData(id,0,0);x.fillStyle='rgba(47,114,190,.13)';
     for(let j=0;j<7;j++)for(let i=0;i<7;i++){x.beginPath();x.arc(((10+i*20+(j%2?10:0))%140)*2,(10+j*20)*2,2.1,0,7);x.fill()}
   }else{
+    const dk=kind==='noiseD'; /* koyu temada açık renkli, çok hafif doku */
     c.width=c.height=140;const x=c.getContext('2d'),id=x.createImageData(140,140);
-    for(let i=0;i<id.data.length;i+=4){id.data[i]=43;id.data[i+1]=34;id.data[i+2]=27;id.data[i+3]=Math.random()*11}
+    for(let i=0;i<id.data.length;i+=4){id.data[i]=dk?170:43;id.data[i+1]=dk?200:34;id.data[i+2]=dk?240:27;id.data[i+3]=Math.random()*(dk?7:11)}
     x.putImageData(id,0,0);
   }
   return grainCache[kind]=c.toDataURL();
@@ -491,6 +473,8 @@ function applyTheme(key,boot){
   STAR_OFF=`rgba(${INKRGB},.3)`;CLAYRGB=T.v['--clay-rgb'].replace(/ /g,',');
   R.setProperty('--grain',`url(${makeGrain(T.grain)})`);
   const mt=document.querySelector('meta[name=theme-color]');if(mt)mt.content=T.meta;
+  const sc=T.scheme||'light',cs=document.querySelector('meta[name=color-scheme]');if(cs)cs.content=sc;
+  R.setProperty('color-scheme',sc);document.documentElement.dataset.theme=key;document.documentElement.toggleAttribute('data-dark',sc==='dark');
   curTheme=key;try{localStorage.setItem(THEMEKEY,key)}catch{}
   if(boot)return;
   /* ekrandaki canvas ikon / yıldız / onay işaretlerini yeni renge boya */
@@ -521,12 +505,12 @@ const catNames=()=>cats.map(c=>c.name);
 const catColor=n=>(cats.find(c=>c.name===n)||{}).color||CLAY;
 /* Kapak zemin rengi temaya göre: krem temada kategori rengi aynen; mavi temada kiremit tonları yerine
    temayla uyumlu, birbirinden ayırt edilen mavi ağırlıklı, aralarında yumuşak yeşiller olan palet (fildişi tabakla güçlü kontrast) */
-const COVER_MAVI=['#5E8A52','#2B7A8C']; /* yumuşak yeşil / turkuaz */
+const COVER_MAVI=['#5E8A52','#2B7A8C'],COVER_TONES={}; /* yumuşak yeşil / turkuaz */
 function coverColor(cat,rec){
-  if(curTheme!=='mavi')return catColor(cat);
+  if(curTheme==='krem')return catColor(cat);
   let t=rec&&Number.isInteger(rec.tone)?rec.tone:-1;
   if(t<0){t=0;for(const ch of String(rec&&rec.id||cat))t=(t*31+ch.charCodeAt(0))>>>0}
-  return COVER_MAVI[t%COVER_MAVI.length];
+  const TN=COVER_TONES[curTheme]||COVER_MAVI;return TN[t%TN.length];
 }
 const catBus=new Set();
 const EASE='cubic-bezier(.22,.9,.24,1)';
@@ -712,7 +696,6 @@ const IC={
   palette:{s:'M12 4a8 8 0 1 0 0 16c1.5 0 2.1-.9 2.1-1.8 0-.6-.3-1-.6-1.4-.3-.4-.4-.8-.4-1.2 0-1 .8-1.8 1.8-1.8H17.2A2.8 2.8 0 0 0 20 11c0-3.9-3.6-7-8-7z',f:[C(7.8,11.2,1.1),C(10.6,7.7,1.1),C(15,8,1.1)]},
   check:{s:'M5 12.5l4.5 4.5L19 7.5'},
   down:{s:'M12 4v10.5M7.5 10.5L12 15l4.5-4.5M5 19.5h14'},up:{s:'M12 15V4.5M7.5 9L12 4.5 16.5 9M5 19.5h14'},
-  cart:{s:'M3 4h2.5l2.2 11h10.6l2-8H6.4',f:['M9 18.6a1.4 1.4 0 1 0 .01 0z','M17 18.6a1.4 1.4 0 1 0 .01 0z']},
   filter:{s:'M4 5h16l-6 7.5V19l-4 1.5v-8z'},
   repeat:{s:'M17 3l3 3-3 3M20 6H8a4 4 0 0 0-4 4v1M7 21l-3-3 3-3M4 18h12a4 4 0 0 0 4-4v-1'},
   heart:{s:'M12 20.2C6.3 16.3 3.8 13 3.8 9.7 3.8 7.2 5.7 5.4 8 5.4c1.6 0 3 .9 4 2.4 1-1.5 2.4-2.4 4-2.4 2.3 0 4.2 1.8 4.2 4.3 0 3.3-2.5 6.6-8.2 10.5z'},heartf:{s:'M12 20.2C6.3 16.3 3.8 13 3.8 9.7 3.8 7.2 5.7 5.4 8 5.4c1.6 0 3 .9 4 2.4 1-1.5 2.4-2.4 4-2.4 2.3 0 4.2 1.8 4.2 4.3 0 3.3-2.5 6.6-8.2 10.5z',f:['M12 20.2C6.3 16.3 3.8 13 3.8 9.7 3.8 7.2 5.7 5.4 8 5.4c1.6 0 3 .9 4 2.4 1-1.5 2.4-2.4 4-2.4 2.3 0 4.2 1.8 4.2 4.3 0 3.3-2.5 6.6-8.2 10.5z']},
@@ -1143,7 +1126,7 @@ function rimArt(x,cx,cy,col,theme,variant=0){
     x.fillStyle=g;x.beginPath();x.moveTo(0,-len);x.quadraticCurveTo(wid,-len*curve,0,len);x.quadraticCurveTo(-wid,-len*curve,0,-len);x.fill();
     if(vein){x.strokeStyle=cream;x.lineWidth=1.3;x.beginPath();x.moveTo(0,-len*.66);x.lineTo(0,len*.66);x.stroke()}
   };
-  if(theme==='mavi'){
+  if(theme!=='krem'){
     lit(()=>{ring(291,2.8,ink);ring(283,1,soft)});
     for(let i=0;i<12;i++){
       lit(()=>at(254,i/12*TAU,()=>petal(21,9,.1,false)));
@@ -1328,88 +1311,6 @@ const countEl=h('div',{class:'count'});
 const sortLab=h('span',{},SORTS[0]);
 const sortB=h('button',{class:'sortb tap',type:'button',onclick:()=>{state.sort=(state.sort+1)%3;sortLab.textContent=SORTS[state.sort];sfx('tap');renderList('stagger')}},sortLab,icon('sort',18,INK2,1.7));
 const listEl=h('div',{class:'list'});
-/* ============ Alışveriş listesi ============
-   Tarif eklenince malzemeleri o anki haliyle kopyalanır (tarif sonradan değişse liste değişmez); aynı malzemeler birleşir. */
-const SHOPKEY='defter-shop-v1',shopBus=new Set();
-let shop=(()=>{try{const x=JSON.parse(localStorage.getItem(SHOPKEY));if(x&&Array.isArray(x.entries))return{entries:x.entries,done:Array.isArray(x.done)?x.done:[]}}catch{}return{entries:[],done:[]}})();
-const saveShop=()=>{try{localStorage.setItem(SHOPKEY,JSON.stringify(shop))}catch{}shopBus.forEach(f=>f())};
-const pkey=p=>p.key||fold(p.raw);
-function sumText(parts){
-  const m=new Map();
-  for(const{p,k}of parts){
-    if(p.qty==null)continue;
-    const q=(p.qty2||p.qty)*k;let b,amt=q;
-    if(p.fam==='mass'){b='g';amt=q*p.f}
-    else if(p.fam==='vol'&&(p.unit==='ml'||p.unit==='lt')){b='ml';amt=q*p.f}
-    else b=p.unit&&p.unit!=='adet'?p.unit:'';
-    m.set(b,(m.get(b)||0)+amt);
-  }
-  return[...m].map(([b,a])=>b==='g'?(a>=1000?fmtQty(a/1000)+' kg':fmtQty(a)+' g'):b==='ml'?(a>=1000?fmtQty(a/1000)+' lt':fmtQty(a)+' ml'):fmtQty(a)+(b?' '+b:'')).join(' + ');
-}
-function shopGroups(){
-  const m=new Map();
-  for(const en of shop.entries)for(const line of en.lines){
-    const p=parseIng(line),key=pkey(p);let g=m.get(key);
-    if(!g){g={key,name:p.name,parts:[],src:[],manual:true};m.set(key,g)}
-    g.parts.push({p,k:en.k});
-    if(en.rid!=='manual'){g.manual=false;if(!g.src.includes(en.title))g.src.push(en.title)}
-  }
-  return[...m.values()].map(g=>({...g,qty:sumText(g.parts),free:g.parts.some(x=>x.p.free),done:shop.done.includes(g.key)})).sort((a,b)=>a.name.localeCompare(b.name,'tr'));
-}
-function shopUncheck(lines){lines.forEach(l=>{const i=shop.done.indexOf(pkey(parseIng(l)));if(i>=0)shop.done.splice(i,1)})}
-function addToShop(r,vi=0,quiet){
-  const e=eff(r,vi),V=vi>0&&r.vars?r.vars[vi-1]:null;
-  if(!e.ing.length){quiet||toast('Bu tarifte malzeme yok');return false}
-  const id=r.id+'|'+vi;
-  if(shop.entries.some(x=>x.id===id)){quiet||toast('Bu tarif zaten listede');return false}
-  shop.entries.push({id,rid:r.id,title:r.title+(V&&V.name?' · '+V.name:''),k:1,lines:[...e.ing]});
-  shopUncheck(e.ing);saveShop();quiet||toast('Alışveriş listesine eklendi');return true;
-}
-function addManyToShop(recs){
-  let n=0;recs.forEach(r=>{if(addToShop(r,0,true))n++});
-  toast(n?`${n} tarif listeye eklendi`:'Seçilen tarifler zaten listede');
-}
-const cartN=h('span',{class:'cbd'}),cartB=h('button',{class:'gearb cartb tap',type:'button','aria-label':'Alışveriş listesi',onclick:()=>{sfx('tap');openShop()}},icon('cart',26,INK,1.9),cartN);
-function paintCart(){const n=shopGroups().filter(g=>!g.done).length;cartN.textContent=n>99?'99+':n;cartN.style.display=n?'':'none'}
-shopBus.add(paintCart);
-function openShop(){
-  const el=h('section',{class:'view push'}),view={el,kind:'push'},box=h('div',{});
-  const addIn=h('input',{class:'in',placeholder:'Listeye ekle, ör. 2 litre süt',enterkeyhint:'done',autocomplete:'off',autocapitalize:'sentences'});
-  const add=()=>{const v=addIn.value.trim();if(!v)return;shop.entries.push({id:'m|'+uid(),rid:'manual',title:'',k:1,lines:[v]});shopUncheck([v]);addIn.value='';saveShop()};
-  addIn.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();add()}};
-  const clearDone=()=>{
-    const dk=new Set(shop.done);
-    shop.entries.forEach(en=>{en.lines=en.lines.filter(l=>!dk.has(pkey(parseIng(l))))});
-    shop.entries=shop.entries.filter(en=>en.lines.length);shop.done=[];saveShop();
-  };
-  const confirmClear=()=>{
-    const b=h('div',{},h('div',{class:'sh-t'},'Liste boşaltılsın mı?'),h('p',{class:'sh-p'},'Tüm ürünler ve tarifler listeden kaldırılacak.'),
-      h('div',{class:'btns'},h('button',{class:'bt g tap',type:'button',onclick:()=>s.close()},'Vazgeç'),
-        h('button',{class:'bt c tap',type:'button',onclick:()=>{shop={entries:[],done:[]};saveShop();s.close()}},'Boşalt')));
-    const s=sheet(b);
-  };
-  const sub=g=>{const t=[g.src.slice(0,2).join(' · ')+(g.src.length>2?` +${g.src.length-2}`:''),g.free&&!g.qty?'ayarına göre':''].filter(Boolean).join(' · ');return t?h('span',{class:'shs'},t):null};
-  const row=g=>h('div',{class:'shr'+(g.done?' on':'')},
-    h('button',{class:'shk tap',type:'button',onclick:()=>{sfx('tap');const i=shop.done.indexOf(g.key);i>=0?shop.done.splice(i,1):shop.done.push(g.key);saveShop()}},
-      h('span',{class:'ck'},icon('check',15,CREAM,2.8)),h('span',{class:'sht'},h('span',{class:'shl'},g.qty?h('b',{},g.qty+' '):null,g.name),sub(g))),
-    g.manual?h('button',{class:'shx tap',type:'button','aria-label':'Sil',onclick:()=>{shop.entries=shop.entries.filter(en=>!(en.rid==='manual'&&en.lines.some(l=>pkey(parseIng(l))===g.key)));shop.done=shop.done.filter(k=>k!==g.key);saveShop()}},icon('close',16,MUTE,2)):null);
-  const sec=(t,n,link)=>h('div',{class:'shsec'},h('div',{class:'shh'},`${t} · ${n}`),link||null);
-  const draw=()=>{
-    const gs=shopGroups(),todo=gs.filter(g=>!g.done),done=gs.filter(g=>g.done),rec=shop.entries.filter(x=>x.rid!=='manual'),parts=[];
-    if(!gs.length)parts.push(h('div',{class:'shemp'},h('h3',{},'Liste boş'),h('p',{},'Bir tarifin menüsünden “Alışveriş listesine ekle”yi seç ya da yukarıdaki alana ürün yaz.')));
-    if(todo.length)parts.push(sec('Alınacaklar',todo.length),...todo.map(row));
-    if(done.length)parts.push(sec('Alınanlar',done.length,h('button',{class:'shlk tap',type:'button',onclick:clearDone},'Temizle')),...done.map(row));
-    if(rec.length)parts.push(sec('Listedeki tarifler',rec.length),...rec.map(en=>h('div',{class:'shrc'},h('div',{class:'shrt'},en.title),
-      h('div',{class:'stp2'},h('button',{type:'button','aria-label':'Azalt',onclick:()=>{if(en.k>1){en.k--;saveShop()}}},'−'),h('span',{},'×'+en.k),h('button',{type:'button','aria-label':'Artır',onclick:()=>{en.k++;saveShop()}},'+')),
-      h('button',{class:'shx tap',type:'button','aria-label':'Kaldır',onclick:()=>{shop.entries=shop.entries.filter(x=>x!==en);saveShop()}},icon('trash',18,DANGER,1.9)))));
-    if(gs.length)parts.push(h('div',{class:'shfoot'},h('button',{class:'shlk dg tap',type:'button',onclick:confirmClear},'Listeyi boşalt')));
-    box.replaceChildren(...parts);
-  };
-  const upd=()=>draw();shopBus.add(upd);view.onClose=()=>shopBus.delete(upd);
-  el.append(h('div',{class:'scroll'},barSp(),h('div',{class:'shaddr'},h('div',{class:'field',style:'flex:1'},addIn),
-    h('button',{class:'shadd tap',type:'button','aria-label':'Ekle',onclick:add},icon('plus',20,CREAM,2.4))),box,h('div',{style:'height:calc(var(--sb) + 40px)'})));
-  draw();pageBar(el,'Alışveriş Listesi');nav.push(view);edgeBack(view);
-}
 const fltN=h('span',{class:'fbd'}),fltB=h('button',{class:'fltb tap',type:'button',onclick:()=>{sfx('tap');openFilter()}},icon('filter',17,INK2,1.7),h('span',{},'Filtre'),fltN);
 function paintFlt(){const n=fCount();fltN.textContent=n||'';fltN.style.display=n?'':'none';fltB.classList.toggle('on',n>0)}
 function openFilter(){
@@ -1435,7 +1336,7 @@ function openFilter(){
 }
 const searchEl=h('div',{class:'search'},icon('search',22,INK2,1.8),inp,h('div',{class:'sright'},h('div',{class:'sgrp'},favB,freqB),clr));
 scroll.append(
-  h('header',{class:'head'},h('h1',{class:'h1'},'Tariflerim'),h('div',{class:'hbtns'},cartB,h('button',{class:'gearb tap',type:'button',onclick:()=>{sfx('tap');openSettings()}},icon('sliders',26,INK,2)))),
+  h('header',{class:'head'},h('h1',{class:'h1'},'Tariflerim'),h('div',{class:'hbtns'},h('button',{class:'gearb tap',type:'button',onclick:()=>{sfx('tap');openSettings()}},icon('sliders',26,INK,2)))),
   searchEl,
   catsEl,h('div',{class:'info'},countEl,h('div',{class:'inr'},fltB,sortB)),listEl
 );
@@ -1449,7 +1350,7 @@ scroll.addEventListener('scroll',()=>{const y=scroll.scrollTop;fab.classList.tog
 /* ============ Malzeme ayrıştırıcı ============
    Tarifte malzemeler düz metin olarak kalır (yedek / varyasyon uyumluluğu bozulmaz); yapı anlık çıkarılır.
    parseIng("2 su bardağı kırmızı mercimek (yıkanmış)") → {qty:2, unit:'su bardağı', fam:'vol', f:200, name:'kırmızı mercimek', note:'yıkanmış', key:'kirmizi mercimek'}
-   fam: mass (g) / vol (ml) / count; f: o ailenin tabanına çarpan. Madde 9 (alışveriş), 10 (kiler), 18 (ölçekleme) bunu kullanır. */
+   fam: mass (g) / vol (ml) / count; f: o ailenin tabanına çarpan. Madde 10 (kiler), 18 (ölçekleme) bunu kullanır. */
 const UNITS=[
   ['kg','mass',1000,['kg','kilo','kilogram']],['g','mass',1,['g','gr','gram']],
   ['lt','vol',1000,['lt','l','litre']],['ml','vol',1,['ml','mililitre']],
@@ -1576,7 +1477,7 @@ function appendMore(){
   if(items.length>shown){const n=h('div',{class:'more'});listEl.append(n);watchMore(n)}
 }
 function renderList(mode){
-  paintFlt();paintCart();const items=filtered(),k=state.q+'|'+state.cat+'|'+state.sort+'|'+state.fav+'|'+state.freq+'|'+JSON.stringify(state.f);
+  paintFlt();const items=filtered(),k=state.q+'|'+state.cat+'|'+state.sort+'|'+state.fav+'|'+state.freq+'|'+JSON.stringify(state.f);
   if(k!==listSig){listSig=k;shown=PAGE}
   if(moreIO)moreIO.disconnect();
   listEl.innerHTML='';listEl.classList.toggle('quick',mode==='quick');listEl.classList.toggle('selecting',sel.on);
@@ -1591,13 +1492,12 @@ bus.add(()=>renderList('quick'));
 /* ============ Çoklu seçim (uzun bas → Yedekle / Seç) ============ */
 const selN=h('div',{class:'sbn'});
 const selGo=h('button',{class:'sbg tap',type:'button',onclick:()=>{const rs=state.all.filter(r=>sel.ids.has(r.id));if(rs.length)runBackup(rs,'selection',selOff)}},icon('down',20,CREAM,2),'Yedekle');
-const selCart=h('button',{class:'sbx tap',type:'button','aria-label':'Alışveriş listesine ekle',onclick:()=>{const rs=state.all.filter(r=>sel.ids.has(r.id));if(rs.length){addManyToShop(rs);selOff()}}},icon('cart',20,INK,1.9));
 const selAll=h('button',{class:'sba tap',type:'button',onclick:()=>{
   const v=filtered(),all=v.length&&v.every(r=>sel.ids.has(r.id));
   v.forEach(r=>all?sel.ids.delete(r.id):sel.ids.add(r.id));renderList('quick');selUpd();
 }},'Tümü');
-home.append(h('div',{class:'selbar'},h('button',{class:'sbx tap',type:'button','aria-label':'Vazgeç',onclick:()=>{sfx('tap');selOff()}},icon('close',20,INK,2.2)),selN,selAll,selCart,selGo));
-function selUpd(){selN.textContent=sel.ids.size?`${sel.ids.size} seçili`:'Tarif seç';selGo.classList.toggle('off',!sel.ids.size);selCart.classList.toggle('off',!sel.ids.size)}
+home.append(h('div',{class:'selbar'},h('button',{class:'sbx tap',type:'button','aria-label':'Vazgeç',onclick:()=>{sfx('tap');selOff()}},icon('close',20,INK,2.2)),selN,selAll,selGo));
+function selUpd(){selN.textContent=sel.ids.size?`${sel.ids.size} seçili`:'Tarif seç';selGo.classList.toggle('off',!sel.ids.size)}
 function toggleSel(id){
   sel.ids.has(id)?sel.ids.delete(id):sel.ids.add(id);
   const c=listEl.querySelector(`.card[data-id="${id}"]`);c&&c.classList.toggle('picked',sel.ids.has(id));selUpd();
@@ -1615,7 +1515,6 @@ function cardMenu(r){
   const s=sheet(h('div',{},h('div',{class:'sh-t'},r.title),h('div',{class:'scard',style:'margin-top:18px'},
     it(r.fav?'heartf':'heart',r.fav?'Favorilerden çıkar':'Favorilere ekle',async()=>{r.fav=!r.fav;await save(r,true);toast(r.fav?'Favorilere eklendi':'Favorilerden çıkarıldı')}),
     it('calendar','Bunu yaptım',async()=>{await markMade(r);toast(`Kaydedildi · ${madeN(r)}. kez`)}),
-    it('cart','Alışveriş listesine ekle',()=>addToShop(r)),
     it('down','Yedekle',()=>runBackup([r],'selection')),it('check','Seç',()=>selOn(r.id)))));
 }
 
@@ -1745,7 +1644,7 @@ function openDetail(id){
         h('button',{type:'button',class:'vc add tap',onclick:()=>varSheet(r,null,k=>{vi=k;build()})},icon('plus',16,CLAY,2.2),'Varyasyon'));
       const w=h('div',{},h('div',{class:'kick'},r.cat),h('h1',{class:'dt'},r.title),V?h('div',{class:'vname'},V.name):null,chips,
         h('div',{class:'rate'},stars,badge),meta,e.tags&&e.tags.length?h('div',{class:'tagrow'},e.tags.map(t=>h('span',{class:'tg'},t))):null,madeBlock(r),
-        e.ing.length?[h('h2',{class:'sec'},'Malzemeler',h('small',{},`${e.ing.length} kalem`)),...ings,outs,h('button',{type:'button',class:'vc add tap',style:'margin-top:18px',onclick:()=>{sfx('tap');addToShop(get(),vi)}},icon('cart',16,CLAY,1.9),'Alışveriş listesine ekle')]:null,
+        e.ing.length?[h('h2',{class:'sec'},'Malzemeler',h('small',{},`${e.ing.length} kalem`)),...ings,outs]:null,
         e.steps.length?[h('h2',{class:'sec'},'Hazırlanışı'),...e.steps.map((t,i)=>h('div',{class:'stp'},h('b',{},String(i+1).padStart(2,'0')),h('p',{},t)))]:null,
         e.note?h('div',{class:'note'},e.note):null);
       body.replaceChildren(w);
@@ -1796,7 +1695,6 @@ function openDetail(id){
       h('button',{class:'srow tap',type:'button',onclick:()=>{s.close();setTimeout(()=>varSheet(r,null,k=>{vi=k;build()}),200)}},icon('plus',24),'Varyasyon ekle'),
       vi>0?h('button',{class:'srow tap',type:'button',onclick:()=>{s.close();setTimeout(()=>varSheet(r,r.vars[vi-1],k=>{vi=k;build()}),200)}},icon('edit',24),'Bu varyasyonu düzenle'):null,
       h('button',{class:'srow tap',type:'button',onclick:()=>{photo.click();s.close()}},icon('camera',24),'Fotoğraf ekle'),
-      h('button',{class:'srow tap',type:'button',onclick:()=>{s.close();addToShop(r,vi)}},icon('cart',24),'Alışveriş listesine ekle'),
       h('button',{class:'srow danger tap',type:'button',onclick:()=>{s.close();setTimeout(()=>confirmDel(r),250)}},h('span',{class:'ibx'},icon('trash',22,DANGER,1.9)),h('span',{},'Tarifi sil')));
     const s=sheet(box);
   }
@@ -2209,7 +2107,7 @@ function openCovers(){
     return h('div',{class:'cvt s'},im,h('div',{class:'cvn'},cb.name));
   };
   const STY=[
-    {plate:0,name:t=>t==='mavi'?'Lale Halkası':'Yaprak Halkası',desc:'Kenarda ince yaprak halkası. Mavi temada on iki lale yaprağı, Krem temada on altı ince yaprak.'},
+    {plate:0,name:t=>t!=='krem'?'Lale Halkası':'Yaprak Halkası',desc:'Kenarda ince yaprak halkası. Mavi ve Koyu temalarda on iki lale yaprağı, Krem temada on altı ince yaprak.'},
     {plate:1,name:()=>'Biberiye Dalı',desc:'Karşılıklı iki biberiye dalı, sol üstte ve sağ altta.'}];
   const C=combos(),parts=[];
   STY.forEach(st=>{
@@ -2238,7 +2136,7 @@ const PRESETS=[
 function openPresets(){
   const el=h('section',{class:'view push'}),view={el,kind:'push'};
   const have=n=>cats.find(c=>fold(c.name)===fold(n));
-  /* Önizleme her zaman Krem görünümüyle çizilir: Mavi temada kapak rengi kategoriden değil iki zemin tonundan gelir */
+  /* Önizleme her zaman Krem görünümüyle çizilir: Mavi temalarda kapak rengi kategoriden değil iki zemin tonundan gelir */
   const art=(name,color)=>{
     const prev=curTheme,tmp={id:uid0(),name:'\u0001'+color,color};
     curTheme='krem';cats=[...cats,tmp];
@@ -2276,7 +2174,7 @@ function openPresets(){
       const b=h('button',{type:'button',class:'tap'+(hx===color?' on':''),style:`background:${hx}`,'aria-label':hx,onclick:()=>{
         color=hx;sw.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));pv.src=art(t.nm,color);
       }});return b}));
-    const note=curTheme==='mavi'?h('p',{class:'pcnote'},'Not: Mavi temada kapak zemini iki tonla sınırlıdır. Seçtiğin renk kategori noktasında ve Krem temada görünür.'):null;
+    const note=curTheme!=='krem'?h('p',{class:'pcnote'},'Not: Koyu ve Mavi temalarda kapak zemini iki tonla sınırlıdır. Seçtiğin renk kategori noktasında ve Krem temada görünür.'):null;
     const row=h('div',{class:'btns'});
     const close=()=>s.close();
     if(c){
@@ -2379,7 +2277,7 @@ async function buildBackup(recs,kind,prog){
   }
   const used=new Set(recs.map(r=>r.cat));
   const cl=(kind==='full'?cats:cats.filter(c=>used.has(c.name))).map(({id,name,color})=>({id,name,color}));
-  const mf={app:'yemek-yapalim',ver:1,kind,created:new Date().toISOString(),theme:kind==='full'?curTheme:null,shop:kind==='full'?shop:null,cats:cl,recipes:out};
+  const mf={app:'yemek-yapalim',ver:1,kind,created:new Date().toISOString(),theme:kind==='full'?curTheme:null,cats:cl,recipes:out};
   const mb=E.encode(JSON.stringify(mf));files.unshift({name:'manifest.json',data:mb,crc:crc32(mb),size:mb.length});
   return zipBuild(files);
 }
@@ -2431,7 +2329,6 @@ async function restoreBackup(z,m,mode,prog){
   }
   if(mode==='replace')for(const r of [...state.all])if(!keep.has(r.id)){await Store.remove(r.id);state.all=state.all.filter(x=>x!==r)}
   if(mode==='replace'&&m.kind==='full'&&m.theme&&THEMES[m.theme])setTheme(m.theme);
-  if(mode==='replace'&&m.kind==='full'&&m.shop&&Array.isArray(m.shop.entries)){shop={entries:m.shop.entries,done:Array.isArray(m.shop.done)?m.shop.done:[]};saveShop()}
   bus.forEach(f=>f(true));catBus.forEach(f=>f());
   return{added,skipped};
 }

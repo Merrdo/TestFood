@@ -257,6 +257,23 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .sitem .si{width:36px;height:36px;border-radius:12px;background:rgb(var(--clay-rgb) / .1);display:grid;place-items:center;flex:none}
 .sitem .st{flex:1}
 .sitem small{color:var(--ink2);font-size:14.5px}
+.pcsum{margin:14px 26px 0;display:flex;align-items:center;gap:10px;color:var(--ink2);font-size:14.5px}
+.pcsum b{color:var(--ink);font-weight:600}
+.pch{display:flex;align-items:baseline;justify-content:space-between;margin:0 8px 12px}
+.pch .sh{margin:0}
+.pcall{background:none;border:0;color:var(--clay);font:600 13.5px var(--sans);padding:6px 4px}
+.pcg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}
+.pct{position:relative;display:block;min-width:0;background:none;border:0;padding:0;text-align:center}
+.pct .im{position:relative;display:block;border-radius:18px;overflow:hidden;aspect-ratio:1;background:var(--paper2);box-shadow:0 10px 24px rgb(var(--shd-rgb) / .16)}
+.pct img{display:block;width:100%;height:100%;object-fit:cover}
+.pct .nm{display:block;font:400 13.5px/1.2 var(--sans);margin:8px 2px 0;color:var(--ink)}
+.pct .bd{position:absolute;right:7px;top:7px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255 / .92);box-shadow:0 2px 8px rgb(0 0 0 / .22)}
+.pct.has .im{box-shadow:0 0 0 2.5px var(--clay),0 10px 24px rgb(var(--shd-rgb) / .16)}
+.pcprev{display:block;width:62%;margin:18px auto 0;aspect-ratio:1;border-radius:26px;object-fit:cover;box-shadow:0 18px 34px -12px rgb(var(--shd-rgb) / .5);background:var(--paper2)}
+.pcsw{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:20px}
+.pcsw button{width:34px;height:34px;border-radius:50%;border:0;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .12);display:grid;place-items:center;transition:transform .25s var(--ease)}
+.pcsw button.on{transform:scale(1.18);box-shadow:0 0 0 2.5px var(--paper),0 0 0 4.5px var(--ink)}
+.pcnote{color:var(--ink2);font-size:13px;line-height:1.45;text-align:center;margin:14px 8px 0}
 .sfoot{text-align:center;color:var(--mute);font:italic 400 15px var(--serif);margin-top:44px}
 .cvgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 10px}
 .cvd0{color:var(--ink2);font-size:13.5px;line-height:1.45;margin:-2px 8px 4px}
@@ -401,7 +418,7 @@ function setTheme(key){
   else{const d=document.documentElement;d.classList.add('tsw');run();setTimeout(()=>d.classList.remove('tsw'),650)}
 }
 const CATKEY='defter-cats-v1';
-const DEFCATS=[['Çorba','#C98446'],['Ana Yemek','#A9502D'],['Hamur İşi','#BF9A58'],['Kahvaltı','#CFA93F'],['Salata','#74834A'],['Tatlı','#B87281'],['İçecek','#668683']];
+const DEFCATS=[['Ana Yemek','#A9502D'],['Salata','#74834A'],['Meze','#8C6A9E'],['Kahvaltı','#CFA93F'],['Tatlı','#B87281'],['Soğuk İçecek','#5B8FA3'],['Sıcak İçecek','#8A6E55']];
 const PALETTE=['#C98446','#A9502D','#BF9A58','#CFA93F','#74834A','#B87281','#668683','#8C6A9E','#4F7C9A','#9A7B4F'];
 const uid0=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 function loadCats(){
@@ -1803,6 +1820,86 @@ function openCovers(){
   nav.push(view);edgeBack(view);
 }
 
+/* Hazır Kategoriler: yemek kategorilerinin düzenli listesi. Her biri kendi kapak önizlemesiyle görünür;
+   dokununca renk seçilir ve tek dokunuşla kategorilerime eklenir (eklenmişse rengi güncellenir / kaldırılır). */
+const PRESETS=[
+  ['Yemekler',[['Ana Yemek','#A9502D'],['Salata','#74834A'],['Meze','#8C6A9E'],['Kahvaltı','#CFA93F'],['Tatlı','#B87281']]],
+  ['İçecekler',[['Soğuk İçecek','#5B8FA3'],['Sıcak İçecek','#8A6E55']]]
+];
+
+function openPresets(){
+  const el=h('section',{class:'view push'}),view={el,kind:'push'};
+  const have=n=>cats.find(c=>fold(c.name)===fold(n));
+  /* Önizleme her zaman Krem görünümüyle çizilir: Mavi temada kapak rengi kategoriden değil iki zemin tonundan gelir */
+  const art=(name,color)=>{
+    const prev=curTheme,tmp={id:uid0(),name:'\u0001'+color,color};
+    curTheme='krem';cats=[...cats,tmp];
+    try{return plateArt(tmp.name,{plate:0,tone:0,id:'pcprev'})}finally{cats=cats.filter(c=>c!==tmp);curTheme=prev}
+  };
+  const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);e.target._go()}}),{rootMargin:'300px'}):null;
+  const sum=h('div',{class:'pcsum'});
+  const tiles=[];
+  const total=PRESETS.reduce((a,g)=>a+g[1].length,0);
+  const refresh=()=>{
+    const n=PRESETS.reduce((a,g)=>a+g[1].filter(([nm])=>have(nm)).length,0);
+    sum.replaceChildren(h('span',{},h('b',{},String(n)),` / ${total} kategori eklendi`));
+    tiles.forEach(t=>{
+      const c=have(t.nm),color=c?c.color:t.color;
+      t.btn.classList.toggle('has',!!c);t.bd.replaceChildren(c?icon('check',16,CLAY,2.6):icon('plus',16,INK2,2.2));
+      const ch=t.color!==color;t.color=color;if(ch&&t.img.getAttribute('src'))t.img._go()
+    });
+  };
+  const mkTile=([nm,col])=>{
+    const img=h('img',{alt:nm,draggable:'false'}),bd=h('span',{class:'bd'});
+    const t={nm,color:col,img,bd};
+    img._go=()=>{img.src=art(nm,t.color)};
+    const btn=h('button',{type:'button',class:'pct tap',onclick:()=>{sfx('tap');detail(t)}},h('span',{class:'im'},img,bd),h('span',{class:'nm'},nm));
+    t.btn=btn;if(io)io.observe(img);else setTimeout(img._go,80);
+    tiles.push(t);return btn;
+  };
+  function addMany(list){
+    let k=0;list.forEach(([nm,col])=>{if(!have(nm)){cats.push({id:uid0(),name:nm,color:col});k++}});
+    if(k){saveCats();catBus.forEach(f=>f());refresh();toast(`${k} kategori eklendi`)}else toast('Hepsi zaten ekli');
+  }
+  function detail(t){
+    const c=have(t.nm);let color=c?c.color:t.color;
+    const pv=h('img',{class:'pcprev',alt:t.nm,src:art(t.nm,color)});
+    const sw=h('div',{class:'pcsw'},...[...new Set([t.color,...PALETTE])].map(hx=>{
+      const b=h('button',{type:'button',class:'tap'+(hx===color?' on':''),style:`background:${hx}`,'aria-label':hx,onclick:()=>{
+        color=hx;sw.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));pv.src=art(t.nm,color);
+      }});return b}));
+    const note=curTheme==='mavi'?h('p',{class:'pcnote'},'Not: Mavi temada kapak zemini iki tonla sınırlıdır. Seçtiğin renk kategori noktasında ve Krem temada görünür.'):null;
+    const row=h('div',{class:'btns'});
+    const close=()=>s.close();
+    if(c){
+      row.append(
+        h('button',{class:'bt c tap',type:'button',onclick:()=>{
+          if(cats.length<=1){toast('En az bir kategori kalmalı');return}
+          const used=state.all.filter(r=>r.cat===c.name).length;
+          s.close();cats=cats.filter(x=>x!==c);saveCats();recat(c.name,'');catBus.forEach(f=>f());refresh();
+          toast(used?`Kaldırıldı · ${used} tarif kategorisiz kaldı`:'Kategori kaldırıldı');
+        }},'Kaldır'),
+        h('button',{class:'bt tap',type:'button',onclick:()=>{c.color=color;saveCats();catBus.forEach(f=>f());refresh();close();toast('Renk güncellendi')}},'Rengi kaydet'));
+    }else{
+      row.append(
+        h('button',{class:'bt g tap',type:'button',onclick:close},'Vazgeç'),
+        h('button',{class:'bt tap',type:'button',onclick:()=>{cats.push({id:uid0(),name:t.nm,color});saveCats();catBus.forEach(f=>f());refresh();close();toast('Kategori eklendi')}},'Ekle'));
+    }
+    const s=sheet(h('div',{},h('div',{class:'sh-t',style:'text-align:center'},t.nm),h('p',{class:'sh-p',style:'text-align:center'},c?'Kategorilerinde var. Rengi değiştirip kapağı önizle.':'Rengi seç, kapağı önizle ve kategorilerine ekle.'),pv,sw,note,row));
+  }
+  const groups=PRESETS.map(([title,list])=>h('section',{class:'sgroup'},
+    h('div',{class:'pch'},h('h2',{class:'sh'},title),h('button',{class:'pcall tap',type:'button',onclick:()=>{sfx('tap');addMany(list)}},'Hepsini ekle')),
+    h('div',{class:'pcg'},...list.map(mkTile))));
+  const upd=()=>refresh();catBus.add(upd);
+  view.onClose=()=>{catBus.delete(upd);io&&io.disconnect()};
+  el.append(h('div',{class:'scroll'},barSp(),
+    h('p',{class:'chint'},'Yemekler için hazır kategori listesi. Kapağını önizlemek ve rengini seçmek için bir kategoriye dokun.'),
+    sum,...groups,h('div',{style:'height:calc(var(--sb) + 40px)'})));
+  refresh();
+  pageBar(el,'Hazır Kategoriler');
+  nav.push(view);edgeBack(view);
+}
+
 /* Ayarlar sayfası: başlıklar altında gruplanır, yeni ayarlar ilgili gruba satır olarak eklenir */
 function openSettings(){
   const el=h('section',{class:'view push'}),view={el,kind:'push'};
@@ -1814,7 +1911,7 @@ function openSettings(){
     h('span',{class:'si'},icon(ic,20,CLAY,1.8)),h('span',{class:'st'},label),right,icon('next',18,MUTE,2));
   const group=(title,...items)=>h('section',{class:'sgroup'},h('h2',{class:'sh'},title),h('div',{class:'scard'},items));
   el.append(h('div',{class:'scroll'},barSp(),
-    group('Tarifler',item('tag','Kategoriler',count,openCategories)),
+    group('Tarifler',item('tag','Kategoriler',count,openCategories),item('plate','Hazır Kategoriler',h('small',{},`${PRESETS.reduce((a,g)=>a+g[1].length,0)} hazır`),openPresets)),
     group('Görünüm',item('palette','Temalar',themeLab,openThemes),item('plate','Kapak Tasarımları',h('small',{},'2 stil'),openCovers)),
     h('div',{class:'sfoot'},'Yemek Yapalım'),
     h('div',{style:'height:calc(var(--sb) + 40px)'})));

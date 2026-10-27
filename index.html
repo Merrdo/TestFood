@@ -106,7 +106,7 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .edge{position:absolute;left:0;top:0;bottom:0;width:18px;z-index:60;touch-action:none}
 .gw{position:relative;transform-origin:50% 0;will-change:transform;backface-visibility:hidden}
 .scroll.stretch{overscroll-behavior-y:auto}
-.gw::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:500px;background:var(--topc,var(--paper2));pointer-events:none}
+.cap{position:absolute;left:0;right:0;bottom:100%;height:260px;overflow:hidden;pointer-events:none;background:var(--topc,var(--paper2))}
 .dots{position:absolute;left:0;right:0;bottom:46px;display:flex;justify-content:center;gap:6px;z-index:4;pointer-events:none}
 .dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.55);transition:all .45s var(--ease)}
 .dots i.on{width:22px;background:#fff}
@@ -1356,25 +1356,29 @@ function openDetail(id){
       if(lock!==null)return;
       if(vars.length&&k<=vars.length&&k!==vi){dir=k>vi?1:-1;vi=k;fill(true);sfx('tap')}},{passive:true});
     fill(false);
-    const gw=h('div',{class:'gw'},gal,dots);
+    const gw=h('div',{class:'gw'},h('div',{class:'cap'}),gal,dots);
     /* nokta rengi: görselin alt kısmı açıksa koyu, koyuysa beyaz */
     const tone=[],topc=[];const setTone=()=>{const k=Math.round(gal.scrollLeft/(gal.clientWidth||1));dots.classList.toggle('dk',!!tone[k]);if(topc[k])gw.style.setProperty('--topc',topc[k])};
     [...gal.querySelectorAll('img')].forEach((im,k)=>{const f=()=>{try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');x.drawImage(im,0,0,24,24);const d=x.getImageData(4,15,16,8).data;let l=0;for(let q=0;q<d.length;q+=4)l+=.2126*d[q]+.7152*d[q+1]+.0722*d[q+2];tone[k]=l/(d.length/4)>150;const u=x.getImageData(0,0,24,2).data;let R=0,G=0,B=0;for(let q=0;q<u.length;q+=4){R+=u[q];G+=u[q+1];B+=u[q+2]}const n=u.length/4;topc[k]=`rgb(${R/n|0},${G/n|0},${B/n|0})`;setTone()}catch{}};im.complete&&im.naturalWidth?f():im.addEventListener('load',f,{once:true})});
     gal.addEventListener('scroll',setTone,{passive:true});
     const sc=h('div',{class:'scroll stretch'},gw,body);
-    /* Esneme tamamen iOS'un yerel lastiğiyle çalışır (tarayıcı çizer, JS parmağı takip etmez → takılma yok).
-       Üstte çekilince scrollTop negatif olur; görseli aynı scroll olayında üst kenara sabitleyip büyütüyoruz.
-       Altta yerel lastik zaten çalışıyor, görselle çakışma olmaz. */
-    let H=0,on=false;
-    const stretch=()=>{
-      const t=sc.scrollTop;
-      if(t<0){
-        if(!on){on=true;H=gw.offsetHeight||1}
-        const k=1+(-t)/H;
-        gw.style.transform=`translate3d(0,${t}px,0) scale3d(${k},${k},1)`;
-      }else if(on){on=false;gw.style.transform=''}
+    /* Yerel iOS lastiği + görsel büyümesi.
+       Scroll olayları lastik sırasında düzensiz geliyor (bazı kareler atlanıyor); ham değeri doğrudan yazmak
+       görseli titretiyordu. Bu yüzden olay yalnızca HEDEFİ günceller, görsel her karede (rAF) hedefe yumuşakça
+       yaklaşır. Alt kenar zaten body'nin (−30px örtüşme) altında kaldığı için küçük gecikme görünmez. */
+    let H=0,tgt=0,cur=0,raf=0;
+    const loop=()=>{
+      cur+=(tgt-cur)*.5;
+      if(Math.abs(tgt-cur)<.2)cur=tgt;
+      if(cur>0){const k=1+cur/H;gw.style.transform=`translate3d(0,${-cur}px,0) scale3d(${k},${k},1)`}
+      else gw.style.transform='';
+      raf=(tgt>0||cur>0)?requestAnimationFrame(loop):0;
     };
-    sc.addEventListener('scroll',stretch,{passive:true});
+    sc.addEventListener('scroll',()=>{
+      const t=sc.scrollTop;tgt=t<0?-t:0;
+      if(tgt>0&&!H)H=gw.offsetHeight||1;
+      if(!raf&&(tgt>0||cur>0))raf=requestAnimationFrame(loop);
+    },{passive:true});
     const back=h('button',{class:'fbtn tap',type:'button',style:'left:18px',onclick:()=>nav.pop()},icon('back',22));
     const more=h('button',{class:'fbtn tap',type:'button',style:'right:18px',onclick:()=>menu(r)},icon('more',22));
     el.append(sc,back,more);

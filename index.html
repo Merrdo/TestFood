@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#F2EBDD">
+<meta name="theme-color" content="#F5F2EC">
 <title>Yemek Yapalım</title>
 <meta name="apple-mobile-web-app-title" content="Yemek Yapalım">
 <link rel="manifest" href="manifest.json">
@@ -18,12 +18,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F2EBDD;--paper2:#E9DFCB;--card:#FAF5EA;--card-rgb:250 245 234;--ink:#2B221B;--ink2:#7A6C5D;--ink3:#4A3E33;--ink-rgb:43 34 27;
-  --line:rgb(var(--ink-rgb) / .13);--clay:#B4532F;--clay-rgb:180 83 47;--danger:#98391D;--danger-rgb:152 57 29;
-  --fabc:#5E6D3B;--go:var(--fabc);--go-rgb:94 109 59;--sun:#D9A23C;--olive:#5F6B3C;--cream:#F6EFE2;--cream-rgb:246 239 226;
-  --mute:#B3A593;--mute-a:#A99B89;--mute-b:#ABA08F;--shd-rgb:70 40 15;--dk-rgb:30 20 12;--dk2-rgb:20 14 10;
-  --c1:68 86 58;--c2:51 69 47;--c3:27 37 24;--cookink:#26331F;--nx1:#FBF5E8;--nx2:#EFE4CC;--g1:#E8C57F;--g2:#D9A23C;
-  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--H:100vh;
+  --paper:#F5F2EC;--paper2:#E7E5DE;--card:#FCFBF8;--card-rgb:252 251 248;--ink:#1B2A3D;--ink2:#5F6C7D;--ink3:#33445A;--ink-rgb:27 42 61;
+  --line:rgb(var(--ink-rgb) / .13);--clay:#2A68AD;--clay-rgb:42 104 173;--danger:#1C438C;--danger-rgb:28 67 140;
+  --fabc:#274A74;--go:var(--fabc);--go-rgb:39 74 116;--sun:#D9A23C;--olive:#5F6B3C;--cream:#F8FBFE;--cream-rgb:248 251 254;
+  --mute:#A3AFBE;--mute-a:#9EAAB9;--mute-b:#A6B1BF;--shd-rgb:24 52 92;--dk-rgb:10 20 36;--dk2-rgb:6 12 22;
+  --c1:38 78 128;--c2:27 58 100;--c3:13 26 46;--cookink:#14304F;--nx1:#FFFFFF;--nx2:#E4EEF9;--g1:#A9D0F6;--g2:#5FA2E6;
+  --onacc:#fff;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--H:100vh;
   --ease:cubic-bezier(.22,.9,.24,1);
   --serif:'Fraunces',Georgia,'Times New Roman',serif;
   --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -83,8 +83,8 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .card .tt{font:400 26px/1.12 var(--serif);letter-spacing:-.015em;margin:16px 6px 0;font-variation-settings:"SOFT" 100,"opsz" 96}
 .card .mt{display:flex;justify-content:space-between;align-items:center;margin:8px 6px 0;font-size:13.5px;color:var(--ink2)}
 .none{padding:50px 40px;text-align:center;color:var(--ink2);font-size:15px;animation:fade .5s both}
-.empty{display:flex;flex-direction:column;align-items:center;padding:34px 40px;text-align:center;animation:rise .9s .3s var(--ease) both}
-.empty h3{font:400 28px var(--serif);margin-top:14px;font-variation-settings:"SOFT" 100,"opsz" 96}
+.empty{display:flex;flex-direction:column;align-items:center;padding:60px 40px;text-align:center}
+.empty h3{font:400 28px var(--serif);font-variation-settings:"SOFT" 100,"opsz" 96}
 .empty p{color:var(--ink2);font-size:15px;line-height:1.5;margin-top:8px;max-width:260px}
 
 .fab{position:absolute;left:50%;bottom:calc(var(--sb) + 20px);transform:translateX(-50%);display:flex;align-items:center;gap:10px;height:58px;padding:0 26px 0 22px;border-radius:29px;background:var(--fabc);color:var(--cream);font:600 16px var(--sans);border:0;box-shadow:0 16px 28px -12px rgb(var(--go-rgb) / .7),inset 0 1px 0 rgba(255,255,255,.18);z-index:20;transition:transform .45s var(--ease),padding .45s var(--ease),gap .45s var(--ease),opacity .35s}
@@ -255,9 +255,9 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .vid{position:absolute;inset:0;z-index:120;background:rgb(var(--dk2-rgb) / .94);display:flex;align-items:center;justify-content:center;padding:0 0}
 .vid iframe{width:100%;aspect-ratio:16/9;border:0;background:#000}
 .vid .cbtn{position:absolute;top:calc(var(--st) + 12px);right:20px}
-#toast{position:absolute;left:50%;bottom:calc(var(--sb) + 98px);transform:translate(-50%,20px);display:flex;align-items:center;gap:10px;background:var(--toast,rgb(var(--ink-rgb) / .94));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgb(var(--cream-rgb) / .14);color:var(--cream);padding:13px 20px 13px 16px;border-radius:22px;font-size:14.5px;font-weight:500;opacity:0;pointer-events:none;z-index:200;transition:all .5s var(--ease);white-space:nowrap;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
-#toast::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--g2);flex:none}
-#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast{position:absolute;left:50%;bottom:calc(var(--sb) + 104px);transform:translate(-50%,14px) scale(.97);display:flex;align-items:center;gap:12px;max-width:calc(100% - 40px);background:var(--toast,rgb(var(--ink-rgb) / .94));-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);border:1px solid rgb(var(--cream-rgb) / .1);color:var(--cream);padding:11px 22px 11px 11px;border-radius:26px;font:500 14.5px/1.25 var(--sans);letter-spacing:.005em;opacity:0;pointer-events:none;z-index:200;white-space:nowrap;box-shadow:0 20px 44px -16px rgba(0,0,0,.55),0 1px 0 rgb(var(--cream-rgb) / .08) inset;transition:opacity .5s ease,transform .7s cubic-bezier(.4,0,.2,1)}
+#toast::before{content:'';width:26px;height:26px;border-radius:50%;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/13px no-repeat,rgb(var(--clay-rgb) / .42);box-shadow:inset 0 0 0 1px rgb(var(--clay-rgb) / .6)}
+#toast.on{opacity:1;transform:translate(-50%,0) scale(1);transition:opacity .6s ease,transform .9s cubic-bezier(.16,1,.3,1)}
 .editor.typing .fab{transform:translateX(-50%) translateY(150px);opacity:0;pointer-events:none}
 
 @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
@@ -272,7 +272,7 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .card{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i)*40ms)}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .sgroup{margin:32px 20px 0}
-.sh{font:600 11.5px var(--sans);letter-spacing:.15em;text-transform:uppercase;color:var(--ink2);margin:0 8px 10px}
+.sh{font:500 12px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#000;margin:0 8px 10px}
 .scard{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
 .sitem{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:0 16px 0 14px;background:none;border:0;border-bottom:1px solid var(--line);text-align:left;font-size:17px}
 .sitem:last-child{border-bottom:0}
@@ -298,6 +298,16 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .pcnote{color:var(--ink2);font-size:13px;line-height:1.45;text-align:center;margin:14px 8px 0}
 .sfoot{text-align:center;color:var(--mute);font:italic 400 15px var(--serif);margin-top:44px}
 .cvgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 10px}
+.cvjump{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 20px;margin-top:16px}
+.cvjump::-webkit-scrollbar{display:none}
+.cvtheme{margin:26px 20px 0;padding:22px 16px 10px;background:var(--card);border:1px solid var(--line);border-radius:28px;scroll-margin-top:calc(var(--st) + 70px)}
+.cvthh{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 6px}
+.cvthh h2{font:400 28px var(--serif);letter-spacing:-.015em;font-variation-settings:"SOFT" 100,"opsz" 96;color:var(--ink)}
+.cvact{font:600 11.5px var(--sans);color:var(--clay);background:rgb(var(--clay-rgb) / .12);padding:5px 11px;border-radius:12px}
+.cvsub{display:flex;align-items:center;gap:12px;margin:26px 6px 4px;font:600 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+.cvsub::after{content:'';flex:1;height:1px;background:var(--line)}
+.cvsd{margin:0 6px 12px}
+.cvtheme .cvgrid3{padding-bottom:14px}
 .cvd0{color:var(--ink2);font-size:13.5px;line-height:1.45;margin:-2px 8px 4px}
 .cvth{font:italic 400 21px var(--serif);margin:20px 8px 12px;font-variation-settings:"SOFT" 100,"opsz" 72}
 .cvth small{font:400 13.5px var(--sans);font-style:normal;color:var(--ink2)}
@@ -366,13 +376,31 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .trd{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);flex:none;position:relative;transition:all .35s var(--ease)}
 .tcard.on .trd{background:var(--go);border-color:var(--go)}
 .tcard.on .trd::after{content:'';position:absolute;left:8px;top:4px;width:6px;height:11px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg)}
-:root[data-dark] .sitem .si,:root[data-dark] .vph,:root[data-dark] .addph,:root[data-dark] .addcat,:root[data-dark] .vc.add{background-color:transparent}
+:root[data-dark] .vph,:root[data-dark] .addph,:root[data-dark] .addcat,:root[data-dark] .vc.add{background-color:transparent}
 :root[data-dark] .view.push{box-shadow:-18px 0 50px rgba(0,0,0,.55)}
 :root[data-dark] #toast{border-color:rgb(var(--cream-rgb) / .16)}
 :root[data-dark] .crow.lift{box-shadow:0 24px 40px -14px rgba(0,0,0,.65),0 0 0 1px var(--line)}
 :root[data-dark] .card .ph{box-shadow:0 22px 34px -20px rgba(0,0,0,.7)}
 :root[data-dark] .tcard.on{box-shadow:0 0 0 4px rgb(var(--go-rgb) / .3)}
 :root[data-dark] .tpv{border-color:rgb(var(--ink-rgb) / .14)}
+:root[data-dark] .sh{color:var(--ink3)}
+:root[data-theme="altin"]{--line:rgb(201 161 91 / .17);--onacc:#14100A}
+:root[data-theme="altin"] .sh{color:var(--clay)}
+/* Siyah Altın: doku yalnızca sade sayfa zeminlerinde; fotoğraf/kapak içeren ekranlar ve pencereler düz siyah */
+:root[data-theme="altin"] .view.detail,:root[data-theme="altin"] .view.detail .body,:root[data-theme="altin"] .view.detail .pbar,:root[data-theme="altin"] .view.editor,:root[data-theme="altin"] .sheet{background-image:none}
+:root[data-theme="altin"] .fab,:root[data-theme="altin"] .bt:not(.g):not(.c),:root[data-theme="altin"] .sbg{background-image:linear-gradient(180deg,rgba(255,226,160,.22),rgba(0,0,0,.14));box-shadow:0 14px 26px -14px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,226,160,.45),0 0 0 1px rgba(201,161,91,.35)}
+:root[data-theme="altin"] .scard,:root[data-theme="altin"] .clist,:root[data-theme="altin"] .tcard,:root[data-theme="altin"] .cvtheme{box-shadow:inset 0 1px 0 rgba(255,226,160,.07)}
+:root[data-theme="altin"] .card .ph{box-shadow:0 22px 34px -20px rgba(0,0,0,.9),0 0 0 1px rgba(201,161,91,.16)}
+:root[data-theme="altin"] .donebtn{border-color:rgb(201 161 91 / .45)}
+:root[data-dark] .sitem .si{background:rgb(var(--clay-rgb) / .16);box-shadow:inset 0 0 0 1px rgb(var(--clay-rgb) / .28)}
+:root[data-dark] .sheet{background:var(--card);box-shadow:0 -24px 60px rgba(0,0,0,.55),0 -1px 0 rgb(var(--ink-rgb) / .08)}
+:root[data-dark] .scard,:root[data-dark] .clist,:root[data-dark] .tcard{box-shadow:inset 0 1px 0 rgb(var(--ink-rgb) / .05)}
+:root[data-dark] .card .ph img,:root[data-dark] .gi img,:root[data-dark] .thumb img,:root[data-dark] .mth img,:root[data-dark] .pct img,:root[data-dark] .cvt img{filter:brightness(.9) saturate(.95)}
+:root[data-dark] .fbtn{box-shadow:0 8px 20px -8px rgba(0,0,0,.7),inset 0 0 0 1px rgb(var(--ink-rgb) / .08)}
+:root[data-dark] .donebtn{box-shadow:0 12px 22px -14px rgba(0,0,0,.8)}
+:root[data-dark] .fab{box-shadow:0 16px 28px -12px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.12)}
+:root[data-dark] .pct .bd{background:rgb(var(--card-rgb) / .92);box-shadow:0 2px 8px rgb(0 0 0 / .5)}
+:root[data-dark] .selbar{box-shadow:0 18px 40px -14px rgba(0,0,0,.8),0 0 0 1px var(--line)}
 .tsw *{transition:background-color .5s,border-color .5s,color .5s,box-shadow .5s!important}
 
 /* ---------- Yedekleme + çoklu seçim ---------- */
@@ -396,6 +424,14 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .hbtns{display:flex;align-items:center}
 .sbx.off{opacity:.4;pointer-events:none}
 .sba{padding:0 8px}
+.selbar{left:14px;right:14px;height:70px;gap:4px;padding:0 10px 0 8px;border-radius:35px;background:rgb(var(--card-rgb) / .9);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);box-shadow:0 22px 44px -18px rgb(var(--shd-rgb) / .6),0 0 0 1px var(--line);transform:translateY(34px) scale(.98);transition:transform .8s cubic-bezier(.16,1,.3,1),opacity .5s ease}
+#home.selecting .selbar{transform:none}
+.selbar .sbx{background:none;width:44px;height:44px}
+.selbar .sbx.dl{background:rgb(var(--danger-rgb) / .12);margin-right:6px}
+.sbn{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;text-align:left;padding-left:4px;min-width:0}
+.sbc{font:600 16px/1.1 var(--sans);letter-spacing:-.005em;color:var(--ink);white-space:nowrap}
+.sbn .sba{height:auto;padding:3px 0;font:500 12.5px/1.1 var(--sans);color:var(--clay);text-align:left;white-space:nowrap}
+.selbar .sbg{height:50px;padding:0 22px 0 18px;border-radius:25px;gap:9px}
 .ingprev{margin-top:8px}
 .ipt{display:flex;align-items:center;gap:8px;background:none;border:0;color:var(--ink2);font-size:13px;padding:6px 0}
 .ipt i{display:inline-block;font-style:normal;transition:transform .3s var(--ease)}
@@ -409,7 +445,7 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .inr{display:flex;align-items:center;gap:16px}
 .fltb{display:flex;align-items:center;gap:6px;background:none;border:0;font-size:13px;color:var(--ink2);padding:6px 0}
 .fltb.on{color:var(--clay);font-weight:600}
-.fbd{min-width:17px;height:17px;border-radius:9px;background:var(--clay);color:var(--cream);font:600 11px/17px var(--sans);text-align:center;padding:0 4px}
+.fbd{min-width:17px;height:17px;border-radius:9px;background:var(--clay);color:var(--onacc);font:600 11px/17px var(--sans);text-align:center;padding:0 4px}
 .chipwrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .tg{height:30px;padding:0 13px;border-radius:15px;background:rgb(var(--clay-rgb) / .1);color:var(--clay);font:600 12.5px var(--sans);display:flex;align-items:center}
@@ -417,7 +453,7 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .fscroll{max-height:56vh;overflow:auto;margin:0 -24px;padding:0 24px}
 .flab{font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink2);font-weight:600;margin-top:22px}
 .fscroll .chipwrap{margin-top:10px}
-.sright{display:grid;grid-template-columns:minmax(0,1fr);justify-items:end;align-items:center;width:76px;flex:none;transition:width .45s var(--ease)}
+.sright{display:grid;grid-template-columns:minmax(0,1fr);justify-items:end;align-items:center;width:38px;flex:none;transition:width .45s var(--ease)}
 .sright>*{grid-area:1/1}
 .sgrp{display:flex;transition:opacity .3s var(--ease),transform .45s var(--ease)}
 .search.typing .sright{width:30px}
@@ -466,11 +502,11 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 'use strict';
 /* ============ Temel ============ */
 const DPR=Math.min(window.devicePixelRatio||1,3);
-let INK='#2B221B',INK2='#7A6C5D',CLAY='#B4532F',CLAY2='#C9683F',DANGER='#98391D',SUN='#D9A23C',CREAM='#F6EFE2',MUTE='#B3A593',COOKINK='#26331F';
-let CLAYRGB='180,83,47',INKRGB='43,34,27',INK2RGB='122,108,93',CREAMRGB='246,239,226',STAR_OFF='rgba(43,34,27,.3)';
+let INK='#1B2A3D',INK2='#5F6C7D',CLAY='#2A68AD',CLAY2='#4C8AD0',DANGER='#1C438C',SUN='#D9A23C',CREAM='#F8FBFE',MUTE='#A3AFBE',COOKINK='#14304F';
+let CLAYRGB='42,104,173',INKRGB='27,42,61',INK2RGB='95,108,125',CREAMRGB='248,251,254',ONACC='#fff',STAR_OFF='rgba(27,42,61,.3)';
 
 /* ============ Temalar ============ */
-const THEMEKEY='defter-theme-v1';
+const THEMEKEY='defter-theme-v2';
 try{localStorage.removeItem('defter-shop-v1')}catch{}
 const THEMES={
   krem:{name:'Zeytin & Krem',desc:'Sıcak krem zemin, zeytin yeşili ve kiremit detaylar.',meta:'#F2EBDD',grain:'noise',
@@ -484,13 +520,35 @@ const THEMES={
     v:{'--paper':'#F5F2EC','--paper2':'#E7E5DE','--card':'#FCFBF8','--card-rgb':'252 251 248','--ink':'#1B2A3D','--ink2':'#5F6C7D','--ink3':'#33445A','--ink-rgb':'27 42 61',
       '--clay':'#2A68AD','--clay-rgb':'42 104 173','--danger':'#1C438C','--danger-rgb':'28 67 140','--fabc':'#274A74','--go-rgb':'39 74 116','--cream':'#F8FBFE','--cream-rgb':'248 251 254',
       '--mute':'#A3AFBE','--mute-a':'#9EAAB9','--mute-b':'#A6B1BF','--shd-rgb':'24 52 92','--dk-rgb':'10 20 36','--dk2-rgb':'6 12 22',
-      '--c1':'38 78 128','--c2':'27 58 100','--c3':'13 26 46','--cookink':'#14304F','--nx1':'#FFFFFF','--nx2':'#E4EEF9','--g1':'#A9D0F6','--g2':'#5FA2E6','--toast':'rgb(27 42 61 / .94)'}}
+      '--c1':'38 78 128','--c2':'27 58 100','--c3':'13 26 46','--cookink':'#14304F','--nx1':'#FFFFFF','--nx2':'#E4EEF9','--g1':'#A9D0F6','--g2':'#5FA2E6','--toast':'rgb(27 42 61 / .94)'}},
+  gece:{name:'Gece Mavisi',desc:'Göz yormayan derin lacivert; loş ışıkta yumuşak kontrast, parlamayan fotoğraflar.',meta:'#0F141C',grain:'noiseD',scheme:'dark',
+    js:{INK:'#E3E8EF',INK2:'#8D99AB',CLAY:'#5A97E0',CLAY2:'#7DB0EA',DANGER:'#E0705C',CREAM:'#EEF2F8',MUTE:'#5F6B7E',COOKINK:'#0E2238',INKRGB:'227,232,239',INK2RGB:'141,153,171',CREAMRGB:'238,242,248'},
+    v:{'--paper':'#0F141C','--paper2':'#1D2530','--card':'#171E29','--card-rgb':'23 30 41','--ink':'#E3E8EF','--ink2':'#8D99AB','--ink3':'#B7C1CF','--ink-rgb':'227 232 239',
+      '--clay':'#5A97E0','--clay-rgb':'90 151 224','--danger':'#CF5A47','--danger-rgb':'207 90 71','--fabc':'#3A71B5','--go-rgb':'58 113 181','--cream':'#EEF2F8','--cream-rgb':'238 242 248',
+      '--mute':'#5F6B7E','--mute-a':'#6A768A','--mute-b':'#667287','--shd-rgb':'0 0 0','--dk-rgb':'3 6 12','--dk2-rgb':'2 4 8',
+      '--c1':'30 56 94','--c2':'21 40 70','--c3':'8 13 22','--cookink':'#0E2238','--nx1':'#C3D9F4','--nx2':'#9BBDE9','--g1':'#8DBDF0','--g2':'#4F8FD8','--toast':'rgb(35 44 58 / .96)'}},
+  altin:{name:'Siyah Altın',desc:'Dokulu saf siyah zemin, şampanya altını detaylar ve sıcak fildişi yazılar.',meta:'#0A0A0B',grain:'leather',scheme:'dark',onacc:'#14100A',
+    js:{INK:'#ECE6D8',INK2:'#9A9384',CLAY:'#C9A15B',CLAY2:'#E0BD7A',DANGER:'#D2604A',CREAM:'#F3EEE2',MUTE:'#5C574D',COOKINK:'#1A140A',INKRGB:'236,230,216',INK2RGB:'154,147,132',CREAMRGB:'243,238,226'},
+    v:{'--paper':'#0A0A0B','--paper2':'#19181A','--card':'#121113','--card-rgb':'18 17 19','--ink':'#ECE6D8','--ink2':'#9A9384','--ink3':'#C9C1AF','--ink-rgb':'236 230 216',
+      '--clay':'#C9A15B','--clay-rgb':'201 161 91','--danger':'#C4543F','--danger-rgb':'196 84 63','--fabc':'#7D5F29','--go-rgb':'125 95 41','--cream':'#F3EEE2','--cream-rgb':'243 238 226',
+      '--mute':'#5C574D','--mute-a':'#6B665B','--mute-b':'#6A6558','--shd-rgb':'0 0 0','--dk-rgb':'0 0 0','--dk2-rgb':'0 0 0',
+      '--c1':'62 47 22','--c2':'42 32 16','--c3':'9 8 6','--cookink':'#1A140A','--nx1':'#EBD6A6','--nx2':'#C9A15B','--g1':'#E6C98B','--g2':'#C9A15B','--toast':'rgb(28 26 22 / .96)'}}
 };
-let curTheme='krem';const themeBus=new Set(),grainCache={};
+let curTheme='mavi';const themeBus=new Set(),grainCache={};
 function makeGrain(kind){
   if(grainCache[kind])return grainCache[kind];
   const c=document.createElement('canvas');
   if(kind==='none'){c.width=c.height=2;return grainCache[kind]=c.toDataURL()} /* dokusuz: şeffaf */
+  if(kind==='leather'){ /* siyah zeminde ince deri/keten dokusu: gren + çapraz örgü */
+    c.width=c.height=140;const x=c.getContext('2d'),id=x.createImageData(140,140);
+    for(let yy=0;yy<140;yy++)for(let xx=0;xx<140;xx++){
+      const i=(yy*140+xx)*4;let a=Math.random()*20;
+      if((xx+yy)%4===0||(((xx-yy)%4)+4)%4===0)a+=9;
+      if(Math.random()<.012)a+=26;
+      id.data[i]=238;id.data[i+1]=226;id.data[i+2]=200;id.data[i+3]=a;
+    }
+    x.putImageData(id,0,0);return grainCache[kind]=c.toDataURL();
+  }
   if(kind==='dots'){ /* ince, kayık sıralı nokta dokusu (2x netlik) */
     c.width=c.height=280;const x=c.getContext('2d'),id=x.createImageData(280,280);
     for(let i=0;i<id.data.length;i+=4){id.data[i]=27;id.data[i+1]=42;id.data[i+2]=61;id.data[i+3]=Math.random()*6}
@@ -505,10 +563,10 @@ function makeGrain(kind){
   return grainCache[kind]=c.toDataURL();
 }
 function applyTheme(key,boot){
-  if(!THEMES[key])key='krem';const T=THEMES[key],R=document.documentElement.style;
+  if(!THEMES[key])key='mavi';const T=THEMES[key],R=document.documentElement.style;
   const oldPal={INK,INK2,CLAY,CLAY2,CREAM,MUTE,COOKINK,DANGER};
   Object.entries(T.v).forEach(([k,v])=>R.setProperty(k,v));
-  ({INK,INK2,CLAY,CLAY2,DANGER,CREAM,MUTE,COOKINK,INKRGB,INK2RGB,CREAMRGB}=T.js);
+  ({INK,INK2,CLAY,CLAY2,DANGER,CREAM,MUTE,COOKINK,INKRGB,INK2RGB,CREAMRGB}=T.js);ONACC=T.onacc||'#fff';
   STAR_OFF=`rgba(${INKRGB},.3)`;CLAYRGB=T.v['--clay-rgb'].replace(/ /g,',');
   R.setProperty('--grain',`url(${makeGrain(T.grain)})`);
   const mt=document.querySelector('meta[name=theme-color]');if(mt)mt.content=T.meta;
@@ -523,7 +581,7 @@ function applyTheme(key,boot){
   try{renderList('quick')}catch{}
   themeBus.forEach(f=>f());
 }
-(()=>{let k='krem';try{k=localStorage.getItem(THEMEKEY)||'krem'}catch{}applyTheme(k,true)})();
+(()=>{let k='mavi';try{k=localStorage.getItem(THEMEKEY)||'mavi'}catch{}applyTheme(k,true)})();
 function setTheme(key){
   if(key===curTheme)return;
   const run=()=>applyTheme(key);
@@ -544,7 +602,7 @@ const catNames=()=>cats.map(c=>c.name);
 const catColor=n=>(cats.find(c=>c.name===n)||{}).color||CLAY;
 /* Kapak zemin rengi temaya göre: krem temada kategori rengi aynen; mavi temada kiremit tonları yerine
    temayla uyumlu, birbirinden ayırt edilen mavi ağırlıklı, aralarında yumuşak yeşiller olan palet (fildişi tabakla güçlü kontrast) */
-const COVER_MAVI=['#5E8A52','#2B7A8C'],COVER_TONES={}; /* yumuşak yeşil / turkuaz */
+const COVER_MAVI=['#5E8A52','#2B7A8C'],COVER_TONES={gece:['#4A8A62','#2F7F92'],altin:['#2E6A56','#7A2F40']}; /* yumuşak yeşil / turkuaz */
 function coverColor(cat,rec){
   if(curTheme==='krem')return catColor(cat);
   let t=rec&&Number.isInteger(rec.tone)?rec.tone:-1;
@@ -687,7 +745,7 @@ const Store=(()=>{
     async remove(id){await init();if(mem){mem.delete(id);return}return run('readwrite',s=>s.delete(id))}
   };
 })();
-const state={all:[],q:'',cat:'Tümü',sort:0,fav:false,freq:false,f:{time:0,rate:0,tags:[]}};
+const state={all:[],q:'',cat:'Tümü',sort:0,fav:false,f:{time:0,rate:0,tags:[]}};
 const bus=new Set();
 const DEFTAGS=['Vegan','Vejetaryen','Hızlı','Çocuk dostu','Fit','Glütensiz','Misafir'];
 const madeN=r=>(r.made||[]).length,lastMade=r=>(r.made||[]).reduce((a,d)=>d>a?d:a,'');
@@ -897,7 +955,7 @@ function Check(on){
     x.beginPath();x.arc(13,13,10,0,7);x.stroke();
     if(p>0){
       x.fillStyle=CLAY;x.beginPath();x.arc(13,13,10*p,0,7);x.fill();
-      x.strokeStyle='#fff';x.lineWidth=2.2;x.lineCap='round';x.lineJoin='round';
+      x.strokeStyle=ONACC;x.lineWidth=2.2;x.lineCap='round';x.lineJoin='round';
       x.setLineDash([16,16]);x.lineDashOffset=16*(1-Math.max(0,(p-.35)/.65));
       x.stroke(new Path2D('M8.2 13.4l3.3 3.3 6.3-7'));x.setLineDash([]);
     }
@@ -947,156 +1005,6 @@ function CatPicker(cats,value,onChange){
 }
 
 /* ============ Çizimler: boş durum + kapak yer tutucu ============ */
-function PotArt(){
-  /* Boş durum: tahtada havuç dilimleyen bıçak.
-     Sahne 2B çizilir; yalnızca havuç diskleri (dilimler + kesik yüz) küçük bir eğik izdüşümle (PH, K1) 3B'den projekte edilir,
-     böylece dilimler devrilirken yüzleri gerçekten dönüyor. Her şey zamanın saf fonksiyonu; tek döngü = LOOP sn. */
-  const S=1.12,W0=286,H0=108;
-  const [cv,g]=canvas(Math.round(W0*S),Math.round(H0*S));let n=0;
-  const YS=54,XK=148,TH=6,E=XK+TH;                    /* YS: havucun tahtaya değdiği çizgi · XK: kesim düzlemi · E: kesilmeden önce havuç ucu */
-  const L=112,R0=13.5,RT=3.8,NS=9;                    /* havuç boyu, omuz/uç yarıçapı, dilim sayısı */
-  const PH=32*Math.PI/180,CP=Math.cos(PH),SP=Math.sin(PH),K1=-.2;
-  const AUP=16*Math.PI/180,ADN=3*Math.PI/180;         /* bıçağın sırtı: yukarıda / kesimde (uç hep tahtada) */
-  const T0=.8,LOOP=6.1,FADE0=5.25;
-  const Ti=i=>.5-.2*i/(NS-1);                         /* vuruşlar yavaştan hızlıya */
-  const S0=[];{let a=T0;for(let i=0;i<NS;i++){S0.push(a);a+=Ti(i)}}
-  const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-  const sm=t=>{t=cl(t);return t*t*(3-2*t)};
-  const eOut=t=>1-Math.pow(1-cl(t),3);
-  const eBack=t=>{t=cl(t);const c1=1.25,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)};
-  const rr=a=>(RT+(R0-RT)*Math.pow(cl(a/L),.85))*(a>L-12?1-.16*Math.pow((a-(L-12))/12,2):1);       /* yarıçap: uçtan (a=0) omuza */
-  const pr=(X,Y,Z)=>[X+K1*Z,YS-Y*CP+Z*SP];
-  const uOf=ph=>ph<.38?Math.pow(ph/.38,2.2):ph<.43?1:1-sm((ph-.43)/.57);
-
-  /* ---- havuç diski (dilim / kesik yüz): normal n=(cosθ,sinθ,0), θ=0 dik duran disk, θ=90° yatık ---- */
-  const discPath=(cx,cy,cz,off,rho,th)=>{
-    const nx=Math.cos(th),ny=Math.sin(th),bx=-ny,by=nx;g.beginPath();
-    for(let k=0;k<=36;k++){const t=k/36*Math.PI*2,c=Math.cos(t)*rho,s=Math.sin(t)*rho;
-      const p=pr(cx+nx*off+bx*s,cy+ny*off+by*s,cz+c);k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])}
-    g.closePath()};
-  const disc=(cx,cy,cz,r,t,th,wall)=>{
-    if(wall){for(let s=0;s<=6;s++){discPath(cx,cy,cz,-t/2+t*s/6,r,th);g.fillStyle=s<3?'#B9540F':'#CC6218';g.fill()}}
-    const f=wall?t/2:0;
-    discPath(cx,cy,cz,f,r,th);g.fillStyle='#DB6A1B';g.fill();
-    discPath(cx,cy,cz,f,r*.88,th);g.fillStyle='#F2994A';g.fill();
-    discPath(cx,cy,cz,f,r*.5,th);g.fillStyle='#F8BC74';g.fill();
-    if(r>5){
-      g.strokeStyle='rgba(196,98,28,.32)';g.lineWidth=.7;
-      for(let k=0;k<10;k++){const a=k/10*Math.PI*2+.3,nx=Math.cos(th),ny=Math.sin(th),bx=-ny,by=nx;
-        const P=q=>pr(cx+nx*f+bx*Math.sin(a)*q,cy+ny*f+by*Math.sin(a)*q,cz+Math.cos(a)*q);
-        const p0=P(r*.1),p1=P(r*.46);g.beginPath();g.moveTo(p0[0],p0[1]);g.lineTo(p1[0],p1[1]);g.stroke()}
-      discPath(cx,cy,cz,f,r*.5,th);g.strokeStyle='rgba(206,106,30,.5)';g.lineWidth=.8;g.stroke()}
-    discPath(cx,cy,cz,f,Math.max(.8,r*.12),th);g.fillStyle='#F2994A';g.fill()};
-
-  /* ---- sahne parçaları ---- */
-  const board=()=>{
-    const x0=12,w=262,y0=YS-30*SP,h=86*SP,r=9;
-    g.fillStyle=`rgba(${INKRGB},.15)`;g.beginPath();g.ellipse(x0+w/2,y0+h+11+3,w/2-2,5.5,0,0,7);g.fill();
-    g.fillStyle='#A8702C';g.beginPath();g.roundRect(x0,y0+6,w,h+5,r);g.fill();
-    const gr=g.createLinearGradient(0,y0,0,y0+h);gr.addColorStop(0,'#E2B476');gr.addColorStop(1,'#D8A662');
-    g.fillStyle=gr;g.beginPath();g.roundRect(x0,y0,w,h,r);g.fill();
-    g.save();g.beginPath();g.roundRect(x0,y0,w,h,r);g.clip();
-    g.strokeStyle='rgba(150,92,36,.24)';g.lineWidth=1.1;
-    [[.22,.9],[.47,-.7],[.7,.6],[.88,-.5]].forEach(([q,k])=>{const y=y0+h*q;g.beginPath();g.moveTo(x0,y);g.bezierCurveTo(x0+w*.3,y+k*3.2,x0+w*.68,y-k*3.2,x0+w,y+k*1.2);g.stroke()});
-    g.fillStyle='rgba(255,255,255,.28)';g.fillRect(x0,y0,w,1.6);
-    g.restore();
-    g.strokeStyle='rgba(120,70,22,.2)';g.lineWidth=1.1;g.beginPath();g.roundRect(x0+10,y0+7,w-20,h-14,6);g.stroke();
-    g.fillStyle='#8E5C28';g.beginPath();g.ellipse(x0+w-20,y0+h*.5,4.6,2.5,0,0,7);g.fill();
-    g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(x0+w-20,y0+h*.5+3,4.6,.7,0,0,Math.PI);g.fill()};
-
-  const stalk=(bx,by,dx,dy,len,w,bend)=>{
-    const m=Math.hypot(dx,dy);dx/=m;dy/=m;const nx=-dy,ny=dx,ex=bx+dx*len,ey=by+dy*len,cx=bx+dx*len*.5+nx*bend,cy=by+dy*len*.5+ny*bend;
-    const q=t=>[(1-t)*(1-t)*bx+2*(1-t)*t*cx+t*t*ex,(1-t)*(1-t)*by+2*(1-t)*t*cy+t*t*ey];
-    const tg=t=>{const a=2*(1-t)*(cx-bx)+2*t*(ex-cx),b=2*(1-t)*(cy-by)+2*t*(ey-cy),mm=Math.hypot(a,b);return[a/mm,b/mm]};
-    const A=[],B=[];for(let k=0;k<=10;k++){const t=k/10,p=q(t),d=tg(t),hw=(w*(1-.38*t))/2;A.push([p[0]-d[1]*hw,p[1]+d[0]*hw]);B.push([p[0]+d[1]*hw,p[1]-d[0]*hw])}
-    g.beginPath();A.forEach((p,k)=>k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));B.reverse().forEach(p=>g.lineTo(p[0],p[1]));g.closePath();
-    g.fillStyle='#5C7B2C';g.fill();
-    g.strokeStyle='#86A64A';g.lineWidth=.9;g.beginPath();for(let k=1;k<=9;k++){const t=k/10,p=q(t),d=tg(t),o=w*(1-.38*t)*.2;k>1?g.lineTo(p[0]-d[1]*o,p[1]+d[0]*o):g.moveTo(p[0]-d[1]*o,p[1]+d[0]*o)}g.stroke();
-    const pe=q(1),de=tg(1);g.fillStyle='#CBDA94';g.beginPath();g.ellipse(pe[0],pe[1],w*.31*.62+.4,w*.31*.62*.55+.3,Math.atan2(de[1],de[0])+Math.PI/2,0,7);g.fill()};
-
-  const carrot=(xe,aEnd,cutFaceOn)=>{
-    const xs=xe-(L-aEnd),yc=a=>YS-rr(a)*CP,hc=yc(L);
-    g.fillStyle=`rgba(${INKRGB},.13)`;g.beginPath();g.ellipse((xs+xe)/2,YS+2.4,(xe-xs)/2+3,4,0,0,7);g.fill();
-    /* sap: gövdenin arkasından çıkar, omuz örter */
-    stalk(xs+4.5,hc-R0*.72,-.38,-1,14,5.6,-1.2);stalk(xs+2,hc-R0*.6,-1,-.5,11.5,5.2,.9);stalk(xs+8,hc-R0*.76,.4,-1,11,4.8,1.2);
-    /* gövde */
-    const pts=[];for(let a=aEnd;a<L;a+=2)pts.push(a);pts.push(L);
-    const X=a=>xe-(a-aEnd);
-    g.beginPath();pts.forEach((a,k)=>{const x=X(a),y=yc(a)-rr(a);k?g.lineTo(x,y):g.moveTo(x,y)});
-    g.bezierCurveTo(xs-6,yc(L)-rr(L),xs-6,yc(L)+rr(L),xs,yc(L)+rr(L));
-    for(let k=pts.length-1;k>=0;k--){const a=pts[k];g.lineTo(X(a),yc(a)+rr(a))}
-    g.closePath();
-    const top=YS-R0*CP-R0,bot=YS+R0*(1-CP);
-    const gr=g.createLinearGradient(0,top,0,bot);gr.addColorStop(0,'#F4903E');gr.addColorStop(.42,'#E9742A');gr.addColorStop(.82,'#CF5C16');gr.addColorStop(1,'#B64B10');
-    g.fillStyle=gr;g.fill();
-    g.save();g.clip();
-    /* ışık: üst üçte bir */
-    g.strokeStyle='rgba(255,216,168,.5)';g.lineWidth=2;g.beginPath();pts.forEach((a,k)=>{if(a<aEnd+5||a>L-9)return;const x=X(a),y=yc(a)-rr(a)*.56;g.lineTo(x,y)});g.stroke();
-    /* halka izleri */
-    g.strokeStyle='rgba(120,44,6,.3)';g.lineWidth=1;g.lineCap='round';
-    [12,26,41,57,73,89,103].forEach((a,k)=>{if(a<aEnd+3||a>L-6)return;const x=X(a),r=rr(a),y=yc(a),s=k%2?.12:-.1;
-      g.beginPath();g.moveTo(x+1.3,y-r*(.72+s));g.quadraticCurveTo(x-1.5,y-r*.28,x+.7,y+r*(.12+s));g.stroke()});
-    g.restore();
-    g.fillStyle='rgba(150,60,10,.22)';g.beginPath();g.ellipse(xs+4.5,hc-R0*.5,4.6,1.7,-.2,0,7);g.fill();
-    /* kesik uç yüzü */
-    if(cutFaceOn){const r=rr(aEnd);disc(xe,r,0,r,0,0,false)}};
-
-  const knife=(tx,ty,al,u)=>{
-    /* orijin = kenarın tahtaya değen göbek noktası; sırt düz, kesen kenar ucuna doğru yukarı kıvrılır */
-    g.fillStyle=`rgba(${INKRGB},${.05+.08*u})`;g.beginPath();g.ellipse(tx+8*Math.cos(al),ty+3.4,36,2.4+1.4*(1-u),0,0,7);g.fill();
-    g.save();g.translate(tx,ty);g.rotate(-al);g.lineJoin='round';g.lineCap='round';
-    const blade=()=>{g.beginPath();g.moveTo(-28,-7.5);g.bezierCurveTo(-21,-1.8,-11,.7,4,.9);g.bezierCurveTo(19,1,33,.9,42,.5);g.lineTo(42,-22.5);g.lineTo(8,-22.1);g.bezierCurveTo(-8,-21.8,-21,-17,-28,-7.5);g.closePath()};
-    const gr=g.createLinearGradient(0,-22,0,2);gr.addColorStop(0,'#EEF2F4');gr.addColorStop(.46,'#DCE2E7');gr.addColorStop(.47,'#C2CBD2');gr.addColorStop(.84,'#B4BFC7');gr.addColorStop(1,'#9AA6AF');
-    g.save();g.translate(1.6,3.2+3*(1-u));blade();g.fillStyle=`rgba(${INKRGB},.22)`;g.fill();g.restore();
-    blade();g.fillStyle=gr;g.fill();
-    g.strokeStyle='rgba(112,126,136,.5)';g.lineWidth=.9;g.beginPath();g.moveTo(-19,-7);g.bezierCurveTo(-8,-3.9,12,-3.5,41,-4.6);g.stroke();
-    g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=1.1;g.beginPath();g.moveTo(-25,-6.4);g.bezierCurveTo(-18,-1.2,-10,.1,4,.2);g.bezierCurveTo(19,.3,33,.2,41,-.1);g.stroke();
-    g.fillStyle='#808B95';g.beginPath();g.roundRect(41.5,-23.5,5.5,26,1.6);g.fill();
-    g.fillStyle='rgba(255,255,255,.35)';g.fillRect(42.4,-22.5,1.2,24);
-    g.fillStyle='#4A2D1E';g.beginPath();g.moveTo(47,-20.5);g.lineTo(82,-21.4);g.quadraticCurveTo(94,-21.4,94,-12);g.quadraticCurveTo(94,-2.8,82,-3.4);g.lineTo(47,-4);g.closePath();g.fill();
-    g.fillStyle='#6A4328';g.beginPath();g.moveTo(48,-19.6);g.lineTo(82,-20.4);g.quadraticCurveTo(88,-20.4,90,-17.4);g.lineTo(48,-15.8);g.closePath();g.fill();
-    g.fillStyle='#E4DDCB';g.strokeStyle='rgba(40,24,14,.5)';g.lineWidth=.6;
-    [57,70,83].forEach(x=>{g.beginPath();g.arc(x,-12.4,1.8,0,7);g.fill();g.stroke()});
-    g.restore()};
-
-  const draw=t=>{
-    g.setTransform(DPR*S,0,0,DPR*S,0,0);g.clearRect(0,0,W0,H0);g.lineCap=g.lineJoin='round';
-    const tau=t%LOOP;
-    board();
-    /* durum */
-    let J=0,Q=0,i=-1,ph=0;
-    for(let k=0;k<NS;k++){const tc=S0[k]+.385*Ti(k);if(tau>=tc)J=k+1;Q+=sm((tau-(tc+.03))/(.36*Ti(k)));if(tau>=S0[k]&&tau<S0[k]+Ti(k)){i=k;ph=(tau-S0[k])/Ti(k)}}
-    const u=i<0?0:uOf(ph);
-    const gA=tau<FADE0?1:1-sm((tau-FADE0)/.5);
-    const inA=cl(tau/.38),ox=-26*(1-eOut(tau/.65));
-    if(gA>0){
-      g.save();g.globalAlpha=gA;
-      /* dilimler (arkadan öne: büyüyenler üstte) */
-      const sl=[];
-      for(let k=0;k<J;k++){
-        const tc=S0[k]+.385*Ti(k),p=cl((tau-tc)/.46),r=rr(k*TH+TH/2),th=TH-.6;
-        const Xl=XK+30+k*7.6,Zl=34+Math.sin(k*2.1)*1.6;
-        const e=eOut(p),X=XK+TH/2+(Xl-(XK+TH/2))*e,Z=Zl*e,hop=Math.sin(Math.PI*p)*6;
-        const Y=th/2+(r-th/2)*(1-e)+hop;
-        sl.push({r,th,X,Y,Z,thA:Math.PI/2*eBack(p)})}
-      sl.forEach(s=>{const lift=cl(1-s.Y/20);const q=pr(s.X,0,s.Z);
-        g.fillStyle=`rgba(${INKRGB},${.16*lift})`;g.beginPath();g.ellipse(q[0],q[1],s.r*1.08,s.r*SP*1.1,0,0,7);g.fill()});
-      sl.forEach(s=>disc(s.X,s.Y,s.Z,s.r,s.th,s.thA,true));
-      /* havuç */
-      g.save();g.globalAlpha=gA*inA;g.translate(ox,0);
-      carrot(E-TH*J+TH*Q,J*TH,true);
-      g.restore();
-      g.restore()}
-    /* bıçak: ucu tahtada, sırt sallanır; kesimde hafifçe ileri iter */
-    const al=AUP+(ADN-AUP)*u;
-    knife(XK+12-2.2*u,YS+10,al,u);
-  };
-  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const loop=t=>{n++;if(!cv.isConnected&&n>20)return;draw(t/1000);requestAnimationFrame(loop)};
-  cv.draw=draw;
-  if(reduce)draw(4.9);else requestAnimationFrame(loop);
-  return cv;
-}
 const artCache={};
 const hexRGB=hx=>{const m=/^#?([0-9a-f]{6})$/i.exec(String(hx).trim());if(!m)return[180,83,47];const n=parseInt(m[1],16);return[n>>16&255,n>>8&255,n&255]};
 const shade=(hx,a,al=1)=>{const[r,g,b]=hexRGB(hx),t=a<0?0:255,p=Math.abs(a);return`rgba(${Math.round(r+(t-r)*p)},${Math.round(g+(t-g)*p)},${Math.round(b+(t-b)*p)},${al})`};
@@ -1222,6 +1130,7 @@ function plateArt(cat,rec){
   x.fillStyle=g;x.beginPath();x.arc(cx,cy,196,0,7);x.fill();
   if(pv===1)garnish(x,cx,cy);
   x.restore();
+  if(curTheme==='gece'||curTheme==='altin'){x.fillStyle=curTheme==='altin'?'rgba(6,5,4,.3)':'rgba(10,14,22,.27)';x.fillRect(0,0,W,W)} /* gece: parlak tabak gözü almasın */
   return artCache[key]=c.toDataURL('image/jpeg',.9);
 }
 
@@ -1336,10 +1245,8 @@ const scroll=h('div',{class:'scroll'});
 const inp=h('input',{type:'search',placeholder:'Tarif, malzeme ara',enterkeyhint:'search',autocomplete:'off',autocapitalize:'off',spellcheck:'false'});
 const clr=h('button',{class:'clr',type:'button',onclick:()=>{inp.value='';state.q='';clr.classList.remove('on');searchEl.classList.remove('typing');renderList('quick');inp.focus()}},icon('close',14,INK,2.2));
 const favB=h('button',{class:'sbtn tap',type:'button','aria-label':'Favoriler',onclick:()=>{state.fav=!state.fav;sfx('tap');paintF();renderList('stagger')}});
-const freqB=h('button',{class:'sbtn tap',type:'button','aria-label':'Sık yapılanlar',onclick:()=>{state.freq=!state.freq;sfx('tap');paintF();renderList('stagger')}});
 function paintF(){
   favB.classList.toggle('on',state.fav);favB.replaceChildren(icon(state.fav?'heartf':'heart',20,state.fav?CLAY:INK2,1.8));
-  freqB.classList.toggle('on',state.freq);freqB.replaceChildren(icon('repeat',20,state.freq?CLAY:INK2,1.9));
 }
 paintF();
 const mkCats=()=>CatPicker(['Tümü',...catNames()],state.cat,c=>{state.cat=c;renderList('stagger')});
@@ -1374,7 +1281,7 @@ function openFilter(){
   };
   draw();const s=sheet(box);
 }
-const searchEl=h('div',{class:'search'},icon('search',22,INK2,1.8),inp,h('div',{class:'sright'},h('div',{class:'sgrp'},favB,freqB),clr));
+const searchEl=h('div',{class:'search'},icon('search',22,INK2,1.8),inp,h('div',{class:'sright'},h('div',{class:'sgrp'},favB),clr));
 scroll.append(
   h('header',{class:'head'},h('h1',{class:'h1'},'Tariflerim'),h('div',{class:'hbtns'},h('button',{class:'gearb tap',type:'button',onclick:()=>{sfx('tap');openSettings()}},icon('sliders',26,INK,2)))),
   searchEl,
@@ -1472,7 +1379,7 @@ function passF(r){
 }
 function filtered(){
   whyMap.clear();
-  const q=fold(state.q.trim());let items=state.all.filter(r=>(state.cat==='Tümü'||r.cat===state.cat)&&(!state.fav||r.fav)&&(!state.freq||madeN(r)>=2)&&passF(r));
+  const q=fold(state.q.trim());let items=state.all.filter(r=>(state.cat==='Tümü'||r.cat===state.cat)&&(!state.fav||r.fav)&&passF(r));
   if(q){
     const toks=q.split(/\s+/).filter(Boolean);
     return items.map(r=>{
@@ -1483,7 +1390,7 @@ function filtered(){
     }).filter(o=>o.rank<99).sort((a,b)=>a.rank-b.rank).map(o=>o.r);
   }
   const by=[(a,b)=>(b.date||'').localeCompare(a.date||'')||b.created-a.created,(a,b)=>(b.rating||0)-(a.rating||0)||(b.date||'').localeCompare(a.date||''),(a,b)=>a.title.localeCompare(b.title,'tr')][state.sort];
-  return items.sort(state.freq?(a,b)=>madeN(b)-madeN(a)||lastMade(b).localeCompare(lastMade(a))||by(a,b):by);
+  return items.sort(by);
 }
 const sel={on:false,ids:new Set()};
 function Card(r,i){
@@ -1496,7 +1403,7 @@ function Card(r,i){
     onpointerdown:e=>{if(sel.on||(e.pointerType==='mouse'&&e.button!==0))return;px=e.clientX;py=e.clientY;stop();lp=setTimeout(()=>{lp=0;held=Date.now();navigator.vibrate&&navigator.vibrate(12);cardMenu(r)},450)},
     onpointermove:e=>{if(lp&&Math.hypot(e.clientX-px,e.clientY-py)>10)stop()},
     onpointerup:stop,onpointercancel:stop},
-    h('div',{class:'ph'},h('img',{src,alt:'',decoding:'async',loading:'lazy'}),h('div',{class:'badge'},r.cat),r.vars&&r.vars.length?h('div',{class:'badge vb'},`${r.vars.length+1} versiyon`):null,h('div',{class:'selck'},icon('check',16,CREAM,2.6)),r.fav?h('div',{class:'fvb'},icon('heartf',16,CREAM,1)):null),
+    h('div',{class:'ph'},h('img',{src,alt:'',decoding:'async',loading:'lazy'}),h('div',{class:'badge'},r.cat),r.vars&&r.vars.length?h('div',{class:'badge vb'},`${r.vars.length+1} versiyon`):null,h('div',{class:'selck'},icon('check',16,ONACC,2.6)),r.fav?h('div',{class:'fvb'},icon('heartf',16,CREAM,1)):null),
     h('div',{class:'tt'},r.title),
     whyMap.has(r.id)?h('div',{class:'why'},whyMap.get(r.id)+' eşleşti'):null,
     h('div',{class:'mt'},h('span',{},fmtShort(r.date)),Stars({value:r.rating,size:15,gap:3}))
@@ -1515,27 +1422,29 @@ function appendMore(){
   if(items.length>shown){const n=h('div',{class:'more'});listEl.append(n);watchMore(n)}
 }
 function renderList(mode){
-  paintFlt();const items=filtered(),k=state.q+'|'+state.cat+'|'+state.sort+'|'+state.fav+'|'+state.freq+'|'+JSON.stringify(state.f);
+  paintFlt();const items=filtered(),k=state.q+'|'+state.cat+'|'+state.sort+'|'+state.fav+'|'+JSON.stringify(state.f);
   if(k!==listSig){listSig=k;shown=PAGE}
   if(moreIO)moreIO.disconnect();
   listEl.innerHTML='';listEl.classList.toggle('quick',mode==='quick');listEl.classList.toggle('selecting',sel.on);
-  countEl.textContent=state.all.length?`${items.length} tarif`+(state.fav||state.freq?' · '+[state.fav&&'Favoriler',state.freq&&'Sık yapılanlar'].filter(Boolean).join(' + '):''):'';
-  if(!state.all.length){listEl.append(h('div',{class:'empty'},PotArt(),h('h3',{},'Henüz tarif eklenmedi'),h('p',{},'İlk tarifini eklediğinde burada görünecek.')));return}
-  if(!items.length){listEl.append(h('div',{class:'none'},state.q.trim()?'Bu aramayla eşleşen tarif yok':state.fav&&state.freq?'Hem favori hem sık yaptığın tarif yok.':state.fav?'Henüz favori tarifin yok. Tarifteki kalbe dokunarak ekleyebilirsin.':state.freq?'Bir tarifi en az 2 kez yaptığında burada görünür.':fCount()?'Bu filtrelere uyan tarif yok.':'Bu kategoride tarif yok'));return}
+  countEl.textContent=state.all.length?`${items.length} tarif`+(state.fav?' · Favoriler':''):'';
+  if(!state.all.length){listEl.append(h('div',{class:'empty'},h('h3',{},'Henüz tarif eklenmedi'),h('p',{},'İlk tarifini eklediğinde burada görünecek.')));return}
+  if(!items.length){listEl.append(h('div',{class:'none'},state.q.trim()?'Bu aramayla eşleşen tarif yok':state.fav?'Henüz favori tarifin yok. Tarifteki kalbe dokunarak ekleyebilirsin.':fCount()?'Bu filtrelere uyan tarif yok.':'Bu kategoride tarif yok'));return}
   items.slice(0,shown).forEach((r,i)=>listEl.append(Card(r,Math.min(i,8))));
   if(items.length>shown){const n=h('div',{class:'more'});listEl.append(n);watchMore(n)}
 }
 bus.add(()=>renderList('quick'));
 
 /* ============ Çoklu seçim (uzun bas → Yedekle / Seç) ============ */
-const selN=h('div',{class:'sbn'});
-const selGo=h('button',{class:'sbg tap',type:'button',onclick:()=>{const rs=state.all.filter(r=>sel.ids.has(r.id));if(rs.length)runBackup(rs,'selection',selOff)}},icon('down',20,CREAM,2),'Yedekle');
+const selCnt=h('b',{class:'sbc'});
 const selAll=h('button',{class:'sba tap',type:'button',onclick:()=>{
   const v=filtered(),all=v.length&&v.every(r=>sel.ids.has(r.id));
   v.forEach(r=>all?sel.ids.delete(r.id):sel.ids.add(r.id));renderList('quick');selUpd();
-}},'Tümü');
-home.append(h('div',{class:'selbar'},h('button',{class:'sbx tap',type:'button','aria-label':'Vazgeç',onclick:()=>{sfx('tap');selOff()}},icon('close',20,INK,2.2)),selN,selAll,selGo));
-function selUpd(){selN.textContent=sel.ids.size?`${sel.ids.size} seçili`:'Tarif seç';selGo.classList.toggle('off',!sel.ids.size)}
+}},'Tümünü seç');
+const selN=h('div',{class:'sbn'},selCnt,selAll);
+const selGo=h('button',{class:'sbg tap',type:'button',onclick:()=>{const rs=state.all.filter(r=>sel.ids.has(r.id));if(rs.length)runBackup(rs,'selection',selOff)}},icon('down',20,CREAM,2),'Yedekle');
+const selDel=h('button',{class:'sbx dl tap off',type:'button','aria-label':'Seçilenleri sil',onclick:()=>{const rs=state.all.filter(r=>sel.ids.has(r.id));if(rs.length){sfx('tap');deleteRecipes(rs,selOff)}}},icon('trash',20,DANGER,1.9));
+home.append(h('div',{class:'selbar'},h('button',{class:'sbx tap',type:'button','aria-label':'Vazgeç',onclick:()=>{sfx('tap');selOff()}},icon('close',20,INK2,2)),selN,selDel,selGo));
+function selUpd(){selCnt.textContent=sel.ids.size?`${sel.ids.size} seçili`:'Tarif seç';{const v=filtered();selAll.textContent=v.length&&v.every(r=>sel.ids.has(r.id))?'Seçimi temizle':'Tümünü seç'}selGo.classList.toggle('off',!sel.ids.size);selDel.classList.toggle('off',!sel.ids.size)}
 function toggleSel(id){
   sel.ids.has(id)?sel.ids.delete(id):sel.ids.add(id);
   const c=listEl.querySelector(`.card[data-id="${id}"]`);c&&c.classList.toggle('picked',sel.ids.has(id));selUpd();
@@ -1548,12 +1457,25 @@ function selOff(){
   sel.on=false;sel.ids.clear();home.classList.remove('selecting');listEl.classList.remove('selecting');
   listEl.querySelectorAll('.picked').forEach(c=>c.classList.remove('picked'));
 }
+function deleteRecipes(recs,pre){
+  const n=recs.length,one=n===1;
+  const box=h('div',{},h('div',{class:'sh-t'},one?'Tarif silinsin mi?':`${n} tarif silinsin mi?`),
+    h('p',{class:'sh-p'},one?`“${recs[0].title}” ve fotoğrafları kalıcı olarak silinecek.`:`Seçtiğin ${n} tarif ve fotoğrafları kalıcı olarak silinecek.`),
+    h('div',{class:'btns'},h('button',{class:'bt g tap',type:'button',onclick:()=>s.close()},'Vazgeç'),
+    h('button',{class:'bt c tap',type:'button',onclick:async()=>{
+      s.close();const ids=new Set(recs.map(r=>r.id));
+      for(const r of recs)await Store.remove(r.id);
+      state.all=state.all.filter(x=>!ids.has(x.id));
+      pre&&pre();bus.forEach(f=>f());toast(one?'Tarif silindi':`${n} tarif silindi`);
+    }},'Sil')));
+  const s=sheet(box);
+}
 function cardMenu(r){
   const it=(ic,t,fn)=>h('button',{class:'sitem tap',type:'button',onclick:()=>{s.close();setTimeout(fn,280)}},h('span',{class:'si'},icon(ic,20,CLAY,1.8)),h('span',{class:'st'},t));
   const s=sheet(h('div',{},h('div',{class:'sh-t'},r.title),h('div',{class:'scard',style:'margin-top:18px'},
     it(r.fav?'heartf':'heart',r.fav?'Favorilerden çıkar':'Favorilere ekle',async()=>{r.fav=!r.fav;await save(r,true);toast(r.fav?'Favorilere eklendi':'Favorilerden çıkarıldı')}),
-    it('calendar','Bunu yaptım',async()=>{await markMade(r);toast(`Kaydedildi · ${madeN(r)}. kez`)}),
-    it('down','Yedekle',()=>runBackup([r],'selection')),it('check','Seç',()=>selOn(r.id)))));
+    it('down','Yedekle',()=>runBackup([r],'selection')),it('check','Seç',()=>selOn(r.id)),
+    h('button',{class:'sitem tap',type:'button',onclick:()=>{s.close();setTimeout(()=>deleteRecipes([r]),280)}},h('span',{class:'si',style:'background:rgb(var(--danger-rgb) / .14)'},icon('trash',20,DANGER,1.8)),h('span',{class:'st',style:'color:var(--danger)'},'Tarifi sil')))));
 }
 
 /* ============ "Yapıldı" geri bildirimi: tüm sayfada konfeti + dalga + ışık ============ */
@@ -1786,7 +1708,7 @@ function openDetail(id){
     {const vid=()=>{const b=get(),v=vi>0&&b&&b.vars?b.vars[vi-1]:null;return v?v.id:null};
       const db=h('button',{class:'donebtn',type:'button','aria-label':'Yapıldı'});let held=false,ht=0;
       refreshMade=()=>{const b=get();if(!b)return;const ml=madeFor(b,vid()),n=ml.length,on=ml.some(e=>e.d===today());db.classList.toggle('on',on);
-        db.replaceChildren(icon('check',27,on?CREAM:CLAY,2.4),...(n?[h('span',{class:'nb'},String(n))]:[]))};
+        db.replaceChildren(icon('check',27,on?ONACC:CLAY,2.4),...(n?[h('span',{class:'nb'},String(n))]:[]))};
       refreshMade();
       const stop=()=>{clearTimeout(ht);ht=0};
       db.addEventListener('pointerdown',()=>{held=false;stop();ht=setTimeout(()=>{ht=0;held=true;sfx('tap');db.animate([{transform:'scale(.9)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:320,easing:EASE});madeSheet(get(),refreshMade,vid())},480)});
@@ -2209,7 +2131,9 @@ function openCovers(){
   /* tema başına renk listesi: krem temada her kategori kendi rengiyle, mavi temada iki zemin tonu */
   const combos=()=>({
     krem:cats.map(c=>({name:c.name,cat:c.name,tone:0})),
-    mavi:[{name:'Yumuşak yeşil',cat:'',tone:0},{name:'Turkuaz',cat:'',tone:1}]
+    mavi:[{name:'Yumuşak yeşil',cat:'',tone:0},{name:'Turkuaz',cat:'',tone:1}],
+    gece:[{name:'Yumuşak yeşil',cat:'',tone:0},{name:'Turkuaz',cat:'',tone:1}],
+    altin:[{name:'Zümrüt',cat:'',tone:0},{name:'Bordo',cat:'',tone:1}]
   });
   const img=(theme,plate,cat,tone)=>{const prev=curTheme;curTheme=theme;try{return plateArt(cat,{plate,tone,id:'cvprev'})}finally{curTheme=prev}};
   const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);e.target._go()}}),{root:null,rootMargin:'300px'}):null;
@@ -2221,20 +2145,24 @@ function openCovers(){
     return h('div',{class:'cvt s'},im,h('div',{class:'cvn'},cb.name));
   };
   const STY=[
-    {plate:0,name:t=>t!=='krem'?'Lale Halkası':'Yaprak Halkası',desc:'Kenarda ince yaprak halkası. Mavi ve Koyu temalarda on iki lale yaprağı, Krem temada on altı ince yaprak.'},
-    {plate:1,name:()=>'Biberiye Dalı',desc:'Karşılıklı iki biberiye dalı, sol üstte ve sağ altta.'}];
-  const C=combos(),parts=[];
-  STY.forEach(st=>{
-    const body=[];
-    Object.keys(THEMES).forEach(k=>{
-      body.push(h('div',{class:'cvth'},THEMES[k].name,h('small',{},` · ${C[k].length} renk`)));
-      body.push(h('div',{class:'cvgrid3'},...C[k].map(cb=>tile(k,st.plate,cb))));
-    });
-    parts.push(h('section',{class:'sgroup'},h('h2',{class:'sh'},st.name(curTheme)),h('p',{class:'cvd0'},st.desc),...body));
+    {plate:0,name:t=>t!=='krem'?'Lale Halkası':'Yaprak Halkası',desc:t=>t!=='krem'?'Kenarda on iki lale yaprağından oluşan halka.':'Kenarda on altı ince yaprak halkası.'},
+    {plate:1,name:()=>'Biberiye Dalı',desc:()=>'Karşılıklı iki biberiye dalı, sol üstte ve sağ altta.'}];
+  const C=combos(),order=['mavi','gece','altin','krem'].filter(k=>THEMES[k]&&C[k]);
+  const secs={};
+  const parts=order.map(k=>{
+    const sec=h('section',{class:'cvtheme'},
+      h('div',{class:'cvthh'},h('h2',{},THEMES[k].name),k===curTheme?h('span',{class:'cvact'},'Aktif'):null),
+      h('p',{class:'cvd0'},`${STY.length} tabak stili · ${C[k].length} renk`),
+      ...STY.flatMap(st=>[
+        h('div',{class:'cvsub'},st.name(k)),
+        h('p',{class:'cvd0 cvsd'},st.desc(k)),
+        h('div',{class:'cvgrid3'},...C[k].map(cb=>tile(k,st.plate,cb)))]));
+    secs[k]=sec;return sec;
   });
+  const jump=h('div',{class:'cvjump'},order.map(k=>h('button',{type:'button',class:'vc tap',onclick:()=>{sfx('tap');secs[k].scrollIntoView({behavior:'smooth',block:'start'})}},THEMES[k].name)));
   el.append(h('div',{class:'scroll'},barSp(),
-    h('p',{class:'chint'},'Tariflerin kapağında kullanılan tüm tabak stilleri ve renk kombinasyonları. Her tarif bunlardan birini alır.'),
-    ...parts,
+    h('p',{class:'chint'},'Her temanın kendi tabak desenleri ve renkleri ayrı bölümlerde. Her tarif, aktif temanın desenlerinden birini alır.'),
+    jump,...parts,
     h('div',{style:'height:calc(var(--sb) + 40px)'})));
   pageBar(el,'Kapak Tasarımları');
   nav.push(view);edgeBack(view);

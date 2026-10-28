@@ -1273,17 +1273,10 @@ function glassArt(c,col){
 
 
   x.save();x.translate(48,-16);x.scale(.9,.9);x.translate(0,DY);
-  /* gölge: yumuşak, taramasız. Tabandan sağa uzanan tek parça; kenarı katmanlı opaklıkla yumuşatılmış, tabanda sıkı temas gölgesi */
-  (function(){
-    var tail=(function(){var o=[];for(var i=0;i<=60;i++){var a=2*PI*i/60,c2=Math.cos(a);o.push([cx+130+165*c2,BY+16+22*Math.sin(a)*(1-.3*Math.max(0,c2))])}return o})();
-    var base=E(cx+6,BY+10,BRX+22,BRY+9,0,2*PI,60);
-    var soft=function(p,my,layers){var mx=0,yy=0;p.forEach(function(q){mx+=q[0];yy+=q[1]});mx/=p.length;yy/=p.length;
-      layers.forEach(function(l){path(p.map(function(q){return[mx+(q[0]-mx)*l[0],yy+(q[1]-yy)*l[1]]}),1,0,my);x.fillStyle='rgba(43,30,23,'+l[2]+')';x.fill()})};
-    soft(tail,0,[[1.1,1.35,.07],[1.05,1.18,.09],[1,1,.17]]);
-    soft(base,0,[[1.06,1.25,.08],[1,1,.2]]);
-    /* temas: bardağın tabanının hemen altında koyu ince oval */
-    path(E(cx+2,BY+9,BRX+4,BRY+3,0,2*PI,60),1,0,0);x.fillStyle='rgba(43,30,23,.42)';x.fill();
-  })();
+  /* gölge: sıcak içecekteki gibi net kenarlı, düz, masanın bir ton koyusu; tabandan sağa uzanan tek parça, yuvarlak uçlu */
+  var s1=wob(E(cx+8,BY+10,BRX+20,34,0,2*PI,60),1.2),s2=wob((function(){var o=[];for(var i=0;i<=60;i++){var a=2*PI*i/60,c2=Math.cos(a);o.push([cx+120+135*c2,BY+14+22*Math.sin(a)*(1-.3*Math.max(0,c2))])}return o})(),1.2);
+  fill(s1,shade(TB,-.32));fill(s2,shade(TB,-.32));
+  x.globalAlpha=.3;fill(wob(E(cx+3,BY+8,BRX+5,BRY+5,0,2*PI,60),1),INK);x.globalAlpha=1;
   /* cam gövdesi */
   var bp=wob([].concat(L([cx-RX,TOP],[cx-BRX,BY],16),E(cx,BY,BRX,BRY,PI,0,36),L([cx+BRX,BY],[cx+RX,TOP],16),E(cx,TOP,RX,RY,0,PI,30)),1.2);
   fill(bp,'rgba(255,251,240,.2)',0,0);

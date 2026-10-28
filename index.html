@@ -648,9 +648,9 @@ const Store=(()=>{
     async remove(id){await init();if(mem){mem.delete(id);return}return run('readwrite',s=>s.delete(id))}
   };
 })();
-const state={all:[],q:'',cat:'Tümü',sort:0,fav:false,freq:false,f:{time:0,rate:0,diff:0,cost:0,tags:[]}};
+const state={all:[],q:'',cat:'Tümü',sort:0,fav:false,freq:false,f:{time:0,rate:0,tags:[]}};
 const bus=new Set();
-const DIFFS=['Kolay','Orta','Zor'],DEFTAGS=['Vegan','Vejetaryen','Hızlı','Çocuk dostu','Fit','Glütensiz','Misafir'];
+const DEFTAGS=['Vegan','Vejetaryen','Hızlı','Çocuk dostu','Fit','Glütensiz','Misafir'];
 const madeN=r=>(r.made||[]).length,lastMade=r=>(r.made||[]).reduce((a,d)=>d>a?d:a,'');
 async function markMade(r,d){r.made=[...(r.made||[]),d||today()];await save(r,true)}
 async function save(rec,quiet){
@@ -1324,11 +1324,9 @@ function openFilter(){
     sc=h('div',{class:'fscroll'},
       h('div',{class:'flab'},'Süre'),chips([[0,'Hepsi'],[30,'30 dk’ya kadar'],[60,'1 saate kadar'],[61,'1 saatten uzun']],'time'),
       h('div',{class:'flab'},'Puan'),chips([[0,'Hepsi'],[3,'3★ ve üzeri'],[4,'4★ ve üzeri']],'rate'),
-      h('div',{class:'flab'},'Zorluk'),chips([[0,'Hepsi'],[1,'Kolay'],[2,'Orta'],[3,'Zor']],'diff'),
-      h('div',{class:'flab'},'Maliyet'),chips([[0,'Hepsi'],[1,'₺'],[2,'₺₺'],[3,'₺₺₺']],'cost'),
       h('div',{class:'flab'},'Etiketler'),tagChips());
     box.replaceChildren(h('div',{class:'sh-t'},'Filtrele'),sc,h('div',{class:'btns'},
-      h('button',{class:'bt g tap',type:'button',onclick:()=>{Object.assign(F,{time:0,rate:0,diff:0,cost:0,tags:[]});change()}},'Temizle'),
+      h('button',{class:'bt g tap',type:'button',onclick:()=>{Object.assign(F,{time:0,rate:0,tags:[]});change()}},'Temizle'),
       h('button',{class:'bt tap',type:'button',onclick:()=>s.close()},`${filtered().length} tarif göster`)));
     sc.scrollTop=top;
   };
@@ -1423,13 +1421,11 @@ function rankTok(c,t){
   if(has(c.note,t))return 5;
   return 9;
 }
-const fCount=()=>{const F=state.f;return(F.time?1:0)+(F.rate?1:0)+(F.diff?1:0)+(F.cost?1:0)+(F.tags.length?1:0)};
+const fCount=()=>{const F=state.f;return(F.time?1:0)+(F.rate?1:0)+(F.tags.length?1:0)};
 function passF(r){
   const F=state.f;
   if(F.time){const m=parseInt(r.time,10);if(!Number.isFinite(m))return false;if(F.time===30?m>30:F.time===60?m>60:m<=60)return false}
   if(F.rate&&(r.rating||0)<F.rate)return false;
-  if(F.diff&&r.diff!==F.diff)return false;
-  if(F.cost&&r.cost!==F.cost)return false;
   return F.tags.every(t=>(r.tags||[]).some(x=>fold(x)===fold(t)));
 }
 function filtered(){
@@ -1636,8 +1632,7 @@ function openDetail(id){
       const meta=h('div',{class:'meta'},
         h('div',{},icon('calendar',22,INK2,1.6),fmtLong(e.date)),
         r.time?h('div',{},icon('clock',20,INK2,1.7),`${r.time} dk`):null,
-        r.serves?h('div',{},peopleIcon(r.serves,22,INK2,1.6),`${r.serves} kişilik`):null,
-        e.diff?h('div',{},'Zorluk: '+DIFFS[e.diff-1]):null,e.cost?h('div',{},'Maliyet: '+'₺'.repeat(e.cost)):null);
+        r.serves?h('div',{},peopleIcon(r.serves,22,INK2,1.6),`${r.serves} kişilik`):null);
       const ings=IngList(e,checked);if(e.addN)ings.slice(-e.addN).forEach(li=>{li.classList.add('new');li.append(h('small',{class:'nw'},'farklı'))});
       const outs=V&&V.out&&V.out.length?h('div',{class:'outl'},'Çıkarılan: '+V.out.join(', ')):null;
       const chips=h('div',{class:'vchips'},[{name:'Ana tarif'},...vars].map((v,k)=>h('button',{type:'button',class:'vc tap'+(k===vi?' on':''),onclick:()=>{if(k===vi)return;sfx('tap');dir=k>vi?1:-1;vi=k;fill(true);slideTo(k)}},v.name)),
@@ -1771,7 +1766,7 @@ function openCook(rec){
 function openEditor(rec){
   const editing=!!rec;
   const d=rec?{...rec,photos:[...rec.photos]}:{id:uid(),title:'',cat:catNames().includes('Ana Yemek')?'Ana Yemek':(catNames()[0]||''),date:today(),rating:0,time:'',serves:'',ing:[],steps:[],video:'',note:'',photos:[],created:Date.now(),plate:Math.floor(Math.random()*PLATE_STYLES),tone:Math.random()<.5?0:1};
-  d.tags=[...(d.tags||[])];d.diff=d.diff||0;d.cost=d.cost||0;
+  d.tags=[...(d.tags||[])];
   let dirty=false;const mark=()=>{dirty=true};
   const el=h('section',{class:'view editor'}),view={el,kind:'modal'};
   const phRow=h('div',{class:'phrow'});
@@ -1817,8 +1812,6 @@ function openEditor(rec){
         h('span',{},p.name+(p.note?` (${p.note})`:''))))));
   };
   ingTa.addEventListener('input',drawIngPrev);drawIngPrev();
-  const segRow=(opts,key)=>{const w=h('div',{class:'chipwrap'});const paint=()=>[...w.children].forEach((b,i)=>b.classList.toggle('on',d[key]===i+1));opts.forEach((t,i)=>w.append(h('button',{type:'button',class:'vc tap',onclick:()=>{d[key]=d[key]===i+1?0:i+1;paint();mark()}},t)));paint();return w};
-  const diffRow=segRow(DIFFS,'diff'),costRow=segRow(['₺','₺₺','₺₺₺'],'cost');
   const hasTag=t=>d.tags.some(x=>fold(x)===fold(t));
   const allTags=()=>{const m=new Map();[...DEFTAGS,...state.all.flatMap(r=>r.tags||[]),...d.tags].forEach(t=>{const k=fold(t);if(!m.has(k))m.set(k,t)});return[...m.values()]};
   const tagBox=h('div',{class:'chipwrap'}),tagIn=h('input',{class:'in',placeholder:'Yeni etiket yaz',enterkeyhint:'done',autocomplete:'off',maxlength:'20',style:'margin-top:6px'});
@@ -1834,7 +1827,7 @@ function openEditor(rec){
   async function doSave(){
     addTag();const title=titleIn.value.trim();
     if(!title){titleIn.parentElement.animate(shake,{duration:420});titleIn.focus();toast('Yemeğe bir ad ver');return}
-    const out={...d,title,cat:picker.value(),date:dateIn.value||today(),time:timeIn.value.trim(),serves:servIn.value.trim(),ing:lines(ingTa.value),steps:lines(stepTa.value),video:vidIn.value.trim(),note:noteTa.value.trim(),tags:[...d.tags],diff:d.diff||0,cost:d.cost||0};
+    const out={...d,title,cat:picker.value(),date:dateIn.value||today(),time:timeIn.value.trim(),serves:servIn.value.trim(),ing:lines(ingTa.value),steps:lines(stepTa.value),video:vidIn.value.trim(),note:noteTa.value.trim(),tags:[...d.tags]};
     await save(out);dirty=false;sfx('save');nav.pop();toast(editing?'Değişiklikler kaydedildi':'Tarif deftere eklendi');
   }
   const saveB=h('button',{class:'fab',type:'button',onclick:doSave},icon('check',24,CREAM,2.2),h('span',{},'Kaydet'));
@@ -1845,7 +1838,7 @@ function openEditor(rec){
     fg('Tarih',f(dateIn)),
     fg('Puan',h('div',{style:'margin-top:10px'},stars)),
     h('div',{class:'fg'},h('div',{class:'two'},h('div',{},h('div',{class:'lab'},'Süre (dk)'),f(timeIn)),h('div',{},h('div',{class:'lab'},'Porsiyon'),f(servIn)))),
-    fg('Zorluk',diffRow),fg('Maliyet',costRow),fg('Etiketler',h('div',{},tagBox,f(tagIn))),
+    fg('Etiketler',h('div',{},tagBox,f(tagIn))),
     fg('Malzemeler',h('div',{},f(ingTa),ingPrev)),
     fg('Hazırlanışı',f(stepTa)),
     fg('Video (isteğe bağlı)',f(vidIn)),

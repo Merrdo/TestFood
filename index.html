@@ -299,6 +299,22 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .pcsw button{width:34px;height:34px;border-radius:50%;border:0;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .12);display:grid;place-items:center;transition:transform .25s var(--ease)}
 .pcsw button.on{transform:scale(1.18);box-shadow:0 0 0 2.5px var(--paper),0 0 0 4.5px var(--ink)}
 .pcnote{color:var(--ink2);font-size:13px;line-height:1.45;text-align:center;margin:14px 8px 0}
+.cvdots{display:flex;justify-content:center;gap:5px;margin-top:6px}
+.cvdot{display:inline-block;width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .16);flex:none}
+.cvdots .cvdot.on{box-shadow:inset 0 0 0 1px rgb(0 0 0 / .16),0 0 0 2px var(--paper),0 0 0 3.5px var(--ink2)}
+.cvhd{display:flex;align-items:center;gap:9px}
+.cvhd .cdot{width:11px;height:11px}
+.cvcnt{color:var(--ink2);font-size:13px}
+.cvtg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.cvtg .vc{justify-content:center;height:40px;padding:0 10px;font-size:13.5px}
+.cvtg .vc .cvdot{width:12px;height:12px}
+.cvsty{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.cvsty .vc{height:34px;padding:0 14px;font-size:13px}
+.cvbody{max-height:calc(100vh - var(--st) - 150px);overflow-y:auto;overscroll-behavior:contain;margin:0 -24px;padding:0 24px}
+.pcsw .cvcust{position:relative;width:34px;height:34px;border-radius:50%;overflow:hidden;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .12);background:conic-gradient(#e0605a,#e3b04a,#7fb866,#4fa7c9,#8b72c9,#e0605a);display:block}
+.pcsw .cvcust.on{transform:scale(1.18);box-shadow:0 0 0 2.5px var(--paper),0 0 0 4.5px var(--ink)}
+.pcsw .cvcust input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
+.cvwrap{margin:0 20px}
 .sfoot{text-align:center;color:var(--mute);font:italic 400 15px var(--serif);margin-top:44px}
 .cvgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 10px}
 .cvjump{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 20px;margin-top:16px}
@@ -622,11 +638,21 @@ const subsOf=n=>((cats.find(c=>c.name===n)||{}).subs)||[];
 /* Kapak zemin rengi temaya göre: krem temada kategori rengi aynen; mavi temada kiremit tonları yerine
    temayla uyumlu, birbirinden ayırt edilen mavi ağırlıklı, aralarında yumuşak yeşiller olan palet (fildişi tabakla güçlü kontrast) */
 const COVER_MAVI=['#5E8A52','#2B7A8C'],COVER_TONES={gece:['#4A8A62','#2F7F92'],altin:['#2E6A56','#7A2F40']}; /* yumuşak yeşil / turkuaz */
+/* Kapaklar sayfası: temaya göre kapak rengi seçimi. cat.cv = {altKategori|'' : {tema: '#renk'}}; yoksa 'Otomatik' (iki ton) */
+let cvForce=null; /* yalnızca Kapaklar sayfasının canlı önizlemesi için */
+function coverOverride(catName,sub,theme){
+  const c=cats.find(x=>x.name===catName),o=c&&c.cv&&c.cv[sub||''];return (o&&o[theme])||null;
+}
+function setCoverOverride(catName,sub,theme,hex){
+  const c=cats.find(x=>x.name===catName);if(!c)return;const k=sub||'';
+  if(hex){c.cv=c.cv||{};(c.cv[k]=c.cv[k]||{})[theme]=hex;return}
+  if(c.cv&&c.cv[k]){delete c.cv[k][theme];if(!Object.keys(c.cv[k]).length)delete c.cv[k];if(!Object.keys(c.cv).length)delete c.cv}
+}
 function coverColor(cat,rec){
-  if(curTheme==='krem'){const sc=rec&&rec.sub&&subColorOf(cat,rec.sub);return sc||catColor(cat)}
-  let t=rec&&Number.isInteger(rec.tone)?rec.tone:-1;
-  if(t<0){t=0;for(const ch of String(rec&&rec.id||cat))t=(t*31+ch.charCodeAt(0))>>>0}
-  const TN=COVER_TONES[curTheme]||COVER_MAVI;return TN[t%TN.length];
+  if(cvForce)return cvForce;
+  if(curTheme!=='krem'){const ov=coverOverride(cat,rec&&rec.sub,curTheme);if(ov)return ov}
+  /* varsayılan: tüm temalarda Krem'deki (kategori / alt kategori) renk; Kapaklar sayfasından tema başına değiştirilebilir */
+  const sc=rec&&rec.sub&&subColorOf(cat,rec.sub);return sc||catColor(cat);
 }
 const catBus=new Set();
 const EASE='cubic-bezier(.22,.9,.24,1)';
@@ -1490,7 +1516,7 @@ function dessertArt(c,col){
 /* Et & Tavuk kapağı: riso baskı tarzı tabakta ızgara biftek (ızgara izleri), kızarmış baget, biberiye ve limon. Alt kategori adı veya önizleme bayrağı ile seçilir. */
 const isMeatCat=(cat,rec)=>!!(rec&&rec.kind==='meat')||subFold(rec)==='et & tavuk'||fold(String(cat||''))==='et & tavuk';
 /* Tavuk kapağı: tabakta yığılmış butlar, lacivert fayans duvar, ceviz masa, keten örtü, yanda mayonezli sos kabı */
-function chickenArt(c){var v=0,g;var PAL=[{wall:'#2B4866',tb:'#5A3E2A',plate:'#F7F2E6',pside:'#D2C7AC',band:'#2B4866',mat:'#F0E8D6',mats:'#CDBFA0',stripe:'#2B4866',flip:0},{wall:'#6C8366',tb:'#3E4347',plate:'#F4ECD8',pside:'#CFC2A2',band:'#B5533A',mat:'#E8DCC0',mats:'#BFB08C',stripe:'#B5533A',flip:0}],p=PAL[v||0];
+function chickenArt(c,wc){var v=0,g;var PAL=[{wall:'#2B4866',tb:'#5A3E2A',plate:'#F7F2E6',pside:'#D2C7AC',band:'#2B4866',mat:'#F0E8D6',mats:'#CDBFA0',stripe:'#2B4866',flip:0},{wall:'#6C8366',tb:'#3E4347',plate:'#F4ECD8',pside:'#CFC2A2',band:'#B5533A',mat:'#E8DCC0',mats:'#BFB08C',stripe:'#B5533A',flip:0}],p=PAL[v||0];if(wc){p.wall=wc;if(p.band)p.band=wc;if(p.stripe)p.stripe=wc}
 var W=960,x=c.getContext('2d'),PI=Math.PI,OX=5,OY=4,INK='#2B1E17',CREAM='#F2E9D6',TONE='#B55A3C',WALLC=p.wall,TB=p.tb,TY=235,GOLD='#D9842F',GSD='#8A4A16';
 var seed=83,rnd=function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 var shade=function(h,a,al){var n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,t=a>0?255:0,k=Math.abs(a);r=Math.round(r+(t-r)*k);g=Math.round(g+(t-g)*k);b=Math.round(b+(t-b)*k);return al==null?'rgb('+r+','+g+','+b+')':'rgba('+r+','+g+','+b+','+al+')'};
@@ -1608,7 +1634,7 @@ var im=x.getImageData(0,0,W,W),d=im.data;
 for(var i=0;i<d.length;i+=4){var n=(rnd()-.5)*30;if(rnd()<.0022)n-=55;d[i]+=n;d[i+1]+=n;d[i+2]+=n}
 x.putImageData(im,0,0)}
 /* Biftek kapağı: ahşap servis tahtasında bütün biftek, biberiye, tuz kasesi ve bıçak */
-function steakArt(c){var v=0;var PAL=[{wall:'#2E6B73',tb:'#7A4E30',top:'#E3BB7E',side:'#B58451',sd:'#9A6E3E',r:26,d:44,flip:0},{wall:'#6C8366',tb:'#3E4347',top:'#B98254',side:'#A56E40',sd:'#7E5030',r:34,d:50,flip:0}],p=PAL[v||0];
+function steakArt(c,wc){var v=0;var PAL=[{wall:'#2B4866',tb:'#5A3E2A',top:'#E3BB7E',side:'#B58451',sd:'#9A6E3E',r:26,d:44,flip:0},{wall:'#6C8366',tb:'#3E4347',top:'#B98254',side:'#A56E40',sd:'#7E5030',r:34,d:50,flip:0}],p=PAL[v||0];if(wc){p.wall=wc;if(p.band)p.band=wc;if(p.stripe)p.stripe=wc}
 var W=960,x=c.getContext('2d'),PI=Math.PI,OX=5,OY=4,INK='#2B1E17',CREAM='#F2E9D6',TONE='#B55A3C',WALLC=p.wall,TB=p.tb,TY=235;
 var seed=83,rnd=function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 var shade=function(h,a,al){var n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,t=a>0?255:0,k=Math.abs(a);r=Math.round(r+(t-r)*k);g=Math.round(g+(t-g)*k);b=Math.round(b+(t-b)*k);return al==null?'rgb('+r+','+g+','+b+')':'rgba('+r+','+g+','+b+','+al+')'};
@@ -1628,8 +1654,13 @@ var sprig=function(p0,p1,p2,n,sz){var s=Q(p0,p1,p2,40);line(s,4.5,INK);for(var i
 x.lineJoin=x.lineCap='round';x.save();if(p.flip){x.translate(W,0);x.scale(-1,1)}
 /* zemin: duvar ve koyu ceviz masa */
 x.fillStyle=WALLC;x.fillRect(0,0,W,W);
-var g=x.createRadialGradient(560,110,20,560,110,520);g.addColorStop(0,shade(WALLC,.25,.5));g.addColorStop(1,shade(WALLC,.25,0));x.fillStyle=g;x.fillRect(0,0,W,TY);
-[[90,120,.18],[300,56,.13]].forEach(function(b){x.beginPath();x.moveTo(b[0],0);x.lineTo(b[0]+b[1],0);x.lineTo(b[0]+b[1]+.5*TY,TY);x.lineTo(b[0]+.5*TY,TY);x.closePath();x.fillStyle=shade(WALLC,.2,b[2]);x.fill()});
+var g,r,tx,ty,of;
+/* tuğla/fayans duvar: Tavuk ve Karışık kapaklarla aynı */
+x.save();x.beginPath();x.rect(0,0,W,TY);x.clip();
+for(r=0;r<6;r++){ty=r*47;of=(r%2)*46;for(tx=-of;tx<W;tx+=92){x.fillStyle=shade(WALLC,(rnd()-.5)*.14);x.fillRect(tx+1,ty+1,90,45);line([[tx+10,ty+8],[tx+48,ty+8]],2.4,'rgba(255,255,255,.3)')}}
+for(r=0;r<6;r++){ty=r*47;of=(r%2)*46;line([[0,ty],[W,ty]],2.4,shade(WALLC,-.5,.5));for(tx=-of;tx<W;tx+=92)line([[tx,ty],[tx,ty+47]],2.4,shade(WALLC,-.5,.5))}
+g=x.createLinearGradient(0,TY-90,0,TY);g.addColorStop(0,'rgba(20,12,8,0)');g.addColorStop(1,'rgba(20,12,8,.35)');x.fillStyle=g;x.fillRect(0,TY-90,W,90);
+x.restore();
 g=x.createLinearGradient(0,TY,0,W);g.addColorStop(0,shade(TB,-.12));g.addColorStop(.5,shade(TB,.05));g.addColorStop(1,shade(TB,-.06));x.fillStyle=g;x.fillRect(0,TY,W,W-TY);
 for(var i=0;i<12;i++){var yy=TY+30+Math.pow(i,1.5)*24,ph=rnd()*6;x.beginPath();for(var px=-20;px<=W+20;px+=14){var py=yy+2.4*Math.sin(px*.011+ph);px==-20?x.moveTo(px,py):x.lineTo(px,py)}x.lineWidth=1.4+i*.25;x.strokeStyle=shade(TB,-.4,.4);x.stroke()}
 x.fillStyle=CREAM;x.fillRect(0,TY-14,W,16);x.fillStyle='rgba(255,255,255,.55)';x.fillRect(0,TY-11,W,3);x.strokeStyle=INK;x.lineWidth=4;[TY-14,TY+2].forEach(function(y){x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()});
@@ -1696,7 +1727,7 @@ var im=x.getImageData(0,0,W,W),d=im.data;
 for(i=0;i<d.length;i+=4){var n=(rnd()-.5)*30;if(rnd()<.0022)n-=55;d[i]+=n;d[i+1]+=n;d[i+2]+=n}
 x.putImageData(im,0,0)}
 /* Et ve tavuk birlikte: tabakta biftek ve iki but, tavuk kapağıyla aynı ortam ve sos kabı */
-function bothArt(c){var v=0,g;var PAL=[{wall:'#2B4866',tb:'#5A3E2A',plate:'#F7F2E6',pside:'#D2C7AC',band:'#2B4866',mat:'#F0E8D6',mats:'#CDBFA0',stripe:'#2B4866',flip:0},{wall:'#6C8366',tb:'#3E4347',plate:'#F4ECD8',pside:'#CFC2A2',band:'#B5533A',mat:'#E8DCC0',mats:'#BFB08C',stripe:'#B5533A',flip:0}],p=PAL[v||0];
+function bothArt(c,wc){var v=0,g;var PAL=[{wall:'#2B4866',tb:'#5A3E2A',plate:'#F7F2E6',pside:'#D2C7AC',band:'#2B4866',mat:'#F0E8D6',mats:'#CDBFA0',stripe:'#2B4866',flip:0},{wall:'#6C8366',tb:'#3E4347',plate:'#F4ECD8',pside:'#CFC2A2',band:'#B5533A',mat:'#E8DCC0',mats:'#BFB08C',stripe:'#B5533A',flip:0}],p=PAL[v||0];if(wc){p.wall=wc;if(p.band)p.band=wc;if(p.stripe)p.stripe=wc}
 var W=960,x=c.getContext('2d'),PI=Math.PI,OX=5,OY=4,INK='#2B1E17',CREAM='#F2E9D6',TONE='#B55A3C',WALLC=p.wall,TB=p.tb,TY=235,GOLD='#D9842F',GSD='#8A4A16';
 var seed=83,rnd=function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 var shade=function(h,a,al){var n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,t=a>0?255:0,k=Math.abs(a);r=Math.round(r+(t-r)*k);g=Math.round(g+(t-g)*k);b=Math.round(b+(t-b)*k);return al==null?'rgb('+r+','+g+','+b+')':'rgba('+r+','+g+','+b+','+al+')'};
@@ -1838,10 +1869,12 @@ x.restore();/* kâğıt greni */
 var im=x.getImageData(0,0,W,W),d=im.data;
 for(var i=0;i<d.length;i+=4){var n=(rnd()-.5)*30;if(rnd()<.0022)n-=55;d[i]+=n;d[i+1]+=n;d[i+2]+=n}
 x.putImageData(im,0,0)}
-function meatArt(c,col,mode){
-  if(mode==='chicken'){chickenArt(c);return}
-  if(mode==='beef'){steakArt(c);return}
-  if(mode==='both'){bothArt(c);return}
+/* Et & Tavuk duvar rengi: yalnızca kullanıcı bir renk seçtiyse uygulanır; aksi halde kapağın kendi duvar rengi kalır */
+const meatCustom=(cat,rec,col)=>String(col).toLowerCase()!==((rec&&rec.sub&&SUB_COLORS[rec.sub])||'#A9502D').toLowerCase();
+function meatArt(c,col,mode,custom){
+  if(mode==='chicken'){chickenArt(c,custom?col:null);return}
+  if(mode==='beef'){steakArt(c,custom?col:null);return}
+  if(mode==='both'){bothArt(c,custom?col:null);return}
   var W=960,x=c.getContext('2d'),cx=480,TY=430,OX=5,OY=4,PI=Math.PI;
   var INK='#2B1E17',CREAM='#F2E9D6',WALL='#DCCDBA',TB='#D9C6A0',TONE='#B55A3C',LEAF='#3E7A45',LEAFD='#2E5E37';
   var STK='#A8503A',STKD='#7C3425',SEAR='#5A2419',FAT='#F1DFB9',SKIN='#DD9A40',SKIND='#B9702A',LEM='#F3D14F',LEMD='#E1AE2E';
@@ -1990,7 +2023,7 @@ function plateArt(cat,rec){
     return artCache[key+'|dessert']=c.toDataURL('image/jpeg',.9);
   }
   if(meatK){
-    meatArt(c,col,mm);
+    meatArt(c,col,mm,meatCustom(cat,rec,col));
     if(curTheme==='gece'||curTheme==='altin'){x.fillStyle=curTheme==='altin'?'rgba(6,5,4,.12)':'rgba(10,14,22,.1)';x.fillRect(0,0,W,W)}
     return artCache[key+'|meat'+mm]=c.toDataURL('image/jpeg',.9);
   }
@@ -3120,6 +3153,87 @@ function openCovers(){
   nav.push(view);edgeBack(view);
 }
 
+/* Kapaklar: şimdiye kadar çizilen tüm kapaklar kategorilerine göre ayrılmış görünür.
+   Bir kapağa dokununca her tema için rengi seçilir (Krem temada kategori rengiyle ortaktır; diğer temalarda
+   'Otomatik' = iki ton ya da seçilen tek renk). Seçimler cat.cv üzerinde saklanır ve yeni tariflere de uygulanır. */
+const CV_THEMES=['mavi','gece','altin','krem'];
+const CV_EXTRA=['#2B7A8C','#5E8A52','#2E6A56','#7A2F40','#2A68AD','#6B6FA8'];
+const cvAuto=t=>COVER_TONES[t]||COVER_MAVI;
+const cvSaved=(it,t)=>t==='krem'?((it.sub&&subColorOf(it.cat,it.sub))||catColor(it.cat)):coverOverride(it.cat,it.sub,t);
+const cvDot=(hex,it)=>`background:${hex||cvSaved(it,'krem')}`;
+const cvKind=(cat,sub)=>{const r=sub?{sub}:null;return isMugCat(cat,r)?'mug':isGlassCat(cat,r)?'glass':isDessertCat(cat,r)?'dessert':isMeatCat(cat,r)?'meat':'plain'};
+const cvStyles=k=>k==='plain'?[{n:'Halka',plate:0},{n:'Biberiye',plate:1}]:k==='meat'?[{n:'Karışık',meat:'ikisi'},{n:'Biftek',meat:'et'},{n:'Tavuk',meat:'tavuk'}]:[{n:'',plate:0}];
+const cvGroups=()=>cats.map(c=>({cat:c,items:(c.subs&&c.subs.length?[{cat:c.name,sub:'',name:'Genel'},...c.subs.map(s=>({cat:c.name,sub:s,name:s}))]:[{cat:c.name,sub:'',name:c.name}])}));
+const cvCount=()=>cvGroups().reduce((a,g)=>a+g.items.length,0);
+/* canlı önizleme: tema ve renk geçici olarak değiştirilir, sonra geri alınır */
+function cvArt(it,theme,st,hex){
+  const pt=curTheme,pf=cvForce;curTheme=theme;cvForce=hex||null;
+  try{return plateArt(it.cat,{id:'cvk',sub:it.sub,plate:st.plate||0,tone:0,meat:st.meat||''})}finally{curTheme=pt;cvForce=pf}
+}
+function openCoverColors(){
+  const el=h('section',{class:'view push'}),view={el,kind:'push'};
+  let pvT=curTheme;const tiles=[];
+  const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);e.target._go()}}),{rootMargin:'300px'}):null;
+  const purge=()=>{for(const k in artCache)if(k.includes('|cvk|'))delete artCache[k]};
+  const dots=it=>CV_THEMES.map(t=>h('i',{class:'cvdot'+(t===pvT?' on':''),style:cvDot(cvSaved(it,t),it)}));
+  const mk=it=>{
+    const img=h('img',{alt:it.name,draggable:'false'}),dw=h('span',{class:'cvdots'},...dots(it));
+    const t={it,img,dw};
+    img._go=()=>{img.src=cvArt(it,pvT,cvStyles(cvKind(it.cat,it.sub))[0],null)};
+    t.btn=h('button',{type:'button',class:'pct tap',onclick:()=>{sfx('tap');detail(it)}},h('span',{class:'im'},img),h('span',{class:'nm'},it.name),dw);
+    if(io)io.observe(img);else setTimeout(img._go,80);
+    tiles.push(t);return t.btn;
+  };
+  const refresh=()=>tiles.forEach(t=>{t.dw.replaceChildren(...dots(t.it));if(t.img.getAttribute('src'))t.img._go()});
+  function detail(it){
+    const kind=cvKind(it.cat,it.sub),styles=cvStyles(kind);let si=0,th=pvT;
+    const draft={};CV_THEMES.forEach(t=>draft[t]=cvSaved(it,t));
+    const pv=h('img',{class:'pcprev',alt:it.name,style:'width:52%;margin-top:16px'}),tg=h('div',{class:'cvtg'}),sty=styles.length>1?h('div',{class:'cvsty'}):null,sw=h('div',{class:'pcsw'}),info=h('p',{class:'pcnote'});
+    const paint=()=>{
+      pv.src=cvArt(it,th,styles[si],draft[th]||draft.krem);
+      tg.replaceChildren(...CV_THEMES.map(t=>h('button',{type:'button',class:'vc tap'+(t===th?' on':''),onclick:()=>{th=t;paint()}},h('i',{class:'cvdot',style:cvDot(draft[t],it)}),THEMES[t].name)));
+      if(sty)sty.replaceChildren(...styles.map((x,i)=>h('button',{type:'button',class:'vc tap'+(i===si?' on':''),onclick:()=>{si=i;paint()}},x.n)));
+      const cur=draft[th]&&draft[th].toLowerCase(),list=[...new Set([...(th==='krem'?[]:cvAuto(th)),...CV_EXTRA,...PALETTE].map(x=>x.toLowerCase()))];
+      const items=[];
+      if(th!=='krem')items.push(h('button',{type:'button',class:'tap'+(!draft[th]?' on':''),style:cvDot(null,it)+';color:#fff;font:700 12px var(--sans)','aria-label':'Krem ile aynı',onclick:()=>{draft[th]=null;paint()}},'K'));
+      list.forEach(hx=>items.push(h('button',{type:'button',class:'tap'+(hx===cur?' on':''),style:`background:${hx}`,'aria-label':hx,onclick:()=>{draft[th]=hx;paint()}})));
+      const ci=h('input',{type:'color',value:/^#[0-9a-f]{6}$/i.test(draft[th]||'')?draft[th]:draft.krem,'aria-label':'Özel renk',onchange:()=>{draft[th]=ci.value.toLowerCase();paint()}});
+      items.push(h('label',{class:'cvcust tap'+(cur&&!list.includes(cur)?' on':'')},ci));
+      sw.replaceChildren(...items);
+      info.textContent=th==='krem'?'Krem temada kapak rengi kategori rengiyle ortaktır.':draft[th]?`${THEMES[th].name} temasında tüm “${it.name}” kapakları bu rengi alır.`:'Krem temasındaki renkle aynı (K). Değiştirmek için bir renk seç.';
+    };
+    const save=()=>{
+      CV_THEMES.forEach(t=>{
+        if(t==='krem'){
+          if(draft.krem&&draft.krem!==cvSaved(it,'krem')){const c=cats.find(x=>x.name===it.cat);if(c){if(it.sub)c.subColors={...(c.subColors||{}),[it.sub]:draft.krem};else c.color=draft.krem}}
+        }else setCoverOverride(it.cat,it.sub,t,draft[t]);
+      });
+      saveCats();catBus.forEach(f=>f());try{renderList('quick')}catch{}
+      pvT=th;syncChips();refresh();s.close();toast('Kapak renkleri kaydedildi');
+    };
+    paint();
+    const s=sheet(h('div',{},h('div',{class:'sh-t',style:'text-align:center'},it.name),
+      h('p',{class:'sh-p',style:'text-align:center'},it.name===it.cat?'Kapak':it.cat),
+      h('div',{class:'cvbody'},pv,sty,tg,sw,info),
+      h('div',{class:'btns'},h('button',{class:'bt g tap',type:'button',onclick:()=>s.close()},'Vazgeç'),h('button',{class:'bt tap',type:'button',onclick:save},'Kaydet'))));
+  }
+  const chips=h('div',{class:'cvjump'});
+  const syncChips=()=>chips.replaceChildren(...CV_THEMES.map(k=>h('button',{type:'button',class:'vc tap'+(k===pvT?' on':''),onclick:()=>{if(k===pvT)return;sfx('tap');pvT=k;syncChips();refresh()}},h('i',{class:'cvdot',style:`background:${THEMES[k].v['--clay']}`}),THEMES[k].name+(k===curTheme?' · Aktif':''))));
+  syncChips();
+  const body=h('div',{});
+  const build=()=>body.replaceChildren(...cvGroups().map(g=>h('section',{class:'sgroup'},
+    h('div',{class:'pch'},h('h2',{class:'sh cvhd'},h('span',{class:'cdot',style:`background:${g.cat.color}`}),g.cat.name),h('span',{class:'cvcnt'},`${g.items.length} kapak`)),
+    h('div',{class:'pcg'},...g.items.map(mk)))));
+  tiles.length=0;build();
+  const upd=()=>{tiles.length=0;build();syncChips()};catBus.add(upd);
+  view.onClose=()=>{catBus.delete(upd);io&&io.disconnect();purge()};
+  el.append(h('div',{class:'scroll'},barSp(),
+    h('p',{class:'chint'},'Çizilmiş tüm kapaklar kategorilerine göre. Üstten temayı seç, bir kapağa dokunup her tema için rengini ayarla. Altındaki noktalar kapağın temalardaki rengidir.'),
+    chips,body,h('div',{style:'height:calc(var(--sb) + 40px)'})));
+  pageBar(el,'Kapaklar');
+  nav.push(view);edgeBack(view);
+}
+
 /* Hazır Kategoriler: yemek kategorilerinin düzenli listesi. Her biri kendi kapak önizlemesiyle görünür;
    dokununca renk seçilir ve tek dokunuşla kategorilerime eklenir (eklenmişse rengi güncellenir / kaldırılır). */
 const PRESETS=[
@@ -3228,7 +3342,8 @@ function confirmReset(){
 function openSettings(){
   const el=h('section',{class:'view push'}),view={el,kind:'push'};
   const count=h('small',{});
-  const upd=()=>{count.textContent=`${cats.length} kategori`};upd();
+  const kLab=h('small',{});
+  const upd=()=>{count.textContent=`${cats.length} kategori`;kLab.textContent=`${cvCount()} kapak`};upd();
   const themeLab=h('small',{},THEMES[curTheme].name),updT=()=>{themeLab.textContent=THEMES[curTheme].name};
   catBus.add(upd);themeBus.add(updT);view.onClose=()=>{catBus.delete(upd);themeBus.delete(updT)};
   const item=(ic,label,right,fn)=>h('button',{class:'sitem tap',type:'button',onclick:()=>{sfx('tap');fn()}},
@@ -3236,7 +3351,7 @@ function openSettings(){
   const group=(title,...items)=>h('section',{class:'sgroup'},h('h2',{class:'sh'},title),h('div',{class:'scard'},items));
   el.append(h('div',{class:'scroll'},barSp(),
     group('Tarifler',item('tag','Kategoriler',count,openCategories),item('plate','Hazır Kategoriler',h('small',{},`${PRESETS.reduce((a,g)=>a+g[1].length,0)} hazır`),openPresets)),
-    group('Görünüm',item('palette','Temalar',themeLab,openThemes),item('plate','Kapak Tasarımları',h('small',{},'2 stil'),openCovers)),
+    group('Görünüm',item('palette','Temalar',themeLab,openThemes),item('plate','Kapaklar',kLab,openCoverColors),item('plate','Kapak Tasarımları',h('small',{},'2 stil'),openCovers)),
     group('Yedekleme',item('down','Tüm tarifleri yedekle',h('small',{},`${state.all.length} tarif`),()=>runBackup(state.all,'full')),item('up','Yedekten geri yükle',null,()=>bkIn.click())),
     group('Veriler',h('button',{class:'sitem tap',type:'button',onclick:()=>{sfx('tap');confirmReset()}},h('span',{class:'si',style:'background:rgb(var(--danger-rgb) / .14)'},icon('trash',20,DANGER,1.8)),h('span',{class:'st',style:'color:var(--danger)'},'Uygulama verilerini sıfırla'),icon('next',18,MUTE,2))),
     h('div',{class:'sfoot'},'Yemek Yapalım'),
@@ -3296,7 +3411,7 @@ async function buildBackup(recs,kind,prog){
     out.push(o);
   }
   const used=new Set(recs.map(r=>r.cat));
-  const cl=(kind==='full'?cats:cats.filter(c=>used.has(c.name))).map(({id,name,color,subs,subColors})=>({id,name,color,...(subs&&subs.length?{subs}:{}),...(subColors?{subColors}:{})}));
+  const cl=(kind==='full'?cats:cats.filter(c=>used.has(c.name))).map(({id,name,color,subs,subColors,cv})=>({id,name,color,...(subs&&subs.length?{subs}:{}),...(subColors?{subColors}:{}),...(cv?{cv}:{})}));
   const mf={app:'yemek-yapalim',ver:1,kind,created:new Date().toISOString(),theme:kind==='full'?curTheme:null,cats:cl,recipes:out};
   const mb=E.encode(JSON.stringify(mf));files.unshift({name:'manifest.json',data:mb,crc:crc32(mb),size:mb.length});
   return zipBuild(files);
@@ -3331,8 +3446,8 @@ function runBackup(recs,kind,after){
 }
 async function restoreBackup(z,m,mode,prog){
   const inc=(m.cats||[]).filter(c=>c&&c.name);
-  if(mode==='replace'&&m.kind==='full'&&inc.length)cats=inc.map(c=>({id:c.id||uid0(),name:c.name,color:c.color||CLAY,...(Array.isArray(c.subs)&&c.subs.length?{subs:c.subs,...(c.subColors?{subColors:c.subColors}:{})}:{})}));
-  else inc.forEach(c=>{if(!cats.some(x=>fold(x.name)===fold(c.name)))cats.push({id:c.id||uid0(),name:c.name,color:c.color||CLAY,...(Array.isArray(c.subs)&&c.subs.length?{subs:c.subs,...(c.subColors?{subColors:c.subColors}:{})}:{})})});
+  if(mode==='replace'&&m.kind==='full'&&inc.length)cats=inc.map(c=>({id:c.id||uid0(),name:c.name,color:c.color||CLAY,...(Array.isArray(c.subs)&&c.subs.length?{subs:c.subs,...(c.subColors?{subColors:c.subColors}:{})}:{}),...(c.cv&&typeof c.cv==='object'?{cv:c.cv}:{})}));
+  else inc.forEach(c=>{if(!cats.some(x=>fold(x.name)===fold(c.name)))cats.push({id:c.id||uid0(),name:c.name,color:c.color||CLAY,...(Array.isArray(c.subs)&&c.subs.length?{subs:c.subs,...(c.subColors?{subColors:c.subColors}:{})}:{}),...(c.cv&&typeof c.cv==='object'?{cv:c.cv}:{})})});
   saveCats();
   const rd=async n=>{const b=await z.read(n);return new Blob([await b.arrayBuffer()],{type:MIME[n.split('.').pop()]||'image/webp'})};
   let added=0,skipped=0;const keep=new Set();

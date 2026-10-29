@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" class="boot">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
@@ -44,6 +44,10 @@ button{font-family:var(--sans);cursor:pointer;color:inherit}
 .dim{position:absolute;inset:0;background:rgb(var(--dk-rgb) / .16);pointer-events:none}
 .view[inert]{pointer-events:none}
 #home{z-index:1}
+/* Açılış: veriler ve yazı tipleri hazır olana kadar ana ekran görünmez; sonra yumuşakça gelir */
+html.boot #home{visibility:hidden}
+html.boot #home *{animation:none!important}
+.fbd:empty{display:none}
 .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 .ic{display:block;pointer-events:none}
@@ -512,11 +516,9 @@ textarea.in{resize:none;line-height:1.55;min-height:96px}
 .madd .bt{flex:none;height:50px;padding:0 24px}
 .btns.col{flex-direction:column}
 .btns.col .bt{flex:none}
-body.booting #home{opacity:0}
-#home{transition:opacity .45s ease}
 </style>
 </head>
-<body class="booting">
+<body>
 <div id="app">
   <section class="view" id="home"></section>
   <div id="toast"></div>
@@ -910,7 +912,7 @@ function roundedStar(ctx,cx,cy,r,rad){
   for(let i=0;i<n;i++){const p=pts[i],m=mid(p,pts[(i+1)%n]);ctx.arcTo(p[0],p[1],m[0],m[1],i%2?rad*.35:rad)}
   ctx.closePath();
 }
-const clamp01=v=>Math.max(0,Math.min(1,v)),eOut=p=>1-Math.pow(1-p,4);
+const clamp01=v=>Math.max(0,Math.min(1,v)),eOut=p=>1-Math.pow(1-p,4),eSoft=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
 const STAR_ON='#D49A2E';
 /* Yarım yıldız destekli puan. value: 0–5, 0.5 adım */
 function Stars({value=0,size=18,gap=4,interactive=false,intro=false,onChange}){
@@ -920,14 +922,13 @@ function Stars({value=0,size=18,gap=4,interactive=false,intro=false,onChange}){
   cv.style.pointerEvents=interactive?'auto':'none';
   let val=intro?0:value,raf=0,down=false,pressIdx=-1;
   const S=Array.from({length:5},(_,i)=>{const t=clamp01(val-i);return{from:t,to:t,t0:0,dur:360,kind:null,press:0,soft:false}});
-  const eSoft=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
   const fillOf=(s,now)=>s.kind?s.from+(s.to-s.from)*(s.soft?eSoft:eOut)(clamp01((now-s.t0)/s.dur)):s.to;
   const draw=now=>{
     x.clearRect(0,0,CW,CH);x.lineJoin='round';
     for(let i=0;i<5;i++){
       const s=S[i],f=fillOf(s,now),cx=pad+i*slot+size/2,cy=pad+size/2+size*.03;
       let sc=1;
-      if(s.kind==='up')sc+=(s.soft?.025:.07)*Math.sin(Math.PI*clamp01((now-s.t0)/s.dur));
+      if(s.kind==='up')sc+=(s.soft?.05:.07)*Math.sin(Math.PI*clamp01((now-s.t0)/s.dur));
       sc*=1+.08*s.press;
       const r=size*.5*sc,rad=r*.16;
       if(f<1){roundedStar(x,cx,cy,r,rad);x.lineWidth=Math.max(1,size*.052);x.strokeStyle=STAR_OFF;x.stroke()}
@@ -953,13 +954,13 @@ function Stars({value=0,size=18,gap=4,interactive=false,intro=false,onChange}){
     const ch=[];S.forEach((s,i)=>{if(clamp01(nv-i)!==s.to)ch.push(i)});
     ch.forEach((i,k)=>{
       const s=S[i],t=clamp01(nv-i),cur=fillOf(s,now),up=t>cur;
-      s.from=cur;s.to=t;s.kind=up?'up':'down';s.soft=soft;s.dur=soft?720:(up?360:220);
-      s.t0=now+delay+(soft?k*110:(up?k*45:(ch.length-1-k)*25));
+      s.from=cur;s.to=t;s.kind=up?'up':'down';s.soft=soft;s.dur=soft?460:(up?360:220);
+      s.t0=now+delay+(soft?k*60:up?k*45:(ch.length-1-k)*25);
     });
     start();
   };
   draw(0);cv._rd=()=>draw(performance.now());
-  if(intro&&value)setTimeout(()=>requestAnimationFrame(()=>{if(val===0&&!down)goto(value,0,true)}),220);
+  if(intro&&value)setTimeout(()=>{if(val===0&&!down)goto(value,0,true)},230);
   if(interactive){
     /* Mekanik: dokun → tam yıldız · aynı yıldıza tekrar dokun → yarım · bir daha → boş. Sürükle → tam yıldızlar. */
     let cur=-1;
@@ -994,8 +995,8 @@ function RatingNum(value=0){
     old.style.cssText='position:absolute;left:0;top:0';wrap.style.width=w0+'px';
     nb.style.cssText='position:absolute;left:0;top:0';wrap.append(nb);
     const w1=nb.offsetWidth;wrap.getBoundingClientRect();wrap.style.width=w1+'px';
-    const d=up?1:-1,o={duration:soft?640:340,easing:soft?'cubic-bezier(.33,0,.2,1)':EASE};
-    old.animate([{transform:'none',opacity:1},{transform:`translateY(${-d*(soft?.14:.28)}em)`,opacity:0}],{...o,fill:'forwards'}).onfinish=()=>old.remove();
+    const d=up?1:-1,o=soft?{duration:520,delay:60,easing:'cubic-bezier(.33,0,.2,1)',fill:'backwards'}:{duration:340,easing:EASE};
+    old.animate([{transform:'none',opacity:1},{transform:`translateY(${-d*(soft?.14:.28)}em)`,opacity:0}],{duration:soft?320:340,easing:o.easing,fill:'forwards'}).onfinish=()=>old.remove();
     nb.animate([{transform:`translateY(${d*(soft?.14:.28)}em)`,opacity:0},{transform:'none',opacity:1}],o);
   };
   return el;
@@ -2618,7 +2619,7 @@ function openDetail(id){
     }
     function fill(anim){
       const e=eff(r,vi),V=vi>0?vars[vi-1]:null;checked.clear();
-      const badge=RatingNum(0);let touched=false;setTimeout(()=>{if(!touched)badge.set(e.rating||0,true)},400);
+      const badge=RatingNum(0);let touched=false;setTimeout(()=>{if(!touched)badge.set(e.rating||0,true)},230);
       const stars=Stars({value:e.rating||0,size:30,gap:8,interactive:true,intro:true,onChange:x=>{touched=true;(V||r).rating=x;save(r,true);badge.set(x)}});
       const meta=h('div',{class:'meta'},
         h('div',{},icon('calendar',22,INK2,1.6),fmtLong(e.date)),
@@ -3510,11 +3511,14 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
   state.all=await Store.all();
   /* eski 'Salata' tariflerini yeni kategoriye taşı */
   if(cats.some(c=>c.name==='Salata & Sandviç')){let mv=0;for(const r of state.all.filter(x=>x.cat==='Salata')){r.cat='Salata & Sandviç';mv++;try{await Store.put(r)}catch{}}saveCats()}
-  renderList('quick');
-  try{await Promise.race([document.fonts&&document.fonts.ready,new Promise(r=>setTimeout(r,900))])}catch{}
+  /* yazı tipleri (Fraunces / DM Sans) gelsin, harf değişimi görünmesin; en fazla 700 ms bekle */
+  try{await Promise.race([Promise.all([document.fonts.load('400 48px Fraunces'),document.fonts.load('400 15px "DM Sans"'),document.fonts.ready]),new Promise(r=>setTimeout(r,700))])}catch{}
+  renderList();
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  document.body.classList.remove('booting');
-})();
+  document.documentElement.classList.remove('boot');
+  home.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:700,easing:'cubic-bezier(.22,.9,.24,1)'});
+})().catch(()=>document.documentElement.classList.remove('boot'));
+setTimeout(()=>document.documentElement.classList.remove('boot'),4000);
 })();
 </script>
 </body>
